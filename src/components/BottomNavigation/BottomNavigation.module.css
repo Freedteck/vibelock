@@ -1,0 +1,54 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  background: rgba(26, 26, 26, 0.95);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border-radius: 12px;
+  min-width: 60px;
+}
+
+.navItem:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.navItem.active {
+  color: #8b5cf6;
+}
+
+.navItem.active svg {
+  color: #8b5cf6;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+  .bottomNav {
+    display: none;
+  }
+}

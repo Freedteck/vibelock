@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Track } from '../../data/mockData';
 import { useAppContext } from '../../context/AppContext';
 import UnlockModal from '../UnlockModal/UnlockModal';
+import WalletModal from '../WalletModal/WalletModal';
 import styles from './TrackCard.module.css';
 
 interface TrackCardProps {
@@ -21,6 +22,7 @@ const TrackCard: React.FC<TrackCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const { state, dispatch } = useAppContext();
   
   const isUnlocked = state.unlockedTracks.includes(track.id);
@@ -35,7 +37,7 @@ const TrackCard: React.FC<TrackCardProps> = ({
     e.preventDefault();
     e.stopPropagation();
     if (!state.isWalletConnected) {
-      alert('Please connect your wallet first');
+      setShowWalletModal(true);
       return;
     }
     setShowUnlockModal(true);
@@ -147,6 +149,11 @@ const TrackCard: React.FC<TrackCardProps> = ({
         onClose={() => setShowUnlockModal(false)}
         track={track}
         onUnlock={handleUnlock}
+      />
+
+      <WalletModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
       />
     </>
   );

@@ -4,6 +4,8 @@ import { Play, Pause, Lock, Unlock, Users, TrendingUp, MessageCircle, Share2, He
 import { Track } from '../../data/mockData';
 import { useAppContext } from '../../context/AppContext';
 import UnlockModal from '../../components/UnlockModal/UnlockModal';
+import WalletModal from '../../components/WalletModal/WalletModal';
+import MobileHeader from '../../components/MobileHeader/MobileHeader';
 import styles from './TrackDetail.module.css';
 
 interface TrackDetailProps {
@@ -17,18 +19,19 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
   const [track, setTrack] = useState<Track | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([
     {
       id: 1,
-      author: 'User123',
-      text: 'This track is absolutely incredible! The production quality is top-notch.',
+      author: 'MusicFan',
+      text: 'This track is absolutely incredible! 🔥',
       timestamp: '2 hours ago'
     },
     {
       id: 2,
-      author: 'MusicLover',
-      text: "Can't wait to unlock the full version. Preview sounds amazing!",
+      author: 'CryptoVibes',
+      text: "Can't wait to unlock the full version!",
       timestamp: '5 hours ago'
     }
   ]);
@@ -45,6 +48,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
   if (!track) {
     return (
       <div className={styles.container}>
+        <MobileHeader title="Track Not Found" showBack={true} />
         <div className={styles.notFound}>
           <h2>Track not found</h2>
           <Link to="/discover" className={styles.backButton}>
@@ -61,7 +65,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
 
   const handleUnlockClick = () => {
     if (!state.isWalletConnected) {
-      alert('Please connect your wallet first');
+      setShowWalletModal(true);
       return;
     }
     setShowUnlockModal(true);
@@ -116,6 +120,8 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
 
   return (
     <div className={styles.trackDetail}>
+      <MobileHeader title={track.title} showBack={true} />
+      
       <div className={styles.container}>
         {/* Hero Section */}
         <div className={styles.hero}>
@@ -128,17 +134,17 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
             <div className={styles.playOverlay}>
               <button onClick={handlePlayClick} className={styles.playButton}>
                 {currentTrack?.id === track.id && isPlaying ? (
-                  <Pause size={32} />
+                  <Pause size={24} />
                 ) : (
-                  <Play size={32} />
+                  <Play size={24} />
                 )}
               </button>
             </div>
             <div className={styles.lockStatus}>
               {isUnlocked ? (
-                <Unlock size={20} className={styles.unlocked} />
+                <Unlock size={16} className={styles.unlocked} />
               ) : (
-                <Lock size={20} className={styles.locked} />
+                <Lock size={16} className={styles.locked} />
               )}
             </div>
           </div>
@@ -151,88 +157,72 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
             
             <h1 className={styles.title}>{track.title}</h1>
             <Link to={`/artist/${1}`} className={styles.artist}>
-              by {track.artist}
+              {track.artist}
             </Link>
 
             <div className={styles.stats}>
               <div className={styles.statItem}>
-                <TrendingUp size={18} />
+                <TrendingUp size={16} />
                 <span>{track.coinPrice} ETH</span>
               </div>
               <div className={styles.statItem}>
-                <Users size={18} />
-                <span>{track.holders} holders</span>
+                <Users size={16} />
+                <span>{track.holders}</span>
               </div>
               <div className={styles.statItem}>
-                <Play size={18} />
-                <span>{track.playCount.toLocaleString()} plays</span>
+                <Play size={16} />
+                <span>{track.playCount.toLocaleString()}</span>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className={styles.actions}>
-              {isUnlocked ? (
-                <button className={styles.playFullButton} onClick={handlePlayClick}>
-                  <Play size={18} />
-                  Play Full Track
-                </button>
-              ) : (
-                <button 
-                  className={styles.unlockButton}
-                  onClick={handleUnlockClick}
-                >
-                  <Lock size={18} />
-                  Unlock for {track.coinPrice} ETH
-                </button>
-              )}
-              
-              <div className={styles.secondaryActions}>
-                <button 
-                  onClick={() => setIsLiked(!isLiked)}
-                  className={`${styles.actionButton} ${isLiked ? styles.liked : ''}`}
-                >
-                  <Heart size={18} />
-                </button>
-                <button onClick={handleShare} className={styles.actionButton}>
-                  <Share2 size={18} />
-                </button>
-              </div>
-            </div>
+        {/* Action Buttons */}
+        <div className={styles.actions}>
+          {isUnlocked ? (
+            <button className={styles.playFullButton} onClick={handlePlayClick}>
+              <Play size={18} />
+              Play Full Track
+            </button>
+          ) : (
+            <button 
+              className={styles.unlockButton}
+              onClick={handleUnlockClick}
+            >
+              <Lock size={18} />
+              Unlock for {track.coinPrice} ETH
+            </button>
+          )}
+          
+          <div className={styles.secondaryActions}>
+            <button 
+              onClick={() => setIsLiked(!isLiked)}
+              className={`${styles.actionButton} ${isLiked ? styles.liked : ''}`}
+            >
+              <Heart size={18} />
+            </button>
+            <button onClick={handleShare} className={styles.actionButton}>
+              <Share2 size={18} />
+            </button>
           </div>
         </div>
 
         {/* Collaborators Section */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Collaborators</h2>
-          <div className={styles.collaborators}>
+          <div className={styles.collaboratorsScroll}>
             {track.collaborators.map((collab, index) => (
-              <div key={index} className={styles.collaborator}>
+              <div key={index} className={styles.collaboratorChip}>
                 <div className={styles.collabAvatar}>
                   {collab.name.charAt(0)}
                 </div>
                 <div className={styles.collabInfo}>
-                  <h3 className={styles.collabName}>{collab.name}</h3>
-                  <p className={styles.collabRole}>{collab.role}</p>
+                  <span className={styles.collabName}>{collab.name}</span>
+                  <span className={styles.collabRole}>{collab.role}</span>
                 </div>
-                <div className={styles.collabPercentage}>
-                  {collab.percentage}%
-                </div>
+                <span className={styles.collabPercentage}>{collab.percentage}%</span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Trading History */}
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Trading History</h2>
-          <div className={styles.tradingChart}>
-            <div className={styles.chartPlaceholder}>
-              <TrendingUp size={48} />
-              <p>Price Chart Coming Soon</p>
-              <div className={styles.priceInfo}>
-                <span className={styles.currentPrice}>Current: {track.coinPrice} ETH</span>
-                <span className={styles.priceChange}>+12.5% (24h)</span>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -255,7 +245,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
                 className={styles.commentSubmit}
                 disabled={!comment.trim()}
               >
-                Post Comment
+                Post
               </button>
             </div>
             
@@ -284,6 +274,11 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
         onClose={() => setShowUnlockModal(false)}
         track={track}
         onUnlock={handleUnlock}
+      />
+
+      <WalletModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
       />
     </div>
   );

@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import Header from './components/Header/Header';
-import AudioPlayer from './components/AudioPlayer/AudioPlayer';
+import MobileHeader from './components/MobileHeader/MobileHeader';
+import BottomNavigation from './components/BottomNavigation/BottomNavigation';
+import BottomPlayer from './components/BottomPlayer/BottomPlayer';
 import NotificationModal from './components/NotificationModal/NotificationModal';
 import Home from './pages/Home/Home';
 import Discover from './pages/Discover/Discover';
@@ -68,8 +70,13 @@ function AppContent() {
   return (
     <Router>
       <div className="App">
+        {/* Desktop Header */}
         <Header />
-        <main>
+        
+        {/* Mobile Header */}
+        <MobileHeader />
+        
+        <main style={{ paddingBottom: currentTrack ? '160px' : '80px' }}>
           <Routes>
             <Route 
               path="/" 
@@ -107,7 +114,8 @@ function AppContent() {
           </Routes>
         </main>
         
-        <AudioPlayer
+        {/* Bottom Player */}
+        <BottomPlayer
           currentTrack={currentTrack}
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
@@ -116,6 +124,9 @@ function AppContent() {
           playlist={playlist}
           currentIndex={currentTrackIndex}
         />
+
+        {/* Bottom Navigation */}
+        <BottomNavigation />
 
         <NotificationModal
           isOpen={notification.isOpen}

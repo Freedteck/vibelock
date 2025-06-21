@@ -1,0 +1,172 @@
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.card.pressed {
+  transform: scale(0.98);
+}
+
+.small {
+  padding: 8px;
+}
+
+.medium {
+  padding: 12px;
+}
+
+.artworkContainer {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.artwork {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.playButton {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.card:hover .playButton {
+  opacity: 1;
+}
+
+.playButton:hover {
+  background: #8b5cf6;
+  transform: scale(1.1);
+}
+
+.lockStatus {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locked {
+  color: #f59e0b;
+}
+
+.unlocked {
+  color: #10b981;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price {
+  font-size: 12px;
+  font-weight: 600;
+  color: #10b981;
+  margin-top: 4px;
+}
+
+.small .title {
+  font-size: 13px;
+}
+
+.small .artist,
+.small .price {
+  font-size: 11px;
+}
+
+/* Touch devices */
+@media (hover: none) {
+  .playButton {
+    opacity: 1;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 480px) {
+  .card {
+    padding: 10px;
+  }
+  
+  .title {
+    font-size: 13px;
+  }
+  
+  .artist,
+  .price {
+    font-size: 11px;
+  }
+  
+  .playButton {
+    width: 28px;
+    height: 28px;
+    bottom: 6px;
+    right: 6px;
+  }
+  
+  .lockStatus {
+    width: 20px;
+    height: 20px;
+    top: 6px;
+    right: 6px;
+  }
+}
