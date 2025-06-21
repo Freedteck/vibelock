@@ -12,7 +12,7 @@ import {
 // import TrackCard from '../../components/TrackCard/TrackCard';
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import TradeModal from "../../components/TradeModal/TradeModal";
-import MobileHeader from "../../components/MobileHeader/MobileHeader";
+// import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import { Track } from "../../data/mockData";
 import { useAppContext } from "../../context/AppContext";
 import styles from "./Dashboard.module.css";

@@ -4,7 +4,11 @@
 
 .hero {
   padding: 20px 16px 32px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(236, 72, 153, 0.1) 100%
+  );
 }
 
 .heroContent {
@@ -268,92 +272,97 @@
 
 /* Desktop adjustments */
 @media (min-width: 768px) {
+  .home {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
   .hero {
     padding: 32px 24px 48px;
   }
-  
+
   .featuredTrack {
     max-width: 600px;
     margin: 0 auto;
     padding: 24px;
   }
-  
+
   .featuredArtwork {
     width: 120px;
     height: 120px;
   }
-  
+
   .featuredTitle {
     font-size: 24px;
   }
-  
+
   .featuredArtist {
     font-size: 16px;
   }
-  
+
   .playButton {
     padding: 12px 24px;
     font-size: 16px;
   }
-  
+
   .statsSection {
     padding: 0 24px 48px;
   }
-  
+
   .statCard {
     padding: 20px;
   }
-  
+
   .statNumber {
     font-size: 24px;
   }
-  
+
   .statLabel {
     font-size: 14px;
   }
-  
+
   .sectionHeader {
     padding: 0 24px;
   }
-  
+
   .sectionTitle {
     font-size: 24px;
   }
-  
+
   .artistsScroll {
     padding: 0 24px;
     gap: 24px;
   }
-  
+
   .artistCard {
     width: 120px;
   }
-  
+
   .artistAvatar {
     width: 100px;
     height: 100px;
   }
-  
+
   .artistName {
     font-size: 16px;
   }
-  
+
   .artistStats {
     font-size: 14px;
   }
-  
+
   .discoverSection {
     padding: 0 24px 48px;
   }
-  
+
   .discoverCard {
     padding: 32px;
   }
-  
+
   .discoverTitle {
     font-size: 24px;
   }
-  
+
   .discoverText {
     font-size: 16px;
   }
