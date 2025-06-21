@@ -1,0 +1,362 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.trackInfo {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.artwork {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.details {
+  flex: 1;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.artist {
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem 0;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.tradeTypeSelector {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem;
+  border-radius: 12px;
+}
+
+.typeButton {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.typeButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.typeButton.active.buy {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.typeButton.active.sell {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.amountSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.amountInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  padding: 0.875rem 4rem 0.875rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.unit {
+  position: absolute;
+  right: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.amountControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.presetButton {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.presetButton:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.presetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.maxInfo {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.summary {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summaryTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.summaryRow.total {
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tradeButton {
+  flex: 2;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tradeButton.buy {
+  background: var(--success);
+}
+
+.tradeButton.sell {
+  background: #ef4444;
+}
+
+.tradeButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.tradeButton.buy:hover:not(:disabled) {
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.tradeButton.sell:hover:not(:disabled) {
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.tradeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.processing {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.processingIcon {
+  margin-bottom: 1.5rem;
+  color: var(--accent-primary);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.processingTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.processingText {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.success {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.successIcon {
+  margin-bottom: 1.5rem;
+  color: var(--success);
+}
+
+.successTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.successText {
+  color: var(--text-secondary);
+  margin: 0 0 2rem 0;
+  line-height: 1.5;
+}
+
+.successStats {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.successStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.successLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.successValue {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .trackInfo {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stats {
+    align-items: center;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .successStats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .amountControls {
+    justify-content: center;
+  }
+}

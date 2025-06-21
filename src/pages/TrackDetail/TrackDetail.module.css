@@ -1,0 +1,526 @@
+.trackDetail {
+  min-height: 100vh;
+  padding-bottom: 120px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.notFound {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.notFound h2 {
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  padding: 1rem 2rem;
+  background: var(--accent-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+.hero {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 4rem;
+  align-items: flex-start;
+}
+
+.artworkContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.artwork {
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.playOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.artworkContainer:hover .playOverlay {
+  opacity: 1;
+}
+
+.playButton {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+}
+
+.lockStatus {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.locked {
+  color: #f59e0b;
+}
+
+.unlocked {
+  color: var(--success);
+}
+
+.trackInfo {
+  flex: 1;
+  padding-top: 1rem;
+}
+
+.metadata {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.genre {
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  color: #a78bfa;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.duration {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  line-height: 1.1;
+}
+
+.artist {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 2rem;
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.artist:hover {
+  color: var(--accent-secondary);
+}
+
+.stats {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.statItem:first-child {
+  color: var(--success);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.unlockButton,
+.playFullButton {
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.unlockButton {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.unlockButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+}
+
+.playFullButton {
+  background: var(--success);
+  color: white;
+}
+
+.playFullButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+}
+
+.secondaryActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #8b5cf6;
+  color: var(--text-primary);
+}
+
+.actionButton.liked {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+  color: white;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.collaborators {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.collaborator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.collabAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.collabInfo {
+  flex: 1;
+}
+
+.collabName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.collabRole {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.collabPercentage {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-secondary);
+}
+
+.tradingChart {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+}
+
+.chartPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.chartPlaceholder p {
+  margin: 1rem 0;
+  font-size: 1.125rem;
+}
+
+.priceInfo {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.currentPrice {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.priceChange {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.comments {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+}
+
+.commentForm {
+  margin-bottom: 2rem;
+}
+
+.commentInput {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  resize: vertical;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.commentInput:focus {
+  outline: none;
+  border-color: #8b5cf6;
+}
+
+.commentSubmit {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.commentSubmit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.comment {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.commentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.commentContent {
+  flex: 1;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.commentTime {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.commentText {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .artwork {
+    width: 300px;
+    height: 300px;
+  }
+
+  .playButton {
+    width: 60px;
+    height: 60px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .unlockButton,
+  .playFullButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .secondaryActions {
+    justify-content: center;
+  }
+
+  .collaborators {
+    gap: 0.75rem;
+  }
+
+  .collaborator {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+
+  .artwork {
+    width: 250px;
+    height: 250px;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .comment {
+    gap: 0.75rem;
+  }
+
+  .commentAvatar {
+    width: 35px;
+    height: 35px;
+  }
+}

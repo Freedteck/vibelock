@@ -1,0 +1,400 @@
+.artistProfile {
+  min-height: 100vh;
+  padding-bottom: 120px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.notFound {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.notFound h2 {
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  padding: 1rem 2rem;
+  background: var(--accent-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+.hero {
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.banner {
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+
+.profileInfo {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+  padding: 0 2rem;
+  margin-top: -80px;
+  position: relative;
+  z-index: 10;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--bg-primary);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.artistDetails {
+  flex: 1;
+  color: white;
+  padding-bottom: 1rem;
+}
+
+.artistName {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.artistBio {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+.artistStats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.socialLink:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.section {
+  padding: 0 2rem 3rem;
+}
+
+.sectionHeader {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.tracksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.noTracks {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.noTracks h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 1rem 0;
+}
+
+.noTracks p {
+  margin: 0;
+}
+
+.earningsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.earningsCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.earningsCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.earningsIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.earningsInfo {
+  flex: 1;
+}
+
+.earningsValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.earningsLabel {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.collaborationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.collaborationItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.collaborationItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.collabArtwork {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.collabInfo {
+  flex: 1;
+}
+
+.collabTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.collabArtists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.collabArtist {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.collabLink {
+  padding: 0.5rem 1rem;
+  background: var(--accent-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.collabLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .banner {
+    height: 200px;
+  }
+
+  .profileInfo {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+    margin-top: -60px;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .artistName {
+    font-size: 2rem;
+  }
+
+  .artistStats {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .socialLinks {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .section {
+    padding: 0 1rem 2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .tracksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .earningsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .collaborationItem {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .collabInfo {
+    text-align: center;
+  }
+
+  .collabArtists {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profileInfo {
+    padding: 0 0.75rem;
+  }
+
+  .artistName {
+    font-size: 1.75rem;
+  }
+
+  .artistBio {
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 0 0.75rem 1.5rem;
+  }
+
+  .socialLinks {
+    gap: 0.5rem;
+  }
+
+  .socialLink {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .earningsCard {
+    padding: 1rem;
+  }
+
+  .earningsIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .earningsValue {
+    font-size: 1.25rem;
+  }
+}
