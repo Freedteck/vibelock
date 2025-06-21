@@ -6,39 +6,41 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 16px;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 24px;
+  padding: 0 8px;
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 1rem 0;
+  margin: 0 0 8px 0;
 }
 
 .subtitle {
-  font-size: 1.125rem;
+  font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
+  line-height: 1.4;
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .statCard {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
   background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -50,40 +52,37 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.statIcon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  background: var(--accent-primary);
+.statHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
+  gap: 8px;
 }
 
-.statInfo {
-  flex: 1;
-}
-
-.statValue {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 0.25rem 0;
+.statIcon {
+  color: #8b5cf6;
+  flex-shrink: 0;
 }
 
 .statLabel {
   color: var(--text-secondary);
-  margin: 0;
-  font-size: 0.875rem;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
 }
 
 .tabNavigation {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: 4px;
+  margin-bottom: 20px;
   background: var(--bg-card);
-  padding: 0.5rem;
+  padding: 4px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -91,8 +90,9 @@
 .tabButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
   background: transparent;
   border: none;
   color: var(--text-secondary);
@@ -101,7 +101,8 @@
   transition: all 0.2s ease;
   font-weight: 500;
   flex: 1;
-  justify-content: center;
+  font-size: 14px;
+  min-height: 44px;
 }
 
 .tabButton:hover {
@@ -110,7 +111,7 @@
 }
 
 .tabButton.active {
-  background: var(--accent-primary);
+  background: #8b5cf6;
   color: white;
 }
 
@@ -118,7 +119,7 @@
   background: var(--bg-card);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 2rem;
+  padding: 16px;
 }
 
 .tabPanel {
@@ -126,59 +127,69 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .sectionHeader {
-  margin-bottom: 2rem;
+  margin-bottom: 16px;
 }
 
 .sectionTitle {
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 4px 0;
 }
 
 .sectionDescription {
   color: var(--text-secondary);
   margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .tracksGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .emptyState {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 32px 16px;
   color: var(--text-secondary);
 }
 
 .emptyState h3 {
-  font-size: 1.5rem;
+  font-size: 18px;
   color: var(--text-primary);
-  margin: 1rem 0;
+  margin: 12px 0 8px 0;
 }
 
 .emptyState p {
   margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .portfolioList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
 }
 
 .portfolioItem {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -190,11 +201,18 @@
   transform: translateY(-2px);
 }
 
+.portfolioHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .portfolioArtwork {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .portfolioInfo {
@@ -203,43 +221,50 @@
 }
 
 .portfolioTitle {
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.25rem 0;
-  white-space: nowrap;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .portfolioArtist {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .portfolioStats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  min-width: 400px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 12px 0;
 }
 
 .portfolioStat {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  text-align: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
 }
 
 .portfolioLabel {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin-bottom: 0.25rem;
+  font-weight: 500;
 }
 
 .portfolioValue {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -250,19 +275,21 @@
 
 .portfolioActions {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .portfolioButton {
-  padding: 0.5rem 1rem;
-  background: var(--accent-primary);
+  flex: 1;
+  padding: 12px 16px;
+  background: #8b5cf6;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 14px;
+  min-height: 44px;
 }
 
 .portfolioButton:hover {
@@ -273,24 +300,24 @@
 .activityList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
 }
 
 .activityItem {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 12px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .activityIcon {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--accent-primary);
+  background: #8b5cf6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,137 +327,158 @@
 
 .activityInfo {
   flex: 1;
+  min-width: 0;
 }
 
 .activityDescription {
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   line-height: 1.4;
+  font-size: 14px;
 }
 
 .activityDescription strong {
-  color: var(--accent-secondary);
+  color: #8b5cf6;
 }
 
 .activityMeta {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .activityTime {
-  font-size: 0.875rem;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
 .activityAmount {
-  font-size: 0.875rem;
+  font-size: 12px;
   font-weight: 600;
   color: var(--success);
+  flex-shrink: 0;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Tablet adjustments */
+@media (min-width: 768px) {
   .container {
-    padding: 1.5rem 1rem;
+    padding: 24px;
+  }
+
+  .header {
+    margin-bottom: 32px;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 32px;
+  }
+
+  .subtitle {
+    font-size: 16px;
   }
 
   .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
   }
 
   .statCard {
-    padding: 1rem;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
   }
 
-  .statIcon {
+  .statHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+
+  .statLabel {
+    font-size: 14px;
+  }
+
+  .tabContent {
+    padding: 24px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+
+  .tracksGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .portfolioItem {
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .portfolioHeader {
+    flex: 1;
+  }
+
+  .portfolioArtwork {
+    width: 60px;
+    height: 60px;
+  }
+
+  .portfolioStats {
+    grid-template-columns: repeat(4, 1fr);
+    margin: 0 16px;
+    min-width: 400px;
+  }
+
+  .portfolioStat {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+  }
+
+  .portfolioActions {
+    flex-shrink: 0;
+  }
+
+  .portfolioButton {
+    flex: none;
+    min-width: 80px;
+  }
+
+  .activityIcon {
     width: 40px;
     height: 40px;
   }
 
-  .statValue {
-    font-size: 1.25rem;
+  .activityDescription {
+    font-size: 15px;
   }
 
-  .tabNavigation {
-    flex-direction: column;
-  }
-
-  .tabButton {
-    justify-content: flex-start;
-  }
-
-  .tabContent {
-    padding: 1.5rem;
-  }
-
-  .tracksGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .portfolioItem {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-
-  .portfolioStats {
-    grid-template-columns: repeat(2, 1fr);
-    min-width: auto;
-    margin: 1rem 0;
-  }
-
-  .portfolioActions {
-    justify-content: center;
+  .activityTime,
+  .activityAmount {
+    font-size: 13px;
   }
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 1rem 0.75rem;
+/* Large desktop adjustments */
+@media (min-width: 1024px) {
+  .tracksGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
+}
 
-  .title {
-    font-size: 1.75rem;
-  }
-
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .sectionTitle {
-    font-size: 1.25rem;
-  }
-
-  .portfolioStats {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .portfolioStat {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
-
-  .activityItem {
-    padding: 0.75rem;
-  }
-
-  .activityIcon {
-    width: 35px;
-    height: 35px;
-  }
-
-  .activityMeta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+/* Hide desktop header spacing on mobile */
+@media (max-width: 767px) {
+  .dashboard {
+    padding-top: 0;
   }
 }
