@@ -1,9 +1,65 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { createAppKit } from "@reown/appkit/react";
+import {
+  arbitrum,
+  base,
+  baseSepolia,
+  mainnet,
+  zoraTestnet,
+} from "@reown/appkit/networks";
+import { WagmiProvider } from "wagmi";
 
-createRoot(document.getElementById('root')!).render(
+// 0. Setup queryClient
+const queryClient = new QueryClient();
+
+// 1. Get projectId from https://cloud.reown.com
+const projectId = "14be22a881c24b68853f61a804b4cf8b";
+
+// 2. Create a metadata object - optional
+const metadata = {
+  name: "vibe lock",
+  description: "AppKit Example",
+  url: "https://reown.com/appkit", // origin must match your domain & subdomain
+  icons: ["https://assets.reown.com/reown-profile-pic.png"],
+};
+
+// 3. Set the networks
+const networks = [mainnet, arbitrum, base, baseSepolia, zoraTestnet] as [
+  typeof mainnet,
+  typeof arbitrum,
+  typeof base,
+  typeof baseSepolia,
+  typeof zoraTestnet
+];
+
+// 4. Create Wagmi Adapter
+const wagmiAdapter = new WagmiAdapter({
+  networks,
+  projectId,
+  ssr: true,
+});
+
+// 5. Create modal
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  projectId,
+  metadata,
+  features: {
+    analytics: true, // Optional - defaults to your Cloud configuration
+  },
+});
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </WagmiProvider>
   </StrictMode>
 );

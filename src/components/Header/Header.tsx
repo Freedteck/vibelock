@@ -1,35 +1,30 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Music, Search, Menu, X, User, Wallet } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
-import { useNotification } from '../../hooks/useNotification';
-import styles from './Header.module.css';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Music, Search, Menu, X, User, Wallet } from "lucide-react";
+import { useAppContext } from "../../context/AppContext";
+import { useNotification } from "../../hooks/useNotification";
+import styles from "./Header.module.css";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
+import { formatUserAddress } from "../../client/helper";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const { state, dispatch } = useAppContext();
   const { showSuccess, showError } = useNotification();
   const location = useLocation();
+  const { open } = useAppKit();
+  const { address, isConnected } = useAppKitAccount();
 
   const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/discover', label: 'Discover' },
-    { path: '/upload', label: 'Upload' },
-    { path: '/dashboard', label: 'Dashboard' }
+    { path: "/", label: "Home" },
+    { path: "/discover", label: "Discover" },
+    { path: "/upload", label: "Upload" },
+    { path: "/dashboard", label: "Dashboard" },
   ];
 
   const handleConnectWallet = () => {
-    if (state.isWalletConnected) {
-      dispatch({ type: 'DISCONNECT_WALLET' });
-      showSuccess('Wallet Disconnected', 'Your wallet has been disconnected successfully.');
-    } else {
-      // Simulate wallet connection
-      setTimeout(() => {
-        dispatch({ type: 'CONNECT_WALLET' });
-        showSuccess('Wallet Connected', 'Your wallet has been connected successfully!');
-      }, 1000);
-    }
+    open();
   };
 
   const handleMenuToggle = () => {
@@ -68,7 +63,7 @@ const Header: React.FC = () => {
               key={item.path}
               to={item.path}
               className={`${styles.navLink} ${
-                location.pathname === item.path ? styles.navLinkActive : ''
+                location.pathname === item.path ? styles.navLinkActive : ""
               }`}
             >
               {item.label}
@@ -81,14 +76,18 @@ const Header: React.FC = () => {
           <button
             onClick={handleConnectWallet}
             className={`${styles.walletButton} ${
-              state.isWalletConnected ? styles.walletConnected : ''
+              state.isWalletConnected ? styles.walletConnected : ""
             }`}
           >
             <Wallet size={18} />
-            {state.isWalletConnected ? 'Connected' : 'Connect'}
+            <div className={styles.appBtn} id="btn"></div>
+
+            {isConnected
+              ? formatUserAddress(address?.toLowerCase())
+              : "Connect"}
           </button>
-          
-          {state.isWalletConnected && (
+
+          {isConnected && (
             <div className={styles.userAvatar}>
               <User size={20} />
             </div>
@@ -106,7 +105,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.open : ''}`}>
+      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.open : ""}`}>
         <div className={styles.mobileSearchContainer}>
           <Search className={styles.searchIcon} />
           <input
@@ -117,14 +116,14 @@ const Header: React.FC = () => {
             className={styles.searchInput}
           />
         </div>
-        
+
         <nav className={styles.mobileNav}>
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               className={`${styles.mobileNavLink} ${
-                location.pathname === item.path ? styles.navLinkActive : ''
+                location.pathname === item.path ? styles.navLinkActive : ""
               }`}
               onClick={handleNavClick}
             >

@@ -4,11 +4,11 @@
 
 .hero {
   padding: 20px 16px 32px;
-  background: linear-gradient(
+  /* background: linear-gradient(
     135deg,
     rgba(139, 92, 246, 0.1) 0%,
     rgba(236, 72, 153, 0.1) 100%
-  );
+  ); */
 }
 
 .heroContent {
