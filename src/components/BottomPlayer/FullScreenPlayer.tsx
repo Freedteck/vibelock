@@ -1,12 +1,23 @@
-import React from 'react';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Heart, Share2 } from 'lucide-react';
-import { Track } from '../../data/mockData';
-import styles from './FullScreenPlayer.module.css';
+import React from "react";
+import {
+  ChevronDown,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Shuffle,
+  Repeat,
+  Heart,
+  Share2,
+} from "lucide-react";
+import { Track } from "../../data/mockData";
+import styles from "./FullScreenPlayer.module.css";
+import { CoinTrack } from "../../models";
 
 interface FullScreenPlayerProps {
   isOpen: boolean;
   onClose: () => void;
-  currentTrack: Track;
+  currentTrack: CoinTrack;
   isPlaying: boolean;
   onPlayPause: () => void;
   onNext: () => void;
@@ -26,13 +37,13 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
   onPrevious,
   currentTime,
   duration,
-  audioRef
+  audioRef,
 }) => {
   const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00';
+    if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,8 +78,8 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
 
         {/* Album Art */}
         <div className={styles.artworkContainer}>
-          <img 
-            src={currentTrack.artwork} 
+          <img
+            src={currentTrack.artworkUrl}
             alt={currentTrack.title}
             className={styles.artwork}
           />
@@ -90,7 +101,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
             onChange={handleSeek}
             className={styles.progressSlider}
             style={{
-              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.2) ${progress}%, rgba(255,255,255,0.2) 100%)`
+              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.2) ${progress}%, rgba(255,255,255,0.2) 100%)`,
             }}
           />
           <div className={styles.timeInfo}>

@@ -108,7 +108,7 @@ const Home: React.FC<HomeProps> = ({
         <div className={styles.heroContent}>
           <div className={styles.featuredTrack}>
             <img
-              src={featuredTrack.artwork}
+              src={featuredTrack.artworkUrl}
               alt={featuredTrack.title}
               className={styles.featuredArtwork}
             />

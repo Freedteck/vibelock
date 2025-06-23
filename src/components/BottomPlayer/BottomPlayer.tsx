@@ -4,9 +4,10 @@ import { Track } from "../../data/mockData";
 // import { useAppContext } from '../../context/AppContext';
 import FullScreenPlayer from "./FullScreenPlayer";
 import styles from "./BottomPlayer.module.css";
+import { CoinTrack } from "../../models";
 
 interface BottomPlayerProps {
-  currentTrack: Track | null;
+  currentTrack: CoinTrack | null;
   isPlaying: boolean;
   onPlayPause: () => void;
   onNext: () => void;
@@ -60,7 +61,9 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   if (!currentTrack) return null;
 
   const isUnlocked = true;
-  const audioUrl = isUnlocked ? currentTrack.fullUrl : currentTrack.previewUrl;
+  const audioUrl = isUnlocked
+    ? currentTrack.premiumAudio
+    : currentTrack.mediaUrl;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
@@ -84,7 +87,7 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
         >
           <div className={styles.trackInfo}>
             <img
-              src={currentTrack.artwork}
+              src={currentTrack.artworkUrl}
               alt={currentTrack.title}
               className={styles.albumArt}
             />
