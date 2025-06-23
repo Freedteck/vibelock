@@ -6,21 +6,23 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 16px;
 }
 
 .notFound {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 48px 16px;
 }
 
 .notFound h2 {
   color: var(--text-primary);
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
+  font-size: 20px;
 }
 
 .backButton {
-  padding: 1rem 2rem;
-  background: var(--accent-primary);
+  padding: 12px 24px;
+  background: #8b5cf6;
   color: white;
   text-decoration: none;
   border-radius: 12px;
@@ -34,15 +36,17 @@
 }
 
 .hero {
-  position: relative;
-  margin-bottom: 3rem;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .banner {
-  height: 300px;
+  height: 200px;
   background-size: cover;
   background-position: center;
-  border-radius: 16px;
   position: relative;
   overflow: hidden;
 }
@@ -59,68 +63,74 @@
 
 .profileInfo {
   display: flex;
-  align-items: flex-end;
-  gap: 2rem;
-  padding: 0 2rem;
-  margin-top: -80px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
+  margin-top: -40px;
   position: relative;
   z-index: 10;
 }
 
 .avatar {
-  width: 160px;
-  height: 160px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--bg-primary);
+  border: 3px solid var(--bg-primary);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: 12px;
 }
 
 .artistDetails {
-  flex: 1;
-  color: white;
-  padding-bottom: 1rem;
+  width: 100%;
 }
 
 .artistName {
-  font-size: 3rem;
+  font-size: 24px;
   font-weight: 800;
-  margin: 0 0 1rem 0;
+  margin: 0 0 8px 0;
+  color: white;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .artistBio {
-  font-size: 1.125rem;
-  line-height: 1.6;
-  margin: 0 0 1.5rem 0;
-  opacity: 0.9;
-  max-width: 600px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 100%;
 }
 
 .artistStats {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .statItem {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 6px;
   font-weight: 600;
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
 }
 
 .socialLinks {
   display: flex;
-  gap: 1rem;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .socialLink {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 6px;
+  padding: 8px 12px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -128,27 +138,29 @@
   color: white;
   text-decoration: none;
   font-weight: 500;
+  font-size: 12px;
   transition: all 0.2s ease;
 }
 
 .socialLink:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .section {
-  padding: 0 2rem 3rem;
+  margin-bottom: 24px;
 }
 
 .sectionHeader {
-  margin-bottom: 2rem;
+  margin-bottom: 16px;
+  padding: 0 16px;
 }
 
 .sectionTitle {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
+  gap: 8px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -156,41 +168,46 @@
 
 .tracksGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 16px;
 }
 
 .noTracks {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 48px 16px;
   color: var(--text-secondary);
 }
 
 .noTracks h3 {
-  font-size: 1.5rem;
+  font-size: 18px;
   color: var(--text-primary);
-  margin: 1rem 0;
+  margin: 12px 0 8px 0;
 }
 
 .noTracks p {
   margin: 0;
+  font-size: 14px;
 }
 
 .earningsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 16px;
 }
 
 .earningsCard {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: 8px;
+  padding: 16px;
   background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .earningsCard:hover {
@@ -199,44 +216,48 @@
 }
 
 .earningsIcon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
-  background: var(--accent-primary);
+  background: #8b5cf6;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
 }
 
 .earningsInfo {
-  flex: 1;
+  width: 100%;
 }
 
 .earningsValue {
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 4px 0;
+  line-height: 1;
 }
 
 .earningsLabel {
   color: var(--text-secondary);
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .collaborationsList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
+  padding: 0 16px;
 }
 
 .collaborationItem {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 12px;
+  padding: 12px;
   background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -249,45 +270,53 @@
 }
 
 .collabArtwork {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .collabInfo {
   flex: 1;
+  min-width: 0;
 }
 
 .collabTitle {
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .collabArtists {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .collabArtist {
-  font-size: 0.875rem;
+  font-size: 11px;
   color: var(--text-secondary);
-  padding: 0.25rem 0.5rem;
+  padding: 2px 6px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
 }
 
 .collabLink {
-  padding: 0.5rem 1rem;
-  background: var(--accent-primary);
+  padding: 8px 12px;
+  background: #8b5cf6;
   color: white;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 12px;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .collabLink:hover {
@@ -295,106 +324,122 @@
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Desktop adjustments */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 24px;
+  }
+
   .banner {
-    height: 200px;
+    height: 300px;
   }
 
   .profileInfo {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0 1rem;
-    margin-top: -60px;
+    flex-direction: row;
+    align-items: flex-end;
+    text-align: left;
+    padding: 24px;
+    margin-top: -80px;
   }
 
   .avatar {
     width: 120px;
     height: 120px;
+    margin-bottom: 0;
+    margin-right: 24px;
   }
 
   .artistName {
-    font-size: 2rem;
-  }
-
-  .artistStats {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .socialLinks {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .section {
-    padding: 0 1rem 2rem;
-  }
-
-  .sectionTitle {
-    font-size: 1.25rem;
-  }
-
-  .tracksGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .earningsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .collaborationItem {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .collabInfo {
-    text-align: center;
-  }
-
-  .collabArtists {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .profileInfo {
-    padding: 0 0.75rem;
-  }
-
-  .artistName {
-    font-size: 1.75rem;
+    font-size: 32px;
   }
 
   .artistBio {
-    font-size: 1rem;
+    font-size: 16px;
+    max-width: 600px;
   }
 
-  .section {
-    padding: 0 0.75rem 1.5rem;
+  .artistStats {
+    justify-content: flex-start;
+    margin-bottom: 20px;
   }
 
   .socialLinks {
-    gap: 0.5rem;
+    justify-content: flex-start;
   }
 
   .socialLink {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+
+  .tracksGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .earningsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
   }
 
   .earningsCard {
-    padding: 1rem;
+    flex-direction: row;
+    text-align: left;
+    padding: 20px;
   }
 
   .earningsIcon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
   }
 
   .earningsValue {
-    font-size: 1.25rem;
+    font-size: 20px;
+  }
+
+  .earningsLabel {
+    font-size: 14px;
+  }
+
+  .collaborationItem {
+    padding: 16px;
+  }
+
+  .collabArtwork {
+    width: 60px;
+    height: 60px;
+  }
+
+  .collabTitle {
+    font-size: 16px;
+  }
+
+  .collabArtist {
+    font-size: 12px;
+  }
+
+  .collabLink {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}
+
+/* Large desktop adjustments */
+@media (min-width: 1024px) {
+  .tracksGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Hide desktop header spacing on mobile */
+@media (max-width: 767px) {
+  .artistProfile {
+    padding-top: 0;
   }
 }

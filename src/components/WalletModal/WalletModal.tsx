@@ -1,8 +1,8 @@
-import React from 'react';
-import { X, Wallet } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
-import { useNotification } from '../../hooks/useNotification';
-import styles from './WalletModal.module.css';
+import React from "react";
+import { X, Wallet } from "lucide-react";
+// import { useAppContext } from '../../context/AppContext';
+import { useNotification } from "../../hooks/useNotification";
+import styles from "./WalletModal.module.css";
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -10,14 +10,17 @@ interface WalletModalProps {
 }
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
-  const { dispatch } = useAppContext();
+  // const { dispatch } = useAppContext();
   const { showSuccess } = useNotification();
 
   const handleConnect = () => {
     // Simulate wallet connection
     setTimeout(() => {
-      dispatch({ type: 'CONNECT_WALLET' });
-      showSuccess('Wallet Connected', 'Your wallet has been connected successfully!');
+      // dispatch({ type: 'CONNECT_WALLET' });
+      showSuccess(
+        "Wallet Connected",
+        "Your wallet has been connected successfully!"
+      );
       onClose();
     }, 1000);
   };
@@ -33,15 +36,16 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
             <X size={20} />
           </button>
         </div>
-        
+
         <div className={styles.content}>
           <div className={styles.icon}>
             <Wallet size={48} />
           </div>
           <p className={styles.description}>
-            Connect your wallet to unlock tracks, trade coins, and support artists.
+            Connect your wallet to unlock tracks, trade coins, and support
+            artists.
           </p>
-          
+
           <button onClick={handleConnect} className={styles.connectButton}>
             <Wallet size={20} />
             Connect Wallet

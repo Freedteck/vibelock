@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AppProvider } from "./context/AppContext";
+// import { AppProvider } from "./context/AppContext";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/MobileHeader/MobileHeader";
 import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
@@ -16,13 +16,15 @@ import { Track } from "./data/mockData";
 import { useNotification } from "./hooks/useNotification";
 import "./styles/globals.css";
 import { setApiKey } from "@zoralabs/coins-sdk";
+import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile";
+import { CoinTrack } from "./models";
 
 function AppContent() {
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<CoinTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playlist, setPlaylist] = useState<Track[]>([]);
+  const [playlist, setPlaylist] = useState<CoinTrack[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [shuffledPlaylist, setShuffledPlaylist] = useState<Track[]>([]);
+  const [shuffledPlaylist, setShuffledPlaylist] = useState<CoinTrack[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
 
   const { notification, hideNotification } = useNotification();
@@ -32,7 +34,7 @@ function AppContent() {
     setApiKey(`${import.meta.env.VITE_ZORA_API_KEY}`);
   }, []);
 
-  const handleTrackPlay = (track: Track, trackList?: Track[]) => {
+  const handleTrackPlay = (track: CoinTrack, trackList?: CoinTrack[]) => {
     if (trackList) {
       setPlaylist(trackList);
       const index = trackList.findIndex((t) => t.id === track.id);
@@ -118,6 +120,10 @@ function AppContent() {
               }
             />
             <Route path="/upload" element={<Upload />} />
+            <Route
+              path="/create-artist-profile"
+              element={<CreateArtistProfile />}
+            />
             <Route path="/artist/:id" element={<ArtistProfile />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
@@ -151,9 +157,9 @@ function AppContent() {
 
 function App() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    // <AppProvider>
+    <AppContent />
+    // </AppProvider>
   );
 }
 

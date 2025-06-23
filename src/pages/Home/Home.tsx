@@ -1,27 +1,104 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { TrendingUp, Users, Music, ChevronRight, Play } from 'lucide-react';
-import CompactTrackCard from '../../components/CompactTrackCard/CompactTrackCard';
-import HorizontalScroll from '../../components/HorizontalScroll/HorizontalScroll';
-import { mockTracks, mockArtists, Track } from '../../data/mockData';
-import { useAppContext } from '../../context/AppContext';
-import styles from './Home.module.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { TrendingUp, Users, Music, ChevronRight, Play } from "lucide-react";
+import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
+import HorizontalScroll from "../../components/HorizontalScroll/HorizontalScroll";
+import { mockArtists } from "../../data/mockData";
+import styles from "./Home.module.css";
+import { CoinTrack, MusicTrack } from "../../models";
+import { getTracks } from "../../client/supabase";
+import { fetchMultipleCoins } from "../../client/zora";
+import {
+  formatCreatedAt,
+  getContentsFromUri,
+  isTrackNew,
+} from "../../client/helper";
 
 interface HomeProps {
-  onTrackPlay: (track: Track, trackList?: Track[]) => void;
-  currentTrack: Track | null;
+  onTrackPlay: (track: CoinTrack, trackList?: CoinTrack[]) => void;
+  currentTrack: CoinTrack | null;
   isPlaying: boolean;
 }
 
-const Home: React.FC<HomeProps> = ({ onTrackPlay, currentTrack, isPlaying }) => {
-  const { state } = useAppContext();
-  const [trendingTracks] = useState(state.tracks.slice(0, 8));
+const Home: React.FC<HomeProps> = ({
+  onTrackPlay,
+  currentTrack,
+  isPlaying,
+}) => {
+  const [trendingTracks, setTrendingTracks] = useState<any[]>([]);
   const [featuredArtists] = useState(mockArtists.slice(0, 6));
-  const [recentReleases] = useState(state.tracks.slice(3, 11));
-  const [featuredTrack] = useState(state.tracks[0]);
+  const [recentReleases, setRecentReleases] = useState<any[]>([]);
+  const [featuredTrack, setFeaturedTrack] = useState<any>({});
+  const [tracks, setTracks] = useState<any[]>([]);
 
-  const handleTrackPlay = (track: Track) => {
-    onTrackPlay(track, state.tracks);
+  useEffect(() => {
+    const fetchCoins = async () => {
+      try {
+        const { data, error } = await getTracks();
+        if (error) throw error;
+
+        const { coins } = await fetchMultipleCoins(
+          data?.map((track) => track.deployed_address) || []
+        );
+
+        console.log("coins: ", coins);
+
+        const formattedTracks = await Promise.all(
+          coins.map(async (coin) => {
+            const supply = Number(coin.totalSupply);
+            const holders = coin.uniqueHolders ?? 0;
+            const tokenUri = coin.tokenUri;
+
+            let tokenDetails: MusicTrack | undefined = undefined;
+            try {
+              tokenDetails = await getContentsFromUri(tokenUri || "");
+            } catch (e) {
+              console.error(`Failed to fetch token details for ${tokenUri}`, e);
+            }
+
+            return {
+              id: coin.address,
+              title: coin.name,
+              artistWallet: coin.creatorAddress,
+              description: coin.description,
+              mimeType: coin.mediaContent?.mimeType,
+              mediaUrl: coin.mediaContent?.originalUri,
+              artworkUrl: coin.mediaContent?.previewImage?.medium,
+              createdAt: coin.createdAt,
+              formattedDate: formatCreatedAt(coin?.createdAt ?? ""),
+              isNew: isTrackNew(coin?.createdAt ?? ""),
+              totalSupply: supply,
+              uniqueHolders: holders,
+              genre: tokenDetails?.attributes[0]?.value || "Unknown",
+              artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
+              premiumAudio: tokenDetails?.extra?.premium_audio || "",
+              collaborators: tokenDetails!.extra?.collaborators || [],
+            };
+          })
+        );
+
+        console.log("Formatted Tracks: ", formattedTracks);
+        setTracks(formattedTracks);
+        setTrendingTracks(
+          formattedTracks?.filter((track) => track.isNew).slice(0, 10)
+        );
+        setRecentReleases(
+          formattedTracks.filter((track) => !track.isNew).slice(0, 10)
+        );
+        setFeaturedTrack(
+          formattedTracks.find((track) => track.isNew) || formattedTracks[0]
+        );
+        return formattedTracks;
+      } catch (error) {
+        console.error("Error fetching coin data:", error);
+        return []; // Return empty array on error
+      }
+    };
+    fetchCoins();
+  }, []);
+
+  const handleTrackPlay = (track: CoinTrack) => {
+    onTrackPlay(track);
   };
 
   return (
@@ -30,8 +107,8 @@ const Home: React.FC<HomeProps> = ({ onTrackPlay, currentTrack, isPlaying }) => 
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.featuredTrack}>
-            <img 
-              src={featuredTrack.artwork} 
+            <img
+              src={featuredTrack.artwork}
               alt={featuredTrack.title}
               className={styles.featuredArtwork}
             />
@@ -39,12 +116,14 @@ const Home: React.FC<HomeProps> = ({ onTrackPlay, currentTrack, isPlaying }) => 
               <span className={styles.featuredLabel}>Featured Track</span>
               <h2 className={styles.featuredTitle}>{featuredTrack.title}</h2>
               <p className={styles.featuredArtist}>by {featuredTrack.artist}</p>
-              <button 
+              <button
                 onClick={() => handleTrackPlay(featuredTrack)}
                 className={styles.playButton}
               >
                 <Play size={20} />
-                {currentTrack?.id === featuredTrack.id && isPlaying ? 'Playing' : 'Play Now'}
+                {currentTrack?.id === featuredTrack.id && isPlaying
+                  ? "Playing"
+                  : "Play Now"}
               </button>
             </div>
           </div>
@@ -57,7 +136,7 @@ const Home: React.FC<HomeProps> = ({ onTrackPlay, currentTrack, isPlaying }) => 
           <div className={styles.statCard}>
             <Music className={styles.statIcon} />
             <div>
-              <div className={styles.statNumber}>{state.tracks.length}</div>
+              <div className={styles.statNumber}>{tracks.length}</div>
               <div className={styles.statLabel}>Tracks</div>
             </div>
           </div>
@@ -101,13 +180,13 @@ const Home: React.FC<HomeProps> = ({ onTrackPlay, currentTrack, isPlaying }) => 
         </div>
         <div className={styles.artistsScroll}>
           {featuredArtists.map((artist) => (
-            <Link 
+            <Link
               key={artist.id}
               to={`/artist/${artist.id}`}
               className={styles.artistCard}
             >
-              <img 
-                src={artist.avatar} 
+              <img
+                src={artist.avatar}
                 alt={artist.name}
                 className={styles.artistAvatar}
               />

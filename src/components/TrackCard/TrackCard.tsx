@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
-import { Play, Pause, Lock, Unlock, Users, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Track } from '../../data/mockData';
-import { useAppContext } from '../../context/AppContext';
-import UnlockModal from '../UnlockModal/UnlockModal';
-import WalletModal from '../WalletModal/WalletModal';
-import styles from './TrackCard.module.css';
+import React, { useState } from "react";
+import { Play, Pause, Lock, Unlock, Users, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Track } from "../../data/mockData";
+// import { useAppContext } from '../../context/AppContext';
+import UnlockModal from "../UnlockModal/UnlockModal";
+import WalletModal from "../WalletModal/WalletModal";
+import styles from "./TrackCard.module.css";
 
 interface TrackCardProps {
   track: Track;
   onPlay: (track: Track) => void;
   isPlaying: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 }
 
-const TrackCard: React.FC<TrackCardProps> = ({ 
-  track, 
-  onPlay, 
-  isPlaying, 
-  size = 'medium' 
+const TrackCard: React.FC<TrackCardProps> = ({
+  track,
+  onPlay,
+  isPlaying,
+  size = "medium",
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const { state, dispatch } = useAppContext();
-  
-  const isUnlocked = state.unlockedTracks.includes(track.id);
+  // const { state, dispatch } = useAppContext();
+
+  const isUnlocked = true;
+  const walletConnected = true; // Replace with actual wallet connection state
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -36,7 +37,7 @@ const TrackCard: React.FC<TrackCardProps> = ({
   const handleUnlockClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!state.isWalletConnected) {
+    if (!walletConnected) {
       setShowWalletModal(true);
       return;
     }
@@ -45,41 +46,50 @@ const TrackCard: React.FC<TrackCardProps> = ({
 
   const handleUnlock = async (trackId: number) => {
     // Simulate blockchain transaction delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    dispatch({ type: 'UNLOCK_TRACK', payload: trackId });
-    
-    // Add transaction record
-    dispatch({
-      type: 'ADD_TRANSACTION',
-      payload: {
-        id: `tx_${Date.now()}`,
-        type: 'unlock',
-        trackId,
-        amount: 1,
-        price: track.coinPrice,
-        timestamp: new Date().toISOString(),
-        status: 'completed'
-      }
-    });
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+    // dispatch({ type: 'UNLOCK_TRACK', payload: trackId });
+    // // Add transaction record
+    // dispatch({
+    //   type: 'ADD_TRANSACTION',
+    //   payload: {
+    //     id: `tx_${Date.now()}`,
+    //     type: 'unlock',
+    //     trackId,
+    //     amount: 1,
+    //     price: track.coinPrice,
+    //     timestamp: new Date().toISOString(),
+    //     status: 'completed'
+    //   }
+    // });
   };
 
   return (
     <>
-      <Link to={`/track/${track.id}`} className={`${styles.trackCard} ${styles[size]}`}>
-        <div 
+      <Link
+        to={`/track/${track.id}`}
+        className={`${styles.trackCard} ${styles[size]}`}
+      >
+        <div
           className={styles.cardContent}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <div className={styles.artworkContainer}>
-            <img 
-              src={track.artwork} 
+            <img
+              src={track.artwork}
               alt={track.title}
               className={styles.artwork}
             />
-            
-            <div className={`${styles.playButton} ${isHovered ? styles.visible : ''}`}>
-              <button onClick={handlePlayClick} className={styles.playButtonInner}>
+
+            <div
+              className={`${styles.playButton} ${
+                isHovered ? styles.visible : ""
+              }`}
+            >
+              <button
+                onClick={handlePlayClick}
+                className={styles.playButtonInner}
+              >
                 {isPlaying ? <Pause size={20} /> : <Play size={20} />}
               </button>
             </div>
@@ -96,7 +106,7 @@ const TrackCard: React.FC<TrackCardProps> = ({
           <div className={styles.trackInfo}>
             <h3 className={styles.title}>{track.title}</h3>
             <p className={styles.artist}>{track.artist}</p>
-            
+
             <div className={styles.metadata}>
               <span className={styles.genre}>{track.genre}</span>
               <span className={styles.duration}>{track.duration}</span>
@@ -106,11 +116,15 @@ const TrackCard: React.FC<TrackCardProps> = ({
               {track.collaborators.slice(0, 2).map((collab, index) => (
                 <div key={index} className={styles.collaborator}>
                   <span className={styles.collabName}>{collab.name}</span>
-                  <span className={styles.collabPercentage}>{collab.percentage}%</span>
+                  <span className={styles.collabPercentage}>
+                    {collab.percentage}%
+                  </span>
                 </div>
               ))}
               {track.collaborators.length > 2 && (
-                <span className={styles.moreCollabs}>+{track.collaborators.length - 2}</span>
+                <span className={styles.moreCollabs}>
+                  +{track.collaborators.length - 2}
+                </span>
               )}
             </div>
 
@@ -127,11 +141,14 @@ const TrackCard: React.FC<TrackCardProps> = ({
 
             <div className={styles.actions}>
               {isUnlocked ? (
-                <button className={styles.playFullButton} onClick={handlePlayClick}>
+                <button
+                  className={styles.playFullButton}
+                  onClick={handlePlayClick}
+                >
                   Play Full Track
                 </button>
               ) : (
-                <button 
+                <button
                   className={styles.unlockButton}
                   onClick={handleUnlockClick}
                 >

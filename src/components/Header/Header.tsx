@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Music, Search, Menu, X, User, Wallet } from "lucide-react";
-import { useAppContext } from "../../context/AppContext";
-import { useNotification } from "../../hooks/useNotification";
+import { useWallet } from "../../hooks/useWallet";
+// import { useNotification } from "../../hooks/useNotification";
 import styles from "./Header.module.css";
-import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import { formatUserAddress } from "../../client/helper";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { state, dispatch } = useAppContext();
-  const { showSuccess, showError } = useNotification();
+  const { isConnected, connectWallet, walletAddress, isConnecting } =
+    useWallet();
+  // const { showSuccess, showError } = useNotification();
   const location = useLocation();
-  const { open } = useAppKit();
-  const { address, isConnected } = useAppKitAccount();
 
   const navItems = [
     { path: "/", label: "Home" },
@@ -22,10 +20,6 @@ const Header: React.FC = () => {
     { path: "/upload", label: "Upload" },
     { path: "/dashboard", label: "Dashboard" },
   ];
-
-  const handleConnectWallet = () => {
-    open();
-  };
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -74,16 +68,17 @@ const Header: React.FC = () => {
         {/* Wallet & User */}
         <div className={styles.userSection}>
           <button
-            onClick={handleConnectWallet}
+            onClick={connectWallet}
+            disabled={isConnecting}
             className={`${styles.walletButton} ${
-              state.isWalletConnected ? styles.walletConnected : ""
+              isConnected ? styles.walletConnected : ""
             }`}
           >
             <Wallet size={18} />
-            <div className={styles.appBtn} id="btn"></div>
-
-            {isConnected
-              ? formatUserAddress(address?.toLowerCase())
+            {isConnecting
+              ? "Connecting..."
+              : isConnected
+              ? formatUserAddress(walletAddress?.toLowerCase())
               : "Connect"}
           </button>
 

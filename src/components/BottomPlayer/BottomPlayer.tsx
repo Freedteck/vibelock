@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, ChevronUp } from 'lucide-react';
-import { Track } from '../../data/mockData';
-import { useAppContext } from '../../context/AppContext';
-import FullScreenPlayer from './FullScreenPlayer';
-import styles from './BottomPlayer.module.css';
+import React, { useState, useRef, useEffect } from "react";
+import { Play, Pause, SkipBack, SkipForward, ChevronUp } from "lucide-react";
+import { Track } from "../../data/mockData";
+// import { useAppContext } from '../../context/AppContext';
+import FullScreenPlayer from "./FullScreenPlayer";
+import styles from "./BottomPlayer.module.css";
 
 interface BottomPlayerProps {
   currentTrack: Track | null;
@@ -22,13 +22,13 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   onNext,
   onPrevious,
   playlist,
-  currentIndex
+  currentIndex,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { state } = useAppContext();
+  // const { state } = useAppContext();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -37,12 +37,12 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
     const updateTime = () => setCurrentTime(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
     };
   }, [currentTrack]);
 
@@ -59,7 +59,7 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
 
   if (!currentTrack) return null;
 
-  const isUnlocked = state.unlockedTracks.includes(currentTrack.id);
+  const isUnlocked = true;
   const audioUrl = isUnlocked ? currentTrack.fullUrl : currentTrack.previewUrl;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -75,19 +75,16 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
       {/* Mini Player */}
       <div className={styles.bottomPlayer}>
         <div className={styles.progressBar}>
-          <div 
-            className={styles.progress} 
-            style={{ width: `${progress}%` }}
-          />
+          <div className={styles.progress} style={{ width: `${progress}%` }} />
         </div>
-        
-        <div 
+
+        <div
           className={styles.playerContent}
           onClick={() => setIsExpanded(true)}
         >
           <div className={styles.trackInfo}>
-            <img 
-              src={currentTrack.artwork} 
+            <img
+              src={currentTrack.artwork}
               alt={currentTrack.title}
               className={styles.albumArt}
             />
@@ -98,19 +95,40 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
           </div>
 
           <div className={styles.controls}>
-            <button onClick={(e) => { e.stopPropagation(); onPrevious(); }} className={styles.controlButton}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onPrevious();
+              }}
+              className={styles.controlButton}
+            >
               <SkipBack size={20} />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onPlayPause(); }} className={styles.playButton}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onPlayPause();
+              }}
+              className={styles.playButton}
+            >
               {isPlaying ? <Pause size={20} /> : <Play size={20} />}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onNext(); }} className={styles.controlButton}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onNext();
+              }}
+              className={styles.controlButton}
+            >
               <SkipForward size={20} />
             </button>
           </div>
 
-          <button 
-            onClick={(e) => { e.stopPropagation(); setIsExpanded(true); }}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(true);
+            }}
             className={styles.expandButton}
           >
             <ChevronUp size={20} />

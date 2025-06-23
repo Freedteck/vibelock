@@ -91,6 +91,21 @@
   color: #10b981;
 }
 
+.newBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #8b5cf6;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
 .info {
   display: flex;
   flex-direction: column;
@@ -118,11 +133,14 @@
   white-space: nowrap;
 }
 
-.price {
+.holders {
   font-size: 12px;
   font-weight: 600;
   color: #10b981;
   margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .small .title {
@@ -146,23 +164,23 @@
   .card {
     padding: 10px;
   }
-  
+
   .title {
     font-size: 13px;
   }
-  
+
   .artist,
   .price {
     font-size: 11px;
   }
-  
+
   .playButton {
     width: 28px;
     height: 28px;
     bottom: 6px;
     right: 6px;
   }
-  
+
   .lockStatus {
     width: 20px;
     height: 20px;

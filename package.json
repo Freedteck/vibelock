@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@0xsplits/splits-sdk-react": "^3.1.0",
     "@reown/appkit": "^1.7.10",
     "@reown/appkit-adapter-wagmi": "^1.7.10",
     "@supabase/supabase-js": "^2.50.0",

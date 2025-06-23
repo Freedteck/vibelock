@@ -9,6 +9,7 @@ import {
   base,
   baseSepolia,
   mainnet,
+  zoraSepolia,
   zoraTestnet,
 } from "@reown/appkit/networks";
 import { WagmiProvider } from "wagmi";
@@ -28,12 +29,20 @@ const metadata = {
 };
 
 // 3. Set the networks
-const networks = [mainnet, arbitrum, base, baseSepolia, zoraTestnet] as [
+const networks = [
+  mainnet,
+  arbitrum,
+  base,
+  baseSepolia,
+  zoraTestnet,
+  zoraSepolia,
+] as [
   typeof mainnet,
   typeof arbitrum,
   typeof base,
   typeof baseSepolia,
-  typeof zoraTestnet
+  typeof zoraTestnet,
+  typeof zoraSepolia
 ];
 
 // 4. Create Wagmi Adapter

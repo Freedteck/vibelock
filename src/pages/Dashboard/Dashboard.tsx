@@ -14,7 +14,7 @@ import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard
 import TradeModal from "../../components/TradeModal/TradeModal";
 // import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import { Track } from "../../data/mockData";
-import { useAppContext } from "../../context/AppContext";
+// import { useAppContext } from "../../context/AppContext";
 import styles from "./Dashboard.module.css";
 
 const Dashboard: React.FC = () => {
@@ -28,23 +28,12 @@ const Dashboard: React.FC = () => {
     null
   );
 
-  const { state, dispatch } = useAppContext();
+  // const { state, dispatch } = useAppContext();
 
-  const ownedTracks = state.tracks.filter((track) =>
-    state.unlockedTracks.includes(track.id)
-  );
-  const portfolioValue = state.userPortfolio.reduce(
-    (sum, p) => sum + p.coinsHeld * p.currentValue,
-    0
-  );
-  const totalCoins = state.userPortfolio.reduce(
-    (sum, p) => sum + p.coinsHeld,
-    0
-  );
-  const totalPlays = ownedTracks.reduce(
-    (sum, track) => sum + track.playCount,
-    0
-  );
+  const ownedTracks: any = [];
+  const portfolioValue = 1000;
+  const totalCoins = 5000;
+  const totalPlays = 10000;
 
   const handleTrackPlay = (track: Track) => {
     if (currentTrack?.id === track.id) {
@@ -56,11 +45,11 @@ const Dashboard: React.FC = () => {
   };
 
   const handleTradeClick = (trackId: number) => {
-    const track = state.tracks.find((t) => t.id === trackId);
-    if (track) {
-      setSelectedTradeTrack(track);
-      setShowTradeModal(true);
-    }
+    // const track = [].find((t) => t!.id === trackId);
+    // if (track) {
+    //   setSelectedTradeTrack(track);
+    //   setShowTradeModal(true);
+    // }
   };
 
   const handleTrade = async (
@@ -71,27 +60,27 @@ const Dashboard: React.FC = () => {
     // Simulate blockchain transaction delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    dispatch({
-      type: "TRADE_COINS",
-      payload: { trackId, type, amount },
-    });
+    // dispatch({
+    //   type: "TRADE_COINS",
+    //   payload: { trackId, type, amount },
+    // });
 
     // Add transaction record
-    const track = state.tracks.find((t) => t.id === trackId);
-    if (track) {
-      dispatch({
-        type: "ADD_TRANSACTION",
-        payload: {
-          id: `tx_${Date.now()}`,
-          type: type === "buy" ? "purchase" : "sell",
-          trackId,
-          amount,
-          price: track.coinPrice,
-          timestamp: new Date().toISOString(),
-          status: "completed",
-        },
-      });
-    }
+    // const track = [].find((t) => t.id === trackId);
+    // if (track) {
+    //   // dispatch({
+    //   //   type: "ADD_TRANSACTION",
+    //   //   payload: {
+    //   //     id: `tx_${Date.now()}`,
+    //   //     type: type === "buy" ? "purchase" : "sell",
+    //   //     trackId,
+    //   //     amount,
+    //   //     price: track.coinPrice,
+    //   //     timestamp: new Date().toISOString(),
+    //   //     status: "completed",
+    //   //   },
+    //   // });
+    // }
   };
 
   const tabs = [
@@ -113,25 +102,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const getActivityDescription = (transaction: any) => {
-    const track = state.tracks.find((t) => t.id === transaction.trackId);
-    if (!track) return "Unknown transaction";
-
-    switch (transaction.type) {
-      case "unlock":
-        return `Unlocked "${track.title}" by ${track.artist}`;
-      case "purchase":
-        return `Purchased ${transaction.amount} coin${
-          transaction.amount !== 1 ? "s" : ""
-        } of "${track.title}"`;
-      case "sell":
-        return `Sold ${transaction.amount} coin${
-          transaction.amount !== 1 ? "s" : ""
-        } of "${track.title}"`;
-      default:
-        return `Interacted with "${track.title}"`;
-    }
-  };
+  const getActivityDescription = (transaction: any) => {};
 
   const formatTimeAgo = (timestamp: string) => {
     const now = new Date();
@@ -228,7 +199,7 @@ const Dashboard: React.FC = () => {
 
               {ownedTracks.length > 0 ? (
                 <div className={styles.tracksGrid}>
-                  {ownedTracks.map((track) => (
+                  {ownedTracks.map((track: any) => (
                     <CompactTrackCard
                       key={track.id}
                       track={track}
@@ -261,10 +232,8 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className={styles.portfolioList}>
-                {state.userPortfolio.map((portfolio) => {
-                  const track = state.tracks.find(
-                    (t) => t.id === portfolio.trackId
-                  );
+                {[].map((portfolio) => {
+                  const track = [].find((t) => t.id === portfolio.trackId);
                   if (!track) return null;
 
                   return (

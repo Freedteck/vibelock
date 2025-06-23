@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Play, Pause, Lock, Unlock, Users, TrendingUp, MessageCircle, Share2, Heart } from 'lucide-react';
-import { Track } from '../../data/mockData';
-import { useAppContext } from '../../context/AppContext';
-import UnlockModal from '../../components/UnlockModal/UnlockModal';
-import WalletModal from '../../components/WalletModal/WalletModal';
-import MobileHeader from '../../components/MobileHeader/MobileHeader';
-import styles from './TrackDetail.module.css';
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import {
+  Play,
+  Pause,
+  Lock,
+  Unlock,
+  Users,
+  TrendingUp,
+  MessageCircle,
+  Share2,
+  Heart,
+} from "lucide-react";
+import { Track } from "../../data/mockData";
+// import { useAppContext } from '../../context/AppContext';
+import UnlockModal from "../../components/UnlockModal/UnlockModal";
+import WalletModal from "../../components/WalletModal/WalletModal";
+import MobileHeader from "../../components/MobileHeader/MobileHeader";
+import styles from "./TrackDetail.module.css";
 
 interface TrackDetailProps {
   onTrackPlay: (track: Track) => void;
@@ -14,36 +24,40 @@ interface TrackDetailProps {
   isPlaying: boolean;
 }
 
-const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, isPlaying }) => {
+const TrackDetail: React.FC<TrackDetailProps> = ({
+  onTrackPlay,
+  currentTrack,
+  isPlaying,
+}) => {
   const { id } = useParams<{ id: string }>();
   const [track, setTrack] = useState<Track | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [comments, setComments] = useState([
     {
       id: 1,
-      author: 'MusicFan',
-      text: 'This track is absolutely incredible! 🔥',
-      timestamp: '2 hours ago'
+      author: "MusicFan",
+      text: "This track is absolutely incredible! 🔥",
+      timestamp: "2 hours ago",
     },
     {
       id: 2,
-      author: 'CryptoVibes',
+      author: "CryptoVibes",
       text: "Can't wait to unlock the full version!",
-      timestamp: '5 hours ago'
-    }
+      timestamp: "5 hours ago",
+    },
   ]);
 
-  const { state, dispatch } = useAppContext();
+  // const { state, dispatch } = useAppContext();
 
   useEffect(() => {
-    const foundTrack = state.tracks.find(t => t.id === parseInt(id || '0'));
-    setTrack(foundTrack || null);
-  }, [id, state.tracks]);
+    // const foundTrack = state.tracks.find(t => t.id === parseInt(id || '0'));
+    setTrack({});
+  }, [id]);
 
-  const isUnlocked = track ? state.unlockedTracks.includes(track.id) : false;
+  const isUnlocked = false;
 
   if (!track) {
     return (
@@ -64,7 +78,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
   };
 
   const handleUnlockClick = () => {
-    if (!state.isWalletConnected) {
+    if (!showWalletModal) {
       setShowWalletModal(true);
       return;
     }
@@ -73,33 +87,20 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
 
   const handleUnlock = async (trackId: number) => {
     // Simulate blockchain transaction delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    dispatch({ type: 'UNLOCK_TRACK', payload: trackId });
-    
-    // Add transaction record
-    dispatch({
-      type: 'ADD_TRANSACTION',
-      payload: {
-        id: `tx_${Date.now()}`,
-        type: 'unlock',
-        trackId,
-        amount: 1,
-        price: track.coinPrice,
-        timestamp: new Date().toISOString(),
-        status: 'completed'
-      }
-    });
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   };
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
-        title: track.title,
-        text: `Check out ${track.title} by ${track.artist}`,
-        url: window.location.href
-      }).catch(() => {
-        navigator.clipboard.writeText(window.location.href);
-      });
+      navigator
+        .share({
+          title: track.title,
+          text: `Check out ${track.title} by ${track.artist}`,
+          url: window.location.href,
+        })
+        .catch(() => {
+          navigator.clipboard.writeText(window.location.href);
+        });
     } else {
       navigator.clipboard.writeText(window.location.href);
     }
@@ -109,25 +110,25 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
     if (comment.trim()) {
       const newComment = {
         id: Date.now(),
-        author: 'You',
+        author: "You",
         text: comment,
-        timestamp: 'Just now'
+        timestamp: "Just now",
       };
       setComments([newComment, ...comments]);
-      setComment('');
+      setComment("");
     }
   };
 
   return (
     <div className={styles.trackDetail}>
       <MobileHeader title={track.title} showBack={true} />
-      
+
       <div className={styles.container}>
         {/* Hero Section */}
         <div className={styles.hero}>
           <div className={styles.artworkContainer}>
-            <img 
-              src={track.artwork} 
+            <img
+              src={track.artwork}
               alt={track.title}
               className={styles.artwork}
             />
@@ -154,7 +155,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
               <span className={styles.genre}>{track.genre}</span>
               <span className={styles.duration}>{track.duration}</span>
             </div>
-            
+
             <h1 className={styles.title}>{track.title}</h1>
             <Link to={`/artist/${1}`} className={styles.artist}>
               {track.artist}
@@ -185,19 +186,18 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
               Play Full Track
             </button>
           ) : (
-            <button 
-              className={styles.unlockButton}
-              onClick={handleUnlockClick}
-            >
+            <button className={styles.unlockButton} onClick={handleUnlockClick}>
               <Lock size={18} />
               Unlock for {track.coinPrice} ETH
             </button>
           )}
-          
+
           <div className={styles.secondaryActions}>
-            <button 
+            <button
               onClick={() => setIsLiked(!isLiked)}
-              className={`${styles.actionButton} ${isLiked ? styles.liked : ''}`}
+              className={`${styles.actionButton} ${
+                isLiked ? styles.liked : ""
+              }`}
             >
               <Heart size={18} />
             </button>
@@ -220,7 +220,9 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
                   <span className={styles.collabName}>{collab.name}</span>
                   <span className={styles.collabRole}>{collab.role}</span>
                 </div>
-                <span className={styles.collabPercentage}>{collab.percentage}%</span>
+                <span className={styles.collabPercentage}>
+                  {collab.percentage}%
+                </span>
               </div>
             ))}
           </div>
@@ -234,13 +236,13 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
           </h2>
           <div className={styles.comments}>
             <div className={styles.commentForm}>
-              <textarea 
+              <textarea
                 placeholder="Share your thoughts..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 className={styles.commentInput}
               />
-              <button 
+              <button
                 onClick={handleCommentSubmit}
                 className={styles.commentSubmit}
                 disabled={!comment.trim()}
@@ -248,7 +250,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
                 Post
               </button>
             </div>
-            
+
             <div className={styles.commentsList}>
               {comments.map((comment) => (
                 <div key={comment.id} className={styles.comment}>
@@ -257,8 +259,12 @@ const TrackDetail: React.FC<TrackDetailProps> = ({ onTrackPlay, currentTrack, is
                   </div>
                   <div className={styles.commentContent}>
                     <div className={styles.commentHeader}>
-                      <span className={styles.commentAuthor}>{comment.author}</span>
-                      <span className={styles.commentTime}>{comment.timestamp}</span>
+                      <span className={styles.commentAuthor}>
+                        {comment.author}
+                      </span>
+                      <span className={styles.commentTime}>
+                        {comment.timestamp}
+                      </span>
                     </div>
                     <p className={styles.commentText}>{comment.text}</p>
                   </div>

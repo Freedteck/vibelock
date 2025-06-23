@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ArrowLeft, Music, User, Wallet } from 'lucide-react';
-import { useAppContext } from '../../context/AppContext';
-import styles from './MobileHeader.module.css';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import { ArrowLeft, Music, User, Wallet } from "lucide-react";
+import { useWallet } from "../../hooks/useWallet";
+import styles from "./MobileHeader.module.css";
 
 interface MobileHeaderProps {
   title?: string;
@@ -10,23 +10,28 @@ interface MobileHeaderProps {
   showProfile?: boolean;
 }
 
-const MobileHeader: React.FC<MobileHeaderProps> = ({ 
-  title, 
-  showBack = false, 
-  showProfile = true 
+const MobileHeader: React.FC<MobileHeaderProps> = ({
+  title,
+  showBack = false,
+  showProfile = true,
 }) => {
   const location = useLocation();
-  const { state } = useAppContext();
+  const { isConnected, connectWallet } = useWallet();
 
   const getTitle = () => {
     if (title) return title;
-    
+
     switch (location.pathname) {
-      case '/': return 'VibeLock';
-      case '/discover': return 'Discover';
-      case '/upload': return 'Upload';
-      case '/dashboard': return 'Profile';
-      default: return 'VibeLock';
+      case "/":
+        return "VibeLock";
+      case "/discover":
+        return "Discover";
+      case "/upload":
+        return "Upload";
+      case "/dashboard":
+        return "Profile";
+      default:
+        return "VibeLock";
     }
   };
 
@@ -34,8 +39,8 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     <header className={styles.header}>
       <div className={styles.left}>
         {showBack ? (
-          <button 
-            onClick={() => window.history.back()} 
+          <button
+            onClick={() => window.history.back()}
             className={styles.backButton}
           >
             <ArrowLeft size={24} />
@@ -51,10 +56,10 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         <h1 className={styles.title}>{getTitle()}</h1>
       </div>
 
-      <div className={styles.right}>
+      <div className={styles.right} onClick={connectWallet}>
         {showProfile && (
           <div className={styles.profileSection}>
-            {state.isWalletConnected ? (
+            {isConnected ? (
               <div className={styles.userAvatar}>
                 <User size={20} />
               </div>

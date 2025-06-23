@@ -1,14 +1,43 @@
-import { DeployCurrency } from "@zoralabs/coins-sdk";
-import { Address } from "viem";
+import { getCoin, getCoins } from "@zoralabs/coins-sdk";
+import { createPublicClient, createWalletClient, Hex, http } from "viem";
+import { baseSepolia } from "viem/chains";
 
-export type CreateCoinArgs = {
-  name: string; // The name of the coin (e.g., "My Awesome Coin")
-  symbol: string; // The trading symbol for the coin (e.g., "MAC")
-  uri: string; // Metadata URI (an IPFS URI is recommended)
-  chainId?: number; // The chain ID (defaults to base mainnet)
-  owners?: Address[]; // Optional array of owner addresses, defaults to [payoutRecipient]
-  payoutRecipient: Address; // Address that receives creator earnings
-  platformReferrer?: Address; // Optional platform referrer address, earns referral fees
-  // DeployCurrency.ETH or DeployCurrency.ZORA
-  currency?: DeployCurrency; // Optional currency for trading (ETH or ZORA)
+// Set up viem clients
+export const viemSetup = (account: any) => {
+  const publicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(),
+  });
+
+  const walletClient = createWalletClient({
+    account: account as Hex,
+    chain: baseSepolia,
+    transport: http(),
+  });
+
+  return { publicClient, walletClient };
 };
+
+export async function fetchSingleCoin(coinAddress: string) {
+  const response = await getCoin({
+    address: coinAddress,
+    chain: baseSepolia.id, // Optional: Base chain set by default
+  });
+
+  const coin = response.data?.zora20Token;
+
+  return { response, coin };
+}
+
+export async function fetchMultipleCoins(coinAddresses: string[]) {
+  const coins = coinAddresses.map((address) => ({
+    collectionAddress: address,
+    chainId: baseSepolia.id,
+  }));
+
+  const response = await getCoins({ coins: coins });
+
+  const coinData = response.data?.zora20Tokens || [];
+
+  return { response, coins: coinData };
+}

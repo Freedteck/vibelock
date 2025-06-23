@@ -1,8 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Maximize2, Minimize2, Shuffle, Repeat } from 'lucide-react';
-import { Track } from '../../data/mockData';
-import { useAppContext } from '../../context/AppContext';
-import styles from './AudioPlayer.module.css';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
+  Maximize2,
+  Minimize2,
+  Shuffle,
+  Repeat,
+} from "lucide-react";
+import { Track } from "../../data/mockData";
+// import { useAppContext } from '../../context/AppContext';
+import styles from "./AudioPlayer.module.css";
 
 interface AudioPlayerProps {
   currentTrack: Track | null;
@@ -21,7 +32,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   onNext,
   onPrevious,
   playlist,
-  currentIndex
+  currentIndex,
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -31,9 +42,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const [isMinimized, setIsMinimized] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
-  const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
+  const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
 
-  const { state } = useAppContext();
+  // const { state } = useAppContext();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -51,40 +62,47 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch((error) => {
-            console.error('Auto-play failed:', error);
+            console.error("Auto-play failed:", error);
           });
         }
       }
     };
     const handleError = () => {
       setIsLoading(false);
-      console.error('Audio failed to load');
+      console.error("Audio failed to load");
     };
     const handleEnded = () => {
-      if (repeatMode === 'one') {
+      if (repeatMode === "one") {
         audio.currentTime = 0;
         audio.play();
-      } else if (repeatMode === 'all' || currentIndex < playlist.length - 1) {
+      } else if (repeatMode === "all" || currentIndex < playlist.length - 1) {
         onNext();
       }
     };
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('loadstart', handleLoadStart);
-    audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('error', handleError);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("loadstart", handleLoadStart);
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("error", handleError);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('loadstart', handleLoadStart);
-      audio.removeEventListener('canplay', handleCanPlay);
-      audio.removeEventListener('error', handleError);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("loadstart", handleLoadStart);
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("error", handleError);
+      audio.removeEventListener("ended", handleEnded);
     };
-  }, [currentTrack, isPlaying, repeatMode, currentIndex, playlist.length, onNext]);
+  }, [
+    currentTrack,
+    isPlaying,
+    repeatMode,
+    currentIndex,
+    playlist.length,
+    onNext,
+  ]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -94,7 +112,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
-          console.error('Playback failed:', error);
+          console.error("Playback failed:", error);
         });
       }
     } else if (!isPlaying && !audio.paused) {
@@ -112,10 +130,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }, [currentTrack]);
 
   const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00';
+    if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,23 +167,31 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   };
 
   const toggleRepeat = () => {
-    setRepeatMode(prev => {
+    setRepeatMode((prev) => {
       switch (prev) {
-        case 'none': return 'all';
-        case 'all': return 'one';
-        case 'one': return 'none';
-        default: return 'none';
+        case "none":
+          return "all";
+        case "all":
+          return "one";
+        case "one":
+          return "none";
+        default:
+          return "none";
       }
     });
   };
 
   if (!currentTrack) return null;
 
-  const isUnlocked = state.unlockedTracks.includes(currentTrack.id);
+  const isUnlocked = true;
   const audioUrl = isUnlocked ? currentTrack.fullUrl : currentTrack.previewUrl;
 
   return (
-    <div className={`${styles.player} ${isMinimized ? styles.minimized : styles.expanded}`}>
+    <div
+      className={`${styles.player} ${
+        isMinimized ? styles.minimized : styles.expanded
+      }`}
+    >
       <audio
         ref={audioRef}
         src={audioUrl}
@@ -176,8 +202,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       {/* Minimized Player */}
       <div className={styles.miniPlayer}>
         <div className={styles.trackInfo}>
-          <img 
-            src={currentTrack.artwork} 
+          <img
+            src={currentTrack.artwork}
             alt={currentTrack.title}
             className={styles.albumArt}
           />
@@ -188,16 +214,22 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         </div>
 
         <div className={styles.controls}>
-          <button 
-            onClick={() => setIsShuffled(!isShuffled)} 
-            className={`${styles.controlButton} ${isShuffled ? styles.active : ''}`}
+          <button
+            onClick={() => setIsShuffled(!isShuffled)}
+            className={`${styles.controlButton} ${
+              isShuffled ? styles.active : ""
+            }`}
           >
             <Shuffle size={16} />
           </button>
           <button onClick={onPrevious} className={styles.controlButton}>
             <SkipBack size={18} />
           </button>
-          <button onClick={onPlayPause} className={styles.playButton} disabled={isLoading}>
+          <button
+            onClick={onPlayPause}
+            className={styles.playButton}
+            disabled={isLoading}
+          >
             {isLoading ? (
               <div className={styles.spinner} />
             ) : isPlaying ? (
@@ -209,12 +241,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button onClick={onNext} className={styles.controlButton}>
             <SkipForward size={18} />
           </button>
-          <button 
-            onClick={toggleRepeat} 
-            className={`${styles.controlButton} ${repeatMode !== 'none' ? styles.active : ''}`}
+          <button
+            onClick={toggleRepeat}
+            className={`${styles.controlButton} ${
+              repeatMode !== "none" ? styles.active : ""
+            }`}
           >
             <Repeat size={16} />
-            {repeatMode === 'one' && <span className={styles.repeatOne}>1</span>}
+            {repeatMode === "one" && (
+              <span className={styles.repeatOne}>1</span>
+            )}
           </button>
         </div>
 
@@ -228,7 +264,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             onChange={handleSeek}
             className={styles.progressBar}
             style={{
-              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #374151 ${(currentTime / duration) * 100}%, #374151 100%)`
+              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${
+                (currentTime / duration) * 100
+              }%, #374151 ${(currentTime / duration) * 100}%, #374151 100%)`,
             }}
           />
           <span className={styles.timeDisplay}>{formatTime(duration)}</span>
@@ -249,7 +287,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
           />
         </div>
 
-        <button 
+        <button
           onClick={() => setIsMinimized(!isMinimized)}
           className={styles.expandButton}
         >
@@ -268,15 +306,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 style={{
                   height: `${Math.random() * 100 + 10}%`,
                   animationDelay: `${i * 0.1}s`,
-                  opacity: i / 50 < (currentTime / duration) ? 1 : 0.3
+                  opacity: i / 50 < currentTime / duration ? 1 : 0.3,
                 }}
               />
             ))}
           </div>
-          
+
           <div className={styles.playlistInfo}>
             <h3>Now Playing</h3>
-            <p>{currentIndex + 1} of {playlist.length} tracks</p>
+            <p>
+              {currentIndex + 1} of {playlist.length} tracks
+            </p>
           </div>
         </div>
       )}
