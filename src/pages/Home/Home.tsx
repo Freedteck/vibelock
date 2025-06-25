@@ -5,14 +5,8 @@ import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard
 import HorizontalScroll from "../../components/HorizontalScroll/HorizontalScroll";
 import { mockArtists } from "../../data/mockData";
 import styles from "./Home.module.css";
-import { CoinTrack, MusicTrack } from "../../models";
-import { getTracks } from "../../client/supabase";
-import { fetchMultipleCoins } from "../../client/zora";
-import {
-  formatCreatedAt,
-  getContentsFromUri,
-  isTrackNew,
-} from "../../client/helper";
+import { CoinTrack } from "../../models";
+import { useAppContext } from "../../context/AppContext";
 
 interface HomeProps {
   onTrackPlay: (track: CoinTrack, trackList?: CoinTrack[]) => void;
@@ -30,72 +24,24 @@ const Home: React.FC<HomeProps> = ({
   const [recentReleases, setRecentReleases] = useState<any[]>([]);
   const [featuredTrack, setFeaturedTrack] = useState<any>({});
   const [tracks, setTracks] = useState<any[]>([]);
+  const { trackLoading, tracks: trackList } = useAppContext();
 
   useEffect(() => {
-    const fetchCoins = async () => {
-      try {
-        const { data, error } = await getTracks();
-        if (error) throw error;
-
-        const { coins } = await fetchMultipleCoins(
-          data?.map((track) => track.deployed_address) || []
-        );
-
-        console.log("coins: ", coins);
-
-        const formattedTracks = await Promise.all(
-          coins.map(async (coin) => {
-            const supply = Number(coin.totalSupply);
-            const holders = coin.uniqueHolders ?? 0;
-            const tokenUri = coin.tokenUri;
-
-            let tokenDetails: MusicTrack | undefined = undefined;
-            try {
-              tokenDetails = await getContentsFromUri(tokenUri || "");
-            } catch (e) {
-              console.error(`Failed to fetch token details for ${tokenUri}`, e);
-            }
-
-            return {
-              id: coin.address,
-              title: coin.name,
-              artistWallet: coin.creatorAddress,
-              description: coin.description,
-              mimeType: coin.mediaContent?.mimeType,
-              mediaUrl: coin.mediaContent?.originalUri,
-              artworkUrl: coin.mediaContent?.previewImage?.medium,
-              createdAt: coin.createdAt,
-              formattedDate: formatCreatedAt(coin?.createdAt ?? ""),
-              isNew: isTrackNew(coin?.createdAt ?? ""),
-              totalSupply: supply,
-              uniqueHolders: holders,
-              genre: tokenDetails?.attributes[0]?.value || "Unknown",
-              artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
-              premiumAudio: tokenDetails?.extra?.premium_audio || "",
-              collaborators: tokenDetails!.extra?.collaborators || [],
-            };
+    if (!trackLoading) {
+      setTracks(trackList);
+      setTrendingTracks(trackList?.filter((track) => track.isNew).slice(0, 10));
+      setRecentReleases(
+        trackList
+          .sort((a: CoinTrack, b: CoinTrack) => {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
           })
-        );
-
-        console.log("Formatted Tracks: ", formattedTracks);
-        setTracks(formattedTracks);
-        setTrendingTracks(
-          formattedTracks?.filter((track) => track.isNew).slice(0, 10)
-        );
-        setRecentReleases(
-          formattedTracks.filter((track) => !track.isNew).slice(0, 10)
-        );
-        setFeaturedTrack(
-          formattedTracks.find((track) => track.isNew) || formattedTracks[0]
-        );
-        return formattedTracks;
-      } catch (error) {
-        console.error("Error fetching coin data:", error);
-        return []; // Return empty array on error
-      }
-    };
-    fetchCoins();
-  }, []);
+          .slice(0, 10)
+      );
+      setFeaturedTrack(trackList.find((track) => track.isNew) || trackList[0]);
+    }
+  }, [trackLoading, trackList]);
 
   const handleTrackPlay = (track: CoinTrack) => {
     onTrackPlay(track);
@@ -108,20 +54,22 @@ const Home: React.FC<HomeProps> = ({
         <div className={styles.heroContent}>
           <div className={styles.featuredTrack}>
             <img
-              src={featuredTrack.artworkUrl}
-              alt={featuredTrack.title}
+              src={featuredTrack?.artworkUrl}
+              alt={featuredTrack?.title}
               className={styles.featuredArtwork}
             />
             <div className={styles.featuredInfo}>
               <span className={styles.featuredLabel}>Featured Track</span>
-              <h2 className={styles.featuredTitle}>{featuredTrack.title}</h2>
-              <p className={styles.featuredArtist}>by {featuredTrack.artist}</p>
+              <h2 className={styles.featuredTitle}>{featuredTrack?.title}</h2>
+              <p className={styles.featuredArtist}>
+                by {featuredTrack?.artist}
+              </p>
               <button
                 onClick={() => handleTrackPlay(featuredTrack)}
                 className={styles.playButton}
               >
                 <Play size={20} />
-                {currentTrack?.id === featuredTrack.id && isPlaying
+                {currentTrack?.id === featuredTrack?.id && isPlaying
                   ? "Playing"
                   : "Play Now"}
               </button>

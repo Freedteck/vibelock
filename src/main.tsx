@@ -13,6 +13,8 @@ import {
   zoraTestnet,
 } from "@reown/appkit/networks";
 import { WagmiProvider } from "wagmi";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { SplitsProvider } from "@0xsplits/splits-sdk-react";
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
@@ -63,11 +65,30 @@ createAppKit({
   },
 });
 
+const publicClient = createPublicClient({
+  chain: baseSepolia,
+  transport: http(),
+});
+
+const walletClient = createWalletClient({
+  chain: baseSepolia,
+  transport: custom(
+    window.ethereum as unknown as { request: (...args: any) => Promise<any> }
+  ),
+});
+const splitsConfig = {
+  chainId: baseSepolia.id,
+  publicClient,
+  walletClient,
+};
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <SplitsProvider config={splitsConfig}>
+          <App />
+        </SplitsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   </StrictMode>

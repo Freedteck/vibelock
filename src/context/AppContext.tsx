@@ -1,200 +1,269 @@
-// import { createContext, useContext, useState, ReactNode } from "react";
-// import { CoinTrack } from "../models";
-// import { uploadFileToPinata, uploadJsonToPinata } from "../client/pinata";
-// import { viemSetup } from "../client/zora";
-// import { Address } from "viem";
-// import { createCoin, DeployCurrency } from "@zoralabs/coins-sdk";
-// import { createTrack, Track } from "../client/supabase";
-// import { useNavigate } from "react-router-dom";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { CoinTrack, MusicTrack } from "../models";
+import { uploadFileToPinata, uploadJsonToPinata } from "../client/pinata";
+import { fetchMultipleCoins, viemSetup } from "../client/zora";
+import { Address } from "viem";
+import { createCoin, DeployCurrency } from "@zoralabs/coins-sdk";
+import { createTrack, getTracks, Track } from "../client/supabase";
+import { useWalletClient } from "wagmi";
+import {
+  formatCreatedAt,
+  getContentsFromUri,
+  isTrackNew,
+} from "../client/helper";
+import { baseSepolia } from "viem/chains";
+import { SplitV2Client } from "@0xsplits/splits-sdk";
 
-// interface AppState {
-//   tracks: CoinTrack[];
-//   userPortfolio: UserPortfolio[];
-//   transactions: Transaction[];
-//   unlockedTracks: number[];
-//   isWalletConnected: boolean;
-// }
+interface AppState {
+  tracks: CoinTrack[];
+  trackLoading: boolean;
+}
 
-// interface AppContextType extends AppState {
-//   unlockTrack: (trackId: number) => void;
-//   addTrack: (track: CoinTrack) => void;
-//   tradeCoins: (trackId: number, type: "buy" | "sell", amount: number) => void;
-//   connectWallet: () => void;
-//   disconnectWallet: () => void;
-//   addTransaction: (tx: Transaction) => void;
-// }
+export enum SplitV2Type {
+  Push = "push",
+  Pull = "pull",
+}
 
-// const AppContext = createContext<AppContextType | null>(null);
+interface AppContextType extends AppState {
+  unlockTrack?: (trackId: number) => void;
+  addTrack: ({
+    trackData,
+    artistName,
+    walletAddress,
+    artworkFile,
+    previewFile,
+    fullFile,
+    collaborators,
+  }: {
+    trackData: { title: string; description: string; genre: string };
+    artistName: string;
+    walletAddress: string;
+    artworkFile: File;
+    previewFile: File;
+    fullFile: File;
+    collaborators: {
+      name: string;
+      walletAddress: string;
+      role: string;
+      percentage: number;
+    }[];
+  }) => void;
+  tradeCoins: () => void;
+}
 
-// export function AppProvider({ children }: { children: ReactNode }) {
-//   const [tracks, setTracks] = useState([]);
-//   const [transactions, setTransactions] = useState([]);
-//     const navigate = useNavigate();
+const AppContext = createContext<AppContextType | null>(null);
 
-//   const addTrack = async ({
-//     trackData,
-//     artistName,
-//     walletAddress,
-//     artworkFile,
-//     previewFile,
-//     fullFile,
-//     collaborators,
-//     walletClient,
-//   }: {
-//     trackData: { title: string; description: string; genre: string };
-//     artistName: string;
-//     walletAddress: string;
-//     artworkFile: File;
-//     previewFile: File;
-//     fullFile: File;
-//     collaborators: {
-//       name: string;
-//       walletAddress: string;
-//       role: string;
-//       percentage: number;
-//     }[];
-//     walletClient: any;
-//   }) => {
-//     try {
-//       const coverUrl = await uploadFileToPinata(artworkFile);
-//       const standardAudioUrl = await uploadFileToPinata(previewFile);
-//       const premiumAudioUrl = await uploadFileToPinata(fullFile);
+export function AppProvider({ children }: { children: ReactNode }) {
+  const [tracks, setTracks] = useState<any[]>([]);
+  const { data: walletClient } = useWalletClient();
+  const [trackLoading, setTrackLoading] = useState(false);
 
-//       const metadata = {
-//         name: trackData.title,
-//         description: trackData.description,
-//         image: coverUrl,
-//         animation_url: standardAudioUrl,
-//         content: {
-//           mime: "audio/mpeg",
-//           uri: standardAudioUrl,
-//         },
-//         attributes: [
-//           { trait_type: "Genre", value: trackData.genre },
-//           { trait_type: "Artist", value: artistName },
-//         ],
-//         extra: {
-//           premium_audio: premiumAudioUrl,
-//           collaborators,
-//           artist_wallet: walletAddress,
-//           split_contract:
-//             collaborators.length > 1 ? "split_contract_address" : "",
-//         },
-//       };
+  useEffect(() => {
+    const fetchCoins = async () => {
+      setTrackLoading(true);
+      try {
+        const { data, error } = await getTracks();
+        setTrackLoading(false);
+        if (error) throw error;
 
-//       const jsonUri = await uploadJsonToPinata(metadata);
+        const { coins } = await fetchMultipleCoins(
+          data?.map((track) => track.deployed_address) || []
+        );
 
-//       const { publicClient } = viemSetup(walletAddress);
-//       const coinParams = {
-//         name: trackData.title,
-//         symbol: "MUSIC",
-//         uri: jsonUri.toString(),
-//         chainId: 84532, // baseSepolia.id
-//         owners: collaborators.map((c) => c.walletAddress as Address),
-//         payoutRecipient: walletAddress.toLowerCase() as Address,
-//         platformReferrer: walletAddress.toLowerCase() as Address,
-//         currency: DeployCurrency.ETH,
-//       };
+        const formattedTracks = await Promise.all(
+          coins.map(async (coin) => {
+            const supply = Number(coin.totalSupply);
+            const holders = coin.uniqueHolders ?? 0;
+            const tokenUri = coin.tokenUri;
 
-//       const result = await createCoin(coinParams, walletClient, publicClient);
+            let tokenDetails: MusicTrack | undefined = undefined;
+            try {
+              tokenDetails = await getContentsFromUri(tokenUri || "");
+            } catch (e) {
+              console.error(`Failed to fetch token details for ${tokenUri}`, e);
+            }
 
-//       const track: Track = {
-//         title: trackData.title,
-//         deployed_address: result.address?.toString() || "",
-//         wallet_address: walletAddress.toLowerCase(),
-//       };
+            return {
+              id: coin.address,
+              title: coin.name,
+              artistWallet: coin.creatorAddress,
+              description: coin.description,
+              mimeType: coin.mediaContent?.mimeType,
+              mediaUrl: coin.mediaContent?.originalUri,
+              artworkUrl: coin.mediaContent?.previewImage?.medium,
+              createdAt: coin.createdAt,
+              formattedDate: formatCreatedAt(coin?.createdAt ?? ""),
+              isNew: isTrackNew(coin?.createdAt ?? ""),
+              totalSupply: supply,
+              uniqueHolders: holders,
+              genre: tokenDetails?.attributes[0]?.value || "Unknown",
+              artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
+              premiumAudio: tokenDetails?.extra?.premium_audio || "",
+              collaborators: tokenDetails!.extra?.collaborators || [],
+            };
+          })
+        );
 
-//       const { error } = await createTrack(track);
-//       if (error) throw error;
-//       // Navigate to success page or track detail
-//       navigate("/dashboard");
-//     } catch (err) {
-//       console.error("Error in addTrack:", err);
-//       alert("Failed to upload track.");
-//     }
-//   };
+        setTracks(formattedTracks);
+        return formattedTracks;
+      } catch (error) {
+        console.error("Error fetching coin data:", error);
+        return []; // Return empty array on error
+      } finally {
+        setTrackLoading(false);
+      }
+    };
+    fetchCoins();
+  }, []);
 
-//   const tradeCoins = (
-//     // trackId: number,
-//     // type: "buy" | "sell",
-//     // amount: number
-//   ) => {
-//     // const track = tracks.find((t) => t.id === trackId);
-//     // if (!track) return;
+  const addTrack = async ({
+    trackData,
+    artistName,
+    walletAddress,
+    artworkFile,
+    previewFile,
+    fullFile,
+    collaborators,
+  }: {
+    trackData: { title: string; description: string; genre: string };
+    artistName: string;
+    walletAddress: string;
+    artworkFile: File;
+    previewFile: File;
+    fullFile: File;
+    collaborators: {
+      name: string;
+      walletAddress: string;
+      role: string;
+      percentage: number;
+    }[];
+  }) => {
+    try {
+      const coverUrl = await uploadFileToPinata(artworkFile);
+      const standardAudioUrl = await uploadFileToPinata(previewFile);
+      const premiumAudioUrl = await uploadFileToPinata(fullFile);
 
-//     // if (type === "buy") {
-//     //   setTracks((prev) =>
-//     //     prev.map((t) =>
-//     //       t.id === trackId
-//     //         ? {
-//     //             ...t,
-//     //             holders: t.holders + 1,
-//     //             currentSupply: t.currentSupply + amount,
-//     //           }
-//     //         : t
-//     //     )
-//     //   );
+      if (!walletClient?.account?.address) {
+        throw new Error("Wallet not connected. Please connect your wallet.");
+      }
+      const { publicClient } = viemSetup(walletAddress);
 
-//     //   setUserPortfolio((prev) => {
-//     //     const existing = prev.find((p) => p.trackId === trackId);
-//     //     const newEntry = {
-//     //       trackId,
-//     //       coinsHeld: (existing?.coinsHeld || 0) + amount,
-//     //       purchasePrice: track.coinPrice,
-//     //       currentValue: track.coinPrice,
-//     //       percentageChange: 0,
-//     //     };
+      const splitsClient = new SplitV2Client({
+        chainId: baseSepolia.id, // Base Sepolia chain ID
+        publicClient, // viem public client (optional, required if using any of the contract functions)
+        walletClient, // viem wallet client (optional, required if using any contract write functions. must have an account already attached)
+        includeEnsNames: false,
+        apiConfig: {
+          apiKey: `${import.meta.env.VITE_SPLIT_API_KEY}`, // You can create an API key by signing up on our app, and accessing your account settings at app.splits.org/settings.
+        }, // Splits GraphQL API key config, this is required for the data client to access the splits graphQL API.
+      });
 
-//     //     return [...prev.filter((p) => p.trackId !== trackId), newEntry];
-//     //   });
-//     // }
+      const args = {
+        recipients: collaborators.map((c) => ({
+          address: c.walletAddress.toLowerCase() as Address,
+          percentAllocation: c.percentage,
+        })),
+        distributorFeePercent: 1.0,
+        totalAllocationPercent: 100.0,
+        splitType: SplitV2Type.Push,
+        ownerAddress: walletClient.account.address.toLowerCase() as Address,
+        creatorAddress: walletClient.account.address.toLowerCase() as Address,
+        chainId: Number(baseSepolia.id),
+      };
+      let splitAddress = "";
+      if (collaborators.length > 1) {
+        const split = await splitsClient.createSplit(args);
+        console.log(split);
 
-//     // if (type === "sell") {
-//     //   setTracks((prev) =>
-//     //     prev.map((t) =>
-//     //       t.id === trackId
-//     //         ? { ...t, currentSupply: Math.max(0, t.currentSupply - amount) }
-//     //         : t
-//     //     )
-//     //   );
+        splitAddress = split.splitAddress ?? "";
+      }
 
-//     //   setUserPortfolio((prev) => {
-//     //     const existing = prev.find((p) => p.trackId === trackId);
-//     //     const newHeld = (existing?.coinsHeld || 0) - amount;
+      const metadata = {
+        name: trackData.title,
+        description: trackData.description,
+        image: coverUrl,
+        animation_url: standardAudioUrl,
+        content: {
+          mime: "audio/mpeg",
+          uri: standardAudioUrl,
+        },
+        attributes: [
+          { trait_type: "Genre", value: trackData.genre },
+          { trait_type: "Artist", value: artistName },
+        ],
+        extra: {
+          premium_audio: premiumAudioUrl,
+          collaborators,
+          artist_wallet: walletAddress,
+          split_contract: collaborators.length > 1 ? splitAddress : "",
+        },
+      };
 
-//     //     if (newHeld <= 0) return prev.filter((p) => p.trackId !== trackId);
+      const jsonUri = await uploadJsonToPinata(metadata);
 
-//     //     return prev.map((p) =>
-//     //       p.trackId === trackId ? { ...p, coinsHeld: newHeld } : p
-//     //     );
-//     //   });
-//     // }
-//   };
+      const coinParams = {
+        name: trackData.title,
+        symbol: "MUSIC",
+        uri: jsonUri.toString(),
+        chainId: Number(baseSepolia.id), // baseSepolia.id
+        owners: collaborators.map((c) => c.walletAddress as Address),
+        payoutRecipient:
+          collaborators.length > 1
+            ? (splitAddress as Address) // use the split contract
+            : (walletAddress.toLowerCase() as Address),
+        platformReferrer:
+          "0xb43C9F0F2bb65A37761E7867a6f1903799f45D65" as Address,
+        currency: DeployCurrency.ETH,
+      };
 
-//   const addTransaction = (tx: Transaction) => {
-//     setTransactions((prev) => [tx, ...prev]);
-//   };
+      if (!walletClient) {
+        throw new Error("Wallet client is not available.");
+      }
+      const result = await createCoin(coinParams, walletClient, publicClient);
 
-//   return (
-//     <AppContext.Provider
-//       value={{
-//         tracks,
-//         userPortfolio,
-//         transactions,
-//         unlockTrack,
-//         addTrack,
-//         tradeCoins,
-//         addTransaction,
-//       }}
-//     >
-//       {children}
-//     </AppContext.Provider>
-//   );
-// }
+      const track: Track = {
+        title: trackData.title,
+        deployed_address: result.address?.toString() || "",
+        wallet_address: walletAddress.toLowerCase(),
+      };
 
-// export function useAppContext() {
-//   const context = useContext(AppContext);
-//   if (!context)
-//     throw new Error("useAppContext must be used within AppProvider");
-//   return context;
-// }
+      const { error } = await createTrack(track);
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error adding track:", error);
+      throw error; // Re-throw to handle in the component
+    }
+  };
+
+  const tradeCoins = () =>
+    // trackId: number,
+    // type: "buy" | "sell",
+    // amount: number
+    {};
+
+  return (
+    <AppContext.Provider
+      value={{
+        tracks,
+        trackLoading,
+        addTrack,
+        tradeCoins,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+export function useAppContext() {
+  const context = useContext(AppContext);
+  if (!context)
+    throw new Error("useAppContext must be used within AppProvider");
+  return context;
+}

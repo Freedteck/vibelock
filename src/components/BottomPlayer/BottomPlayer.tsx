@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, ChevronUp } from "lucide-react";
-import { Track } from "../../data/mockData";
-// import { useAppContext } from '../../context/AppContext';
 import FullScreenPlayer from "./FullScreenPlayer";
 import styles from "./BottomPlayer.module.css";
 import { CoinTrack } from "../../models";
@@ -12,8 +10,10 @@ interface BottomPlayerProps {
   onPlayPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
-  playlist: Track[];
+  playlist: CoinTrack[];
   currentIndex: number;
+  isShuffled: boolean;
+  onShuffle: () => void;
 }
 
 const BottomPlayer: React.FC<BottomPlayerProps> = ({
@@ -24,12 +24,13 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   onPrevious,
   playlist,
   currentIndex,
+  isShuffled,
+  onShuffle,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  // const { state } = useAppContext();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -151,6 +152,10 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
         currentTime={currentTime}
         duration={duration}
         audioRef={audioRef}
+        isShuffled={isShuffled}
+        onShuffle={onShuffle}
+        playlist={playlist}
+        currentIndex={currentIndex}
       />
     </>
   );

@@ -9,20 +9,10 @@ import {
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useWallet } from "../../hooks/useWallet";
-import { createTrack, getArtist, Track } from "../../client/supabase";
+import { getArtist } from "../../client/supabase";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./Upload.module.css";
-import { uploadFileToPinata, uploadJsonToPinata } from "../../client/pinata";
-import { MusicTrack } from "../../models";
-import {
-  createCoin,
-  DeployCurrency,
-  validateMetadataJSON,
-} from "@zoralabs/coins-sdk";
-import { Address } from "viem";
-import { baseSepolia } from "viem/chains";
-import { viemSetup } from "../../client/zora";
-import { useWalletClient } from "wagmi";
+import { useAppContext } from "../../context/AppContext";
 
 interface Collaborator {
   name: string;
@@ -33,7 +23,7 @@ interface Collaborator {
 
 const Upload: React.FC = () => {
   const navigate = useNavigate();
-  const { data: walletClient } = useWalletClient();
+  const { addTrack } = useAppContext();
   const { isConnected, walletAddress, connectWallet, isConnecting } =
     useWallet();
 
@@ -154,83 +144,15 @@ const Upload: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const coverUrl = await uploadFileToPinata(artworkFile!);
-      const standardAudioUrl = await uploadFileToPinata(previewFile!);
-      const premiumAudioUrl = await uploadFileToPinata(fullFile!);
-
-      // Create metadata
-      const metadata: MusicTrack = {
-        name: trackData.title || "Untitled Track",
-        description: trackData.description || "",
-        image: coverUrl.toString(),
-        animation_url: standardAudioUrl.toString(),
-        content: {
-          mime: "audio/mpeg",
-          uri: standardAudioUrl.toString(),
-        },
-        attributes: [
-          { trait_type: "Genre", value: trackData.genre },
-          { trait_type: "Artist", value: artistName },
-        ],
-        extra: {
-          premium_audio: premiumAudioUrl.toString(),
-          collaborators: collaborators.map((c) => ({
-            name: c.name,
-            wallet: c.walletAddress,
-            role: c.role,
-            percentage: c.percentage,
-          })),
-          artist_wallet: walletAddress,
-          split_contract:
-            collaborators.length > 1 ? "split_contract_address" : "",
-        },
-      };
-
-      const res = validateMetadataJSON(metadata);
-
-      if (!res) {
-        alert("Invalid metadata format. Please check your inputs.");
-        setIsUploading(false);
-        return;
-      }
-      const jsonUri = await uploadJsonToPinata(metadata);
-
-      const coinParams = {
-        name: trackData.title || "Untitled Track",
-        symbol: "MUSIC",
-        uri: jsonUri.toString(),
-        chainId: +baseSepolia.id, // Base mainnet
-        owners: [
-          ...collaborators.map((c) => c.walletAddress as Address),
-        ].filter((addr) => addr?.trim() !== ""),
-        payoutRecipient: walletAddress.toLowerCase() as Address,
-        platformReferrer: walletAddress.toLowerCase() as Address, // Optional, can be your platform address
-        currency: DeployCurrency.ETH, // Default to ETH
-      };
-
-      const { publicClient } = viemSetup(walletAddress);
-
-      if (!walletClient || !publicClient) {
-        throw new Error("Wallet client or public client is not available.");
-      }
-
-      const result = await createCoin(coinParams, walletClient, publicClient, {
-        gasMultiplier: 120, // Optional: Add 20% buffer to gas (defaults to 100%)
+      await addTrack({
+        trackData,
+        artistName,
+        walletAddress,
+        artworkFile: artworkFile!,
+        previewFile: previewFile!,
+        fullFile: fullFile!,
+        collaborators,
       });
-
-      console.log("Transaction hash:", result.hash);
-      console.log("Coin address:", result.address);
-      console.log("Deployment details:", result.deployment);
-
-      const track: Track = {
-        title: trackData.title,
-        deployed_address: result.address?.toString() || "",
-        wallet_address: walletAddress.toLowerCase(),
-      };
-
-      const { error } = await createTrack(track);
-      if (error) throw error;
-      // Navigate to success page or track detail
       navigate("/dashboard");
     } catch (error) {
       console.error("Error uploading track:", error);

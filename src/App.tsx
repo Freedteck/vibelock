@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import { AppProvider } from "./context/AppContext";
+import { AppProvider, useAppContext } from "./context/AppContext";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/MobileHeader/MobileHeader";
 import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
@@ -12,7 +12,6 @@ import TrackDetail from "./pages/TrackDetail/TrackDetail";
 import Upload from "./pages/Upload/Upload";
 import ArtistProfile from "./pages/ArtistProfile/ArtistProfile";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import { Track } from "./data/mockData";
 import { useNotification } from "./hooks/useNotification";
 import "./styles/globals.css";
 import { setApiKey } from "@zoralabs/coins-sdk";
@@ -20,9 +19,10 @@ import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile
 import { CoinTrack } from "./models";
 
 function AppContent() {
+  const { tracks } = useAppContext();
   const [currentTrack, setCurrentTrack] = useState<CoinTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playlist, setPlaylist] = useState<CoinTrack[]>([]);
+  const [playlist, setPlaylist] = useState<CoinTrack[]>(tracks);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [shuffledPlaylist, setShuffledPlaylist] = useState<CoinTrack[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
@@ -34,7 +34,31 @@ function AppContent() {
     setApiKey(`${import.meta.env.VITE_ZORA_API_KEY}`);
   }, []);
 
-  const handleTrackPlay = (track: CoinTrack, trackList?: CoinTrack[]) => {
+  const toggleShuffle = () => {
+    if (!isShuffled) {
+      // Create a shuffled copy of the playlist without the current track
+      const shuffled = [...playlist];
+      const currentTrackItem = shuffled.splice(currentTrackIndex, 1)[0];
+
+      // Fisher-Yates shuffle algorithm
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      // Put current track at the beginning
+      shuffled.unshift(currentTrackItem);
+      setShuffledPlaylist(shuffled);
+      setCurrentTrackIndex(0);
+    }
+
+    setIsShuffled(!isShuffled);
+  };
+
+  const handleTrackPlay = (
+    track: CoinTrack,
+    trackList: CoinTrack[] = tracks
+  ) => {
     if (trackList) {
       setPlaylist(trackList);
       const index = trackList.findIndex((t) => t.id === track.id);
@@ -138,6 +162,8 @@ function AppContent() {
           onPrevious={handlePrevious}
           playlist={playlist}
           currentIndex={currentTrackIndex}
+          isShuffled={isShuffled}
+          onShuffle={toggleShuffle}
         />
 
         {/* Bottom Navigation */}
@@ -157,9 +183,9 @@ function AppContent() {
 
 function App() {
   return (
-    // <AppProvider>
-    <AppContent />
-    // </AppProvider>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }
 

@@ -7,10 +7,9 @@ import {
   SkipForward,
   Shuffle,
   Repeat,
-  Heart,
+  // Heart,
   Share2,
 } from "lucide-react";
-import { Track } from "../../data/mockData";
 import styles from "./FullScreenPlayer.module.css";
 import { CoinTrack } from "../../models";
 
@@ -25,6 +24,10 @@ interface FullScreenPlayerProps {
   currentTime: number;
   duration: number;
   audioRef: React.RefObject<HTMLAudioElement>;
+  isShuffled: boolean;
+  onShuffle: () => void;
+  playlist: CoinTrack[];
+  currentIndex: number;
 }
 
 const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
@@ -38,6 +41,10 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
   currentTime,
   duration,
   audioRef,
+  isShuffled,
+  onShuffle,
+  playlist,
+  currentIndex,
 }) => {
   const formatTime = (time: number) => {
     if (isNaN(time)) return "0:00";
@@ -54,6 +61,16 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
     audio.currentTime = newTime;
   };
 
+  const handleTrackSelect = (index: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const track = playlist[index];
+    audio.currentTime = 0;
+    audio.src = track.premiumAudio || track.mediaUrl;
+    audio.play().catch(console.error);
+  };
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   if (!isOpen) return null;
@@ -67,7 +84,9 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
             <ChevronDown size={24} />
           </button>
           <div className={styles.headerInfo}>
-            <span className={styles.playingFrom}>Playing from Playlist</span>
+            <span className={styles.playingFrom}>
+              {isShuffled ? "Shuffled Playlist" : "Playing from Playlist"}
+            </span>
           </div>
           <div className={styles.headerActions}>
             <button className={styles.actionButton}>
@@ -112,7 +131,12 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
 
         {/* Controls */}
         <div className={styles.controls}>
-          <button className={styles.controlButton}>
+          <button
+            onClick={onShuffle}
+            className={`${styles.controlButton} ${
+              isShuffled ? styles.active : ""
+            }`}
+          >
             <Shuffle size={24} />
           </button>
           <button onClick={onPrevious} className={styles.controlButton}>
@@ -129,11 +153,32 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
           </button>
         </div>
 
-        {/* Bottom Actions */}
-        <div className={styles.bottomActions}>
-          <button className={styles.actionButton}>
-            <Heart size={20} />
-          </button>
+        {/* Playlist */}
+        <div className={styles.playlistContainer}>
+          <div className={styles.playlist}>
+            {playlist.map((track, index) => (
+              <div
+                key={track.id}
+                className={`${styles.playlistItem} ${
+                  index === currentIndex ? styles.active : ""
+                }`}
+                onClick={() => handleTrackSelect(index)}
+              >
+                <img
+                  src={track.artworkUrl}
+                  alt={track.title}
+                  className={styles.playlistArt}
+                />
+                <div className={styles.playlistInfo}>
+                  <h4>{track.title}</h4>
+                  <p>{track.artist}</p>
+                </div>
+                {index === currentIndex && isPlaying && (
+                  <div className={styles.nowPlayingIndicator}>Now Playing</div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

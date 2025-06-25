@@ -11,16 +11,16 @@ import {
   Share2,
   Heart,
 } from "lucide-react";
-import { Track } from "../../data/mockData";
-// import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from "../../context/AppContext";
 import UnlockModal from "../../components/UnlockModal/UnlockModal";
 import WalletModal from "../../components/WalletModal/WalletModal";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./TrackDetail.module.css";
+import { CoinTrack } from "../../models";
 
 interface TrackDetailProps {
-  onTrackPlay: (track: Track) => void;
-  currentTrack: Track | null;
+  onTrackPlay: (track: CoinTrack) => void;
+  currentTrack: CoinTrack | null;
   isPlaying: boolean;
 }
 
@@ -30,7 +30,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
   isPlaying,
 }) => {
   const { id } = useParams<{ id: string }>();
-  const [track, setTrack] = useState<Track | null>(null);
+  const [track, setTrack] = useState<any>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
@@ -50,12 +50,20 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
     },
   ]);
 
-  // const { state, dispatch } = useAppContext();
+  const { tracks, trackLoading } = useAppContext();
 
   useEffect(() => {
-    // const foundTrack = state.tracks.find(t => t.id === parseInt(id || '0'));
-    setTrack({});
-  }, [id]);
+    if (!trackLoading && tracks.length > 0 && id) {
+      const foundTrack = tracks.find((t) => t.id === id);
+
+      if (foundTrack) {
+        setTrack(foundTrack);
+      } else {
+        console.warn(`Track with ID ${id} not found`);
+        setTrack(null);
+      }
+    }
+  }, [id, trackLoading, tracks]);
 
   const isUnlocked = false;
 
@@ -83,11 +91,6 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
       return;
     }
     setShowUnlockModal(true);
-  };
-
-  const handleUnlock = async (trackId: number) => {
-    // Simulate blockchain transaction delay
-    await new Promise((resolve) => setTimeout(resolve, 3000));
   };
 
   const handleShare = () => {
@@ -128,7 +131,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
         <div className={styles.hero}>
           <div className={styles.artworkContainer}>
             <img
-              src={track.artwork}
+              src={track.artworkUrl}
               alt={track.title}
               className={styles.artwork}
             />
@@ -172,7 +175,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
               </div>
               <div className={styles.statItem}>
                 <Play size={16} />
-                <span>{track.playCount.toLocaleString()}</span>
+                <span>{track?.playCount?.toString()}</span>
               </div>
             </div>
           </div>
@@ -211,7 +214,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Collaborators</h2>
           <div className={styles.collaboratorsScroll}>
-            {track.collaborators.map((collab, index) => (
+            {track.collaborators.map((collab: any, index: number) => (
               <div key={index} className={styles.collaboratorChip}>
                 <div className={styles.collabAvatar}>
                   {collab.name.charAt(0)}
@@ -279,7 +282,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
         isOpen={showUnlockModal}
         onClose={() => setShowUnlockModal(false)}
         track={track}
-        onUnlock={handleUnlock}
+        onUnlock={(): Promise<void> => Promise.resolve()}
       />
 
       <WalletModal

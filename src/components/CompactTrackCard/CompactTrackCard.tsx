@@ -62,7 +62,7 @@ const CompactTrackCard: React.FC<CompactTrackCardProps> = ({
 
       <div className={styles.info}>
         <h3 className={styles.title}>{track.title}</h3>
-        <p className={styles.artist}>{track.artist}</p>
+        <p className={styles.artist}>By {track.artist}</p>
         <div className={styles.holders}>
           <Users size={12} />
           <span>
