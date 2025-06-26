@@ -449,14 +449,9 @@
 }
 
 .publishButton {
-  background: var(--success);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.publishButton:hover {
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
 .spinner {

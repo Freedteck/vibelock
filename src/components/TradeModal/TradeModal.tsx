@@ -1,63 +1,67 @@
-import React, { useState } from 'react';
-import { TrendingUp, TrendingDown, Loader, DollarSign } from 'lucide-react';
-import Modal from '../Modal/Modal';
-import { Track, UserPortfolio } from '../../data/mockData';
-import styles from './TradeModal.module.css';
+import React, { useState } from "react";
+import { TrendingUp, TrendingDown, Loader, DollarSign } from "lucide-react";
+import Modal from "../Modal/Modal";
+import styles from "./TradeModal.module.css";
+import { CoinTrack } from "../../models";
 
 interface TradeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  track: Track;
-  portfolio: UserPortfolio;
-  onTrade: (trackId: number, type: 'buy' | 'sell', amount: number) => Promise<void>;
+  track: CoinTrack;
+  onTrade: (
+    trackId: string,
+    type: "buy" | "sell",
+    amount: number
+  ) => Promise<void>;
 }
 
 const TradeModal: React.FC<TradeModalProps> = ({
   isOpen,
   onClose,
   track,
-  portfolio,
-  onTrade
+  onTrade,
 }) => {
-  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy');
+  const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState(1);
   const [isTrading, setIsTrading] = useState(false);
-  const [step, setStep] = useState<'setup' | 'processing' | 'success'>('setup');
+  const [step, setStep] = useState<"setup" | "processing" | "success">("setup");
 
-  const maxSell = portfolio.coinsHeld;
-  const maxBuy = Math.min(50, track.maxSupply - track.currentSupply); // Limit to 50 or available supply
-  const totalCost = amount * track.coinPrice;
+  const maxSell = 300;
+  // const maxBuy = Math.min(50, track.maxSupply - track.currentSupply); // Limit to 50 or available supply
+  const maxBuy = 1000000;
+  const totalCost = amount * 20;
   const estimatedGas = 0.001;
 
   const handleTrade = async () => {
     setIsTrading(true);
-    setStep('processing');
-    
+    setStep("processing");
+
     try {
       await onTrade(track.id, tradeType, amount);
-      setStep('success');
+      setStep("success");
       setTimeout(() => {
         onClose();
-        setStep('setup');
+        setStep("setup");
         setIsTrading(false);
         setAmount(1);
       }, 2000);
     } catch (error) {
       setIsTrading(false);
-      setStep('setup');
+      setStep("setup");
+      console.error("Trade failed:", error);
     }
   };
 
   const handleClose = () => {
     if (!isTrading) {
       onClose();
-      setStep('setup');
+      setStep("setup");
       setAmount(1);
     }
   };
 
   const canTrade = () => {
-    if (tradeType === 'buy') {
+    if (tradeType === "buy") {
       return amount > 0 && amount <= maxBuy;
     } else {
       return amount > 0 && amount <= maxSell;
@@ -68,15 +72,17 @@ const TradeModal: React.FC<TradeModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={step === 'success' ? 'Trade Completed!' : `Trade ${track.title} Coins`}
+      title={
+        step === "success" ? "Trade Completed!" : `Trade ${track.title} Coins`
+      }
       size="medium"
     >
       <div className={styles.container}>
-        {step === 'setup' && (
+        {step === "setup" && (
           <>
             <div className={styles.trackInfo}>
-              <img 
-                src={track.artwork} 
+              <img
+                src={track.artworkUrl}
                 alt={track.title}
                 className={styles.artwork}
               />
@@ -86,15 +92,15 @@ const TradeModal: React.FC<TradeModalProps> = ({
                 <div className={styles.stats}>
                   <div className={styles.stat}>
                     <span>Current Price</span>
-                    <span>{track.coinPrice} ETH</span>
+                    <span>{20} ETH</span>
                   </div>
                   <div className={styles.stat}>
                     <span>You Own</span>
-                    <span>{portfolio.coinsHeld} coins</span>
+                    <span>{20} coins</span>
                   </div>
                   <div className={styles.stat}>
                     <span>Available Supply</span>
-                    <span>{track.maxSupply - track.currentSupply} coins</span>
+                    <span>{500000} coins</span>
                   </div>
                 </div>
               </div>
@@ -102,15 +108,19 @@ const TradeModal: React.FC<TradeModalProps> = ({
 
             <div className={styles.tradeTypeSelector}>
               <button
-                onClick={() => setTradeType('buy')}
-                className={`${styles.typeButton} ${tradeType === 'buy' ? styles.active : ''} ${styles.buy}`}
+                onClick={() => setTradeType("buy")}
+                className={`${styles.typeButton} ${
+                  tradeType === "buy" ? styles.active : ""
+                } ${styles.buy}`}
               >
                 <TrendingUp size={18} />
                 Buy
               </button>
               <button
-                onClick={() => setTradeType('sell')}
-                className={`${styles.typeButton} ${tradeType === 'sell' ? styles.active : ''} ${styles.sell}`}
+                onClick={() => setTradeType("sell")}
+                className={`${styles.typeButton} ${
+                  tradeType === "sell" ? styles.active : ""
+                } ${styles.sell}`}
               >
                 <TrendingDown size={18} />
                 Sell
@@ -118,14 +128,12 @@ const TradeModal: React.FC<TradeModalProps> = ({
             </div>
 
             <div className={styles.amountSelector}>
-              <label className={styles.label}>
-                Amount to {tradeType}
-              </label>
+              <label className={styles.label}>Amount to {tradeType}</label>
               <div className={styles.amountInput}>
                 <input
                   type="number"
                   min="1"
-                  max={tradeType === 'buy' ? maxBuy : maxSell}
+                  max={tradeType === "buy" ? maxBuy : maxSell}
                   value={amount}
                   onChange={(e) => setAmount(parseInt(e.target.value) || 1)}
                   className={styles.input}
@@ -142,33 +150,37 @@ const TradeModal: React.FC<TradeModalProps> = ({
                 <button
                   onClick={() => setAmount(5)}
                   className={styles.presetButton}
-                  disabled={5 > (tradeType === 'buy' ? maxBuy : maxSell)}
+                  disabled={5 > (tradeType === "buy" ? maxBuy : maxSell)}
                 >
                   5
                 </button>
                 <button
                   onClick={() => setAmount(10)}
                   className={styles.presetButton}
-                  disabled={10 > (tradeType === 'buy' ? maxBuy : maxSell)}
+                  disabled={10 > (tradeType === "buy" ? maxBuy : maxSell)}
                 >
                   10
                 </button>
                 <button
-                  onClick={() => setAmount(tradeType === 'buy' ? maxBuy : maxSell)}
+                  onClick={() =>
+                    setAmount(tradeType === "buy" ? maxBuy : maxSell)
+                  }
                   className={styles.presetButton}
                 >
                   Max
                 </button>
               </div>
               <p className={styles.maxInfo}>
-                Max {tradeType}: {tradeType === 'buy' ? maxBuy : maxSell} coins
+                Max {tradeType}: {tradeType === "buy" ? maxBuy : maxSell} coins
               </p>
             </div>
 
             <div className={styles.summary}>
               <h4 className={styles.summaryTitle}>Transaction Summary</h4>
               <div className={styles.summaryRow}>
-                <span>{amount} coins × {track.coinPrice} ETH</span>
+                <span>
+                  {amount} coins × {20} ETH
+                </span>
                 <span>{totalCost.toFixed(4)} ETH</span>
               </div>
               <div className={styles.summaryRow}>
@@ -176,12 +188,12 @@ const TradeModal: React.FC<TradeModalProps> = ({
                 <span>{estimatedGas} ETH</span>
               </div>
               <div className={`${styles.summaryRow} ${styles.total}`}>
-                <span>Total {tradeType === 'buy' ? 'Cost' : 'Received'}</span>
+                <span>Total {tradeType === "buy" ? "Cost" : "Received"}</span>
                 <span>
-                  {tradeType === 'buy' 
-                    ? (totalCost + estimatedGas).toFixed(4) 
-                    : (totalCost - estimatedGas).toFixed(4)
-                  } ETH
+                  {tradeType === "buy"
+                    ? (totalCost + estimatedGas).toFixed(4)
+                    : (totalCost - estimatedGas).toFixed(4)}{" "}
+                  ETH
                 </span>
               </div>
             </div>
@@ -190,51 +202,62 @@ const TradeModal: React.FC<TradeModalProps> = ({
               <button onClick={handleClose} className={styles.cancelButton}>
                 Cancel
               </button>
-              <button 
-                onClick={handleTrade} 
+              <button
+                onClick={handleTrade}
                 disabled={!canTrade()}
                 className={`${styles.tradeButton} ${styles[tradeType]}`}
               >
-                {tradeType === 'buy' ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
-                {tradeType === 'buy' ? 'Buy' : 'Sell'} {amount} Coin{amount !== 1 ? 's' : ''}
+                {tradeType === "buy" ? (
+                  <TrendingUp size={18} />
+                ) : (
+                  <TrendingDown size={18} />
+                )}
+                {tradeType === "buy" ? "Buy" : "Sell"} {amount} Coin
+                {amount !== 1 ? "s" : ""}
               </button>
             </div>
           </>
         )}
 
-        {step === 'processing' && (
+        {step === "processing" && (
           <div className={styles.processing}>
             <div className={styles.processingIcon}>
               <Loader size={48} className={styles.spinner} />
             </div>
             <h3 className={styles.processingTitle}>Processing Trade...</h3>
             <p className={styles.processingText}>
-              Please confirm the transaction in your wallet and wait for blockchain confirmation.
+              Please confirm the transaction in your wallet and wait for
+              blockchain confirmation.
             </p>
           </div>
         )}
 
-        {step === 'success' && (
+        {step === "success" && (
           <div className={styles.success}>
             <div className={styles.successIcon}>
               <DollarSign size={48} />
             </div>
             <h3 className={styles.successTitle}>Trade Successful!</h3>
             <p className={styles.successText}>
-              You have successfully {tradeType === 'buy' ? 'purchased' : 'sold'} {amount} coin{amount !== 1 ? 's' : ''} of "{track.title}".
+              You have successfully {tradeType === "buy" ? "purchased" : "sold"}{" "}
+              {amount} coin{amount !== 1 ? "s" : ""} of "{track.title}".
             </p>
             <div className={styles.successStats}>
               <div className={styles.successStat}>
-                <span className={styles.successLabel}>Coins {tradeType === 'buy' ? 'Purchased' : 'Sold'}</span>
+                <span className={styles.successLabel}>
+                  Coins {tradeType === "buy" ? "Purchased" : "Sold"}
+                </span>
                 <span className={styles.successValue}>{amount}</span>
               </div>
               <div className={styles.successStat}>
-                <span className={styles.successLabel}>Total {tradeType === 'buy' ? 'Cost' : 'Received'}</span>
+                <span className={styles.successLabel}>
+                  Total {tradeType === "buy" ? "Cost" : "Received"}
+                </span>
                 <span className={styles.successValue}>
-                  {tradeType === 'buy' 
-                    ? (totalCost + estimatedGas).toFixed(4) 
-                    : (totalCost - estimatedGas).toFixed(4)
-                  } ETH
+                  {tradeType === "buy"
+                    ? (totalCost + estimatedGas).toFixed(4)
+                    : (totalCost - estimatedGas).toFixed(4)}{" "}
+                  ETH
                 </span>
               </div>
             </div>

@@ -1,41 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Music,
   TrendingUp,
   Users,
   Play,
   Lock,
-  Unlock,
+  // Unlock,
   Eye,
-  Heart,
+  // Heart,
+  Wallet,
 } from "lucide-react";
-// import TrackCard from '../../components/TrackCard/TrackCard';
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import TradeModal from "../../components/TradeModal/TradeModal";
-// import MobileHeader from "../../components/MobileHeader/MobileHeader";
-import { Track } from "../../data/mockData";
-// import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../../context/AppContext";
 import styles from "./Dashboard.module.css";
+import { CoinTrack } from "../../models";
+import { useWallet } from "../../hooks/useWallet";
+import MobileHeader from "../../components/MobileHeader/MobileHeader";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "owned" | "portfolio" | "activity"
   >("owned");
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<CoinTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTradeModal, setShowTradeModal] = useState(false);
-  const [selectedTradeTrack, setSelectedTradeTrack] = useState<Track | null>(
-    null
-  );
+  const [selectedTradeTrack, setSelectedTradeTrack] =
+    useState<CoinTrack | null>(null);
+  const [ownedTracks, setOwnedTracks] = useState<CoinTrack[]>([]);
+  const { isConnected, walletAddress, connectWallet, isConnecting } =
+    useWallet();
 
-  // const { state, dispatch } = useAppContext();
+  const { tracks, trackLoading } = useAppContext();
 
-  const ownedTracks: any = [];
   const portfolioValue = 1000;
   const totalCoins = 5000;
   const totalPlays = 10000;
 
-  const handleTrackPlay = (track: Track) => {
+  useEffect(() => {
+    if (!isConnected || !walletAddress) return;
+
+    if (!trackLoading && tracks.length > 0) {
+      const userOwnedTracks = tracks.filter(
+        (track) =>
+          track.collaborators?.some(
+            (collab) =>
+              collab?.wallet?.toLowerCase() === walletAddress?.toLowerCase()
+          ) ||
+          track.artistWallet?.toLowerCase() === walletAddress?.toLowerCase()
+      );
+      setOwnedTracks(userOwnedTracks);
+    }
+  }, [trackLoading, tracks, walletAddress, isConnected]);
+
+  const handleTrackPlay = (track: CoinTrack) => {
     if (currentTrack?.id === track.id) {
       setIsPlaying(!isPlaying);
     } else {
@@ -44,43 +62,20 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleTradeClick = (trackId: number) => {
-    // const track = [].find((t) => t!.id === trackId);
-    // if (track) {
-    //   setSelectedTradeTrack(track);
-    //   setShowTradeModal(true);
-    // }
-  };
+  // const handleTradeClick = (trackId: string) => {
+  //   const track = ownedTracks.find((t) => t!.id === trackId);
+  //   if (track) {
+  //     setSelectedTradeTrack(track);
+  //     setShowTradeModal(true);
+  //   }
+  // };
 
   const handleTrade = async (
-    trackId: number,
+    trackId: string,
     type: "buy" | "sell",
     amount: number
   ) => {
-    // Simulate blockchain transaction delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // dispatch({
-    //   type: "TRADE_COINS",
-    //   payload: { trackId, type, amount },
-    // });
-
-    // Add transaction record
-    // const track = [].find((t) => t.id === trackId);
-    // if (track) {
-    //   // dispatch({
-    //   //   type: "ADD_TRANSACTION",
-    //   //   payload: {
-    //   //     id: `tx_${Date.now()}`,
-    //   //     type: type === "buy" ? "purchase" : "sell",
-    //   //     trackId,
-    //   //     amount,
-    //   //     price: track.coinPrice,
-    //   //     timestamp: new Date().toISOString(),
-    //   //     status: "completed",
-    //   //   },
-    //   // });
-    // }
+    console.log(`Handling trade for track ${trackId}: ${type} ${amount} coins`);
   };
 
   const tabs = [
@@ -89,33 +84,110 @@ const Dashboard: React.FC = () => {
     { id: "activity", label: "Activity", icon: <Eye size={16} /> },
   ];
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case "unlock":
-        return <Unlock size={18} />;
-      case "purchase":
-        return <TrendingUp size={18} />;
-      case "sell":
-        return <TrendingUp size={18} />;
-      default:
-        return <Heart size={18} />;
-    }
-  };
+  // const getActivityIcon = (type: string) => {
+  //   switch (type) {
+  //     case "unlock":
+  //       return <Unlock size={18} />;
+  //     case "purchase":
+  //       return <TrendingUp size={18} />;
+  //     case "sell":
+  //       return <TrendingUp size={18} />;
+  //     default:
+  //       return <Heart size={18} />;
+  //   }
+  // };
 
-  const getActivityDescription = (transaction: any) => {};
+  // const getActivityDescription = (transaction: any) => {
+  //   switch (transaction.type) {
+  //     case "unlock":
+  //       return `Unlocked track ${transaction.trackTitle}`;
+  //     case "purchase":
+  //       return `Purchased ${transaction.amount} coins for ${transaction.trackTitle}`;
+  //     case "sell":
+  //       return `Sold ${transaction.amount} coins for ${transaction.trackTitle}`;
+  //     default:
+  //       return `Performed action on ${transaction.trackTitle}`;
+  //   }
+  // };
 
-  const formatTimeAgo = (timestamp: string) => {
-    const now = new Date();
-    const time = new Date(timestamp);
-    const diffInHours = Math.floor(
-      (now.getTime() - time.getTime()) / (1000 * 60 * 60)
+  // const formatTimeAgo = (timestamp: string) => {
+  //   const now = new Date();
+  //   const time = new Date(timestamp);
+  //   const diffInHours = Math.floor(
+  //     (now.getTime() - time.getTime()) / (1000 * 60 * 60)
+  //   );
+
+  //   if (diffInHours < 1) return "Just now";
+  //   if (diffInHours < 24) return `${diffInHours}h ago`;
+  //   const diffInDays = Math.floor(diffInHours / 24);
+  //   return `${diffInDays}d ago`;
+  // };
+
+  if (!isConnected) {
+    return (
+      <div className={styles.notConnected}>
+        <MobileHeader title="Upload Track" showBack={true} />
+
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>Connect Your Wallet</h1>
+            <p className={styles.subtitle}>
+              You need to connect your wallet to upload tracks and manage your
+              music
+            </p>
+          </div>
+
+          <div className={styles.stepContent}>
+            <div
+              className={styles.stepPanel}
+              style={{ textAlign: "center", padding: "3rem 2rem" }}
+            >
+              <Wallet
+                size={64}
+                style={{ margin: "0 auto 2rem", color: "#8b5cf6" }}
+              />
+              <h2
+                style={{ color: "var(--text-primary)", marginBottom: "1rem" }}
+              >
+                Wallet Required
+              </h2>
+              <p
+                style={{
+                  color: "var(--text-secondary)",
+                  marginBottom: "2rem",
+                  lineHeight: 1.5,
+                }}
+              >
+                Connect your wallet to start uploading tracks, manage your
+                music, and earn from your creations.
+              </p>
+              <button
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className={styles.publishButton}
+                style={{ margin: "0 auto" }}
+              >
+                {isConnecting ? (
+                  <>
+                    <div
+                      className={styles.spinner}
+                      style={{ width: "18px", height: "18px" }}
+                    />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Wallet size={18} />
+                    Connect Wallet
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     );
-
-    if (diffInHours < 1) return "Just now";
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays}d ago`;
-  };
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -232,7 +304,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className={styles.portfolioList}>
-                {[].map((portfolio) => {
+                {/* {[].map((portfolio) => {
                   const track = [].find((t) => t.id === portfolio.trackId);
                   if (!track) return null;
 
@@ -297,7 +369,7 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                   );
-                })}
+                })} */}
               </div>
             </div>
           )}
@@ -313,7 +385,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className={styles.activityList}>
-                {state.transactions.map((transaction) => (
+                {/* {state.transactions.map((transaction) => (
                   <div key={transaction.id} className={styles.activityItem}>
                     <div className={styles.activityIcon}>
                       {getActivityIcon(transaction.type)}
@@ -336,7 +408,7 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           )}
@@ -352,17 +424,6 @@ const Dashboard: React.FC = () => {
             setSelectedTradeTrack(null);
           }}
           track={selectedTradeTrack}
-          portfolio={
-            state.userPortfolio.find(
-              (p) => p.trackId === selectedTradeTrack.id
-            ) || {
-              trackId: selectedTradeTrack.id,
-              coinsHeld: 0,
-              purchasePrice: 0,
-              currentValue: selectedTradeTrack.coinPrice,
-              percentageChange: 0,
-            }
-          }
           onTrade={handleTrade}
         />
       )}
