@@ -70,16 +70,9 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
-const walletClient = createWalletClient({
-  chain: baseSepolia,
-  transport: custom(
-    window.ethereum as unknown as { request: (...args: any) => Promise<any> }
-  ),
-});
 const splitsConfig = {
   chainId: baseSepolia.id,
   publicClient,
-  walletClient,
 };
 
 createRoot(document.getElementById("root")!).render(
