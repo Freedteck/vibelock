@@ -13,7 +13,7 @@ import {
   zoraTestnet,
 } from "@reown/appkit/networks";
 import { WagmiProvider } from "wagmi";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { createPublicClient, http } from "viem";
 import { SplitsProvider } from "@0xsplits/splits-sdk-react";
 
 // 0. Setup queryClient
