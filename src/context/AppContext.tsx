@@ -4,13 +4,20 @@ import {
   useState,
   ReactNode,
   useEffect,
+  useCallback,
 } from "react";
 import { CoinTrack, MusicTrack } from "../models";
 import { uploadFileToPinata, uploadJsonToPinata } from "../client/pinata";
 import { fetchMultipleCoins, viemSetup } from "../client/zora";
 import { Address } from "viem";
 import { createCoin, DeployCurrency } from "@zoralabs/coins-sdk";
-import { createTrack, getTracks, Track } from "../client/supabase";
+import {
+  Artist,
+  createTrack,
+  getArtists,
+  getTracks,
+  Track,
+} from "../client/supabase";
 import { useWalletClient } from "wagmi";
 import {
   formatCreatedAt,
@@ -23,6 +30,8 @@ import { SplitV2Client } from "@0xsplits/splits-sdk";
 interface AppState {
   tracks: CoinTrack[];
   trackLoading: boolean;
+  artists?: Artist[];
+  artistLoading?: boolean;
 }
 
 export enum SplitV2Type {
@@ -63,64 +72,86 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<any[]>([]);
   const { data: walletClient } = useWalletClient();
   const [trackLoading, setTrackLoading] = useState(false);
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [artistLoading, setArtistLoading] = useState(false);
+
+  const fetchCoins = useCallback(async () => {
+    setTrackLoading(true);
+    try {
+      const { data, error } = await getTracks();
+      setTrackLoading(false);
+      if (error) throw error;
+
+      const { coins } = await fetchMultipleCoins(
+        data?.map((track) => track.deployed_address) || []
+      );
+
+      const formattedTracks = await Promise.all(
+        coins.map(async (coin) => {
+          const supply = Number(coin.totalSupply);
+          const holders = coin.uniqueHolders ?? 0;
+          const tokenUri = coin.tokenUri;
+
+          let tokenDetails: MusicTrack | undefined = undefined;
+          try {
+            tokenDetails = await getContentsFromUri(tokenUri || "");
+          } catch (e) {
+            console.error(`Failed to fetch token details for ${tokenUri}`, e);
+          }
+
+          return {
+            id: coin.address,
+            title: coin.name,
+            artistWallet: coin.creatorAddress,
+            description: coin.description,
+            mimeType: coin.mediaContent?.mimeType,
+            mediaUrl: coin.mediaContent?.originalUri,
+            artworkUrl: coin.mediaContent?.previewImage?.medium,
+            createdAt: coin.createdAt,
+            formattedDate: formatCreatedAt(coin?.createdAt ?? ""),
+            isNew: isTrackNew(coin?.createdAt ?? ""),
+            totalSupply: supply,
+            uniqueHolders: holders,
+            genre: tokenDetails?.attributes[0]?.value || "Unknown",
+            artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
+            premiumAudio: tokenDetails?.extra?.premium_audio || "",
+            collaborators: tokenDetails!.extra?.collaborators || [],
+          };
+        })
+      );
+
+      setTracks(formattedTracks);
+      return formattedTracks;
+    } catch (error) {
+      console.error("Error fetching coin data:", error);
+      return []; // Return empty array on error
+    } finally {
+      setTrackLoading(false);
+    }
+  }, []);
+
+  const fetchArtists = useCallback(async () => {
+    try {
+      setArtistLoading(true);
+      const { data, error } = await getArtists();
+      if (error) throw error;
+      setArtistLoading(false);
+
+      setArtists(data || []);
+    } catch (error) {
+      console.error("Error fetching artists:", error);
+      setArtistLoading(false);
+      return [];
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchCoins = async () => {
-      setTrackLoading(true);
-      try {
-        const { data, error } = await getTracks();
-        setTrackLoading(false);
-        if (error) throw error;
-
-        const { coins } = await fetchMultipleCoins(
-          data?.map((track) => track.deployed_address) || []
-        );
-
-        const formattedTracks = await Promise.all(
-          coins.map(async (coin) => {
-            const supply = Number(coin.totalSupply);
-            const holders = coin.uniqueHolders ?? 0;
-            const tokenUri = coin.tokenUri;
-
-            let tokenDetails: MusicTrack | undefined = undefined;
-            try {
-              tokenDetails = await getContentsFromUri(tokenUri || "");
-            } catch (e) {
-              console.error(`Failed to fetch token details for ${tokenUri}`, e);
-            }
-
-            return {
-              id: coin.address,
-              title: coin.name,
-              artistWallet: coin.creatorAddress,
-              description: coin.description,
-              mimeType: coin.mediaContent?.mimeType,
-              mediaUrl: coin.mediaContent?.originalUri,
-              artworkUrl: coin.mediaContent?.previewImage?.medium,
-              createdAt: coin.createdAt,
-              formattedDate: formatCreatedAt(coin?.createdAt ?? ""),
-              isNew: isTrackNew(coin?.createdAt ?? ""),
-              totalSupply: supply,
-              uniqueHolders: holders,
-              genre: tokenDetails?.attributes[0]?.value || "Unknown",
-              artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
-              premiumAudio: tokenDetails?.extra?.premium_audio || "",
-              collaborators: tokenDetails!.extra?.collaborators || [],
-            };
-          })
-        );
-
-        setTracks(formattedTracks);
-        return formattedTracks;
-      } catch (error) {
-        console.error("Error fetching coin data:", error);
-        return []; // Return empty array on error
-      } finally {
-        setTrackLoading(false);
-      }
-    };
     fetchCoins();
-  }, []);
+  }, [fetchCoins]);
+
+  useEffect(() => {
+    fetchArtists();
+  }, [fetchArtists]);
 
   const addTrack = async ({
     trackData,
@@ -235,6 +266,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       const { error } = await createTrack(track);
       if (error) throw error;
+      fetchCoins();
     } catch (error) {
       console.error("Error adding track:", error);
       throw error; // Re-throw to handle in the component
@@ -252,6 +284,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       value={{
         tracks,
         trackLoading,
+        artists,
+        artistLoading,
         addTrack,
         tradeCoins,
       }}

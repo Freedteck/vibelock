@@ -6,6 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface Artist {
+  id?: string;
   full_name: string;
   twitter?: string;
   instagram?: string;
@@ -28,12 +29,23 @@ export interface Track {
 }
 
 // Artist functions
-export const getArtist = async (wallet: string) => {
+export const getArtist = async (id: string) => {
+  const isWallet = id.startsWith("0x");
+
   const { data, error } = await supabase
     .from("artists")
     .select()
-    .eq("wallet_address", wallet)
+    .eq(isWallet ? "wallet_address" : "id", id)
     .single();
+  return { data, error };
+};
+
+export const getArtists = async () => {
+  const { data, error } = await supabase
+    .from("artists")
+    .select()
+    .order("created_at", { ascending: false });
+
   return { data, error };
 };
 

@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { TrendingUp, Users, Music, ChevronRight, Play } from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import HorizontalScroll from "../../components/HorizontalScroll/HorizontalScroll";
-import { mockArtists } from "../../data/mockData";
 import styles from "./Home.module.css";
 import { CoinTrack } from "../../models";
 import { useAppContext } from "../../context/AppContext";
+import { Artist } from "../../client/supabase";
+import { formatUserAddress } from "../../client/helper";
 
 interface HomeProps {
   onTrackPlay: (track: CoinTrack, trackList?: CoinTrack[]) => void;
@@ -20,11 +21,16 @@ const Home: React.FC<HomeProps> = ({
   isPlaying,
 }) => {
   const [trendingTracks, setTrendingTracks] = useState<any[]>([]);
-  const [featuredArtists] = useState(mockArtists.slice(0, 6));
+  const [featuredArtists, setFeaturedArtists] = useState<Artist[]>([]);
   const [recentReleases, setRecentReleases] = useState<any[]>([]);
   const [featuredTrack, setFeaturedTrack] = useState<any>({});
   const [tracks, setTracks] = useState<any[]>([]);
-  const { trackLoading, tracks: trackList } = useAppContext();
+  const {
+    trackLoading,
+    tracks: trackList,
+    artists,
+    artistLoading,
+  } = useAppContext();
 
   useEffect(() => {
     if (!trackLoading) {
@@ -42,6 +48,12 @@ const Home: React.FC<HomeProps> = ({
       setFeaturedTrack(trackList.find((track) => track.isNew) || trackList[0]);
     }
   }, [trackLoading, trackList]);
+
+  useEffect(() => {
+    if (!artistLoading) {
+      setFeaturedArtists(artists?.slice(0, 6) || []);
+    }
+  }, [artistLoading, artists]);
 
   const handleTrackPlay = (track: CoinTrack) => {
     onTrackPlay(track);
@@ -129,19 +141,19 @@ const Home: React.FC<HomeProps> = ({
         <div className={styles.artistsScroll}>
           {featuredArtists.map((artist) => (
             <Link
-              key={artist.id}
-              to={`/artist/${artist.id}`}
+              key={artist?.id}
+              to={`/artist/${artist?.id}`}
               className={styles.artistCard}
             >
               <img
-                src={artist.avatar}
-                alt={artist.name}
+                src={artist.profile_image}
+                alt={artist.full_name}
                 className={styles.artistAvatar}
               />
               <div className={styles.artistInfo}>
-                <h3 className={styles.artistName}>{artist.name}</h3>
+                <h3 className={styles.artistName}>{artist.full_name}</h3>
                 <p className={styles.artistStats}>
-                  {artist.followers.toLocaleString()} followers
+                  {formatUserAddress(artist.wallet_address.toLocaleString())}
                 </p>
               </div>
             </Link>

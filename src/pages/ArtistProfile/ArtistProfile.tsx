@@ -3,29 +3,42 @@ import { useParams, Link } from "react-router-dom";
 import { Music, Users, TrendingUp, ExternalLink, Play } from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
-import { Artist, Track, mockArtists, mockTracks } from "../../data/mockData";
 import styles from "./ArtistProfile.module.css";
+import { Artist, getArtist } from "../../client/supabase";
+import { useAppContext } from "../../context/AppContext";
+import { CoinTrack } from "../../models";
 
 const ArtistProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [artist, setArtist] = useState<Artist | null>(null);
-  const [artistTracks, setArtistTracks] = useState<Track[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [artistTracks, setArtistTracks] = useState<CoinTrack[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<CoinTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { tracks } = useAppContext();
 
   useEffect(() => {
-    const foundArtist = mockArtists.find((a) => a.id === parseInt(id || "0"));
-    setArtist(foundArtist || null);
+    const fetchArtistByWallet = async () => {
+      try {
+        const { data, error } = await getArtist(id?.toLowerCase() || "");
+        if (error) throw error;
+        if (data) {
+          const artistTracks = tracks.filter(
+            (track) =>
+              track.artistWallet.toLowerCase() ===
+              data.wallet_address.toLowerCase()
+          );
+          setArtistTracks(artistTracks);
+          setArtist(data || null);
+        }
+      } catch (error) {
+        console.error("Error fetching artist by wallet:", error);
+        setArtist(null);
+      }
+    };
+    fetchArtistByWallet();
+  }, [id, tracks]);
 
-    if (foundArtist) {
-      const tracks = mockTracks.filter(
-        (track) => track.artist === foundArtist.name
-      );
-      setArtistTracks(tracks);
-    }
-  }, [id]);
-
-  const handleTrackPlay = (track: Track) => {
+  const handleTrackPlay = (track: CoinTrack) => {
     if (currentTrack?.id === track.id) {
       setIsPlaying(!isPlaying);
     } else {
@@ -52,47 +65,47 @@ const ArtistProfile: React.FC = () => {
 
   return (
     <div className={styles.artistProfile}>
-      <MobileHeader title={artist.name} showBack={true} />
+      <MobileHeader title={artist.full_name} showBack={true} />
 
       <div className={styles.container}>
         {/* Hero Section */}
         <div className={styles.hero}>
           <div
             className={styles.banner}
-            style={{ backgroundImage: `url(${artist.banner})` }}
+            style={{ backgroundImage: `url(${artist?.banner_image})` }}
           >
             <div className={styles.bannerOverlay} />
           </div>
 
           <div className={styles.profileInfo}>
             <img
-              src={artist.avatar}
-              alt={artist.name}
+              src={artist?.profile_image}
+              alt={artist.full_name}
               className={styles.avatar}
             />
             <div className={styles.artistDetails}>
-              <h1 className={styles.artistName}>{artist.name}</h1>
+              <h1 className={styles.artistName}>{artist.full_name}</h1>
               <p className={styles.artistBio}>{artist.bio}</p>
 
               <div className={styles.artistStats}>
                 <div className={styles.statItem}>
                   <Users size={16} />
-                  <span>{artist.followers.toLocaleString()}</span>
+                  <span>{0}</span>
                 </div>
                 <div className={styles.statItem}>
                   <Music size={16} />
-                  <span>{artist.totalTracks} tracks</span>
+                  <span>{artistTracks.length} tracks</span>
                 </div>
                 <div className={styles.statItem}>
                   <TrendingUp size={16} />
-                  <span>{artist.totalEarnings} ETH</span>
+                  <span>{0} ETH</span>
                 </div>
               </div>
 
               <div className={styles.socialLinks}>
-                {artist.socialLinks.twitter && (
+                {artist?.twitter && (
                   <a
-                    href={`https://twitter.com/${artist.socialLinks.twitter.replace(
+                    href={`https://twitter.com/${artist?.twitter.replace(
                       "@",
                       ""
                     )}`}
@@ -104,9 +117,9 @@ const ArtistProfile: React.FC = () => {
                     Twitter
                   </a>
                 )}
-                {artist.socialLinks.instagram && (
+                {artist?.instagram && (
                   <a
-                    href={`https://instagram.com/${artist.socialLinks.instagram.replace(
+                    href={`https://instagram.com/${artist?.instagram.replace(
                       "@",
                       ""
                     )}`}
@@ -118,7 +131,7 @@ const ArtistProfile: React.FC = () => {
                     Instagram
                   </a>
                 )}
-                {artist.socialLinks.spotify && (
+                {/* {artist?.spotify && (
                   <a
                     href="#"
                     target="_blank"
@@ -128,7 +141,7 @@ const ArtistProfile: React.FC = () => {
                     <ExternalLink size={14} />
                     Spotify
                   </a>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -179,7 +192,7 @@ const ArtistProfile: React.FC = () => {
                 <TrendingUp size={20} />
               </div>
               <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{artist.totalEarnings}</h3>
+                <h3 className={styles.earningsValue}>{0}</h3>
                 <p className={styles.earningsLabel}>Total ETH</p>
               </div>
             </div>
@@ -189,7 +202,7 @@ const ArtistProfile: React.FC = () => {
                 <Music size={20} />
               </div>
               <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{artist.totalTracks}</h3>
+                <h3 className={styles.earningsValue}>{artistTracks.length}</h3>
                 <p className={styles.earningsLabel}>Tracks</p>
               </div>
             </div>
@@ -199,7 +212,7 @@ const ArtistProfile: React.FC = () => {
                 <Users size={20} />
               </div>
               <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{artist.followers}</h3>
+                <h3 className={styles.earningsValue}>{0}</h3>
                 <p className={styles.earningsLabel}>Followers</p>
               </div>
             </div>
@@ -209,11 +222,7 @@ const ArtistProfile: React.FC = () => {
                 <Play size={20} />
               </div>
               <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>
-                  {artistTracks
-                    .reduce((sum, track) => sum + track.playCount, 0)
-                    .toLocaleString()}
-                </h3>
+                <h3 className={styles.earningsValue}>{0}</h3>
                 <p className={styles.earningsLabel}>Total Plays</p>
               </div>
             </div>
@@ -233,14 +242,14 @@ const ArtistProfile: React.FC = () => {
             {artistTracks.slice(0, 3).map((track) => (
               <div key={track.id} className={styles.collaborationItem}>
                 <img
-                  src={track.artwork}
+                  src={track.artworkUrl}
                   alt={track.title}
                   className={styles.collabArtwork}
                 />
                 <div className={styles.collabInfo}>
                   <h3 className={styles.collabTitle}>{track.title}</h3>
                   <div className={styles.collabArtists}>
-                    {track.collaborators.map((collab, index) => (
+                    {track?.collaborators?.map((collab, index) => (
                       <span key={index} className={styles.collabArtist}>
                         {collab.name} ({collab.percentage}%)
                       </span>

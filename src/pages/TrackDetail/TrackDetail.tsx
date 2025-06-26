@@ -160,7 +160,10 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
             </div>
 
             <h1 className={styles.title}>{track.title}</h1>
-            <Link to={`/artist/${1}`} className={styles.artist}>
+            <Link
+              to={`/artist/${track.artistWallet}`}
+              className={styles.artist}
+            >
               {track.artist}
             </Link>
 

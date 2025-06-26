@@ -26,7 +26,7 @@ const projectId = "14be22a881c24b68853f61a804b4cf8b";
 const metadata = {
   name: "vibe lock",
   description: "AppKit Example",
-  url: "https://reown.com/appkit", // origin must match your domain & subdomain
+  url: "https://vibelock.netlify.app", // origin must match your domain & subdomain
   icons: ["https://assets.reown.com/reown-profile-pic.png"],
 };
 

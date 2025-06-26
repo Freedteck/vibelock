@@ -104,7 +104,7 @@ const CreateArtistProfile: React.FC = () => {
       // Create artist profile
       const artistData: Artist = {
         full_name: formData.name.trim(),
-        wallet_address: walletAddress,
+        wallet_address: walletAddress.toLowerCase(),
         bio: formData.bio.trim(),
         twitter: formData.twitter.trim(),
         instagram: formData.instagram.trim(),

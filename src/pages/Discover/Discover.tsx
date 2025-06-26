@@ -66,7 +66,7 @@ const Discover: React.FC<DiscoverProps> = ({
         result.sort((a, b) => b.coinPrice - a.coinPrice);
         break;
       case "holders":
-        result.sort((a, b) => b.holders - a.holders);
+        result.sort((a, b) => b.uniqueHolders - a.uniqueHolders);
         break;
     }
 
@@ -127,7 +127,7 @@ const Discover: React.FC<DiscoverProps> = ({
         >
           All
         </button>
-        {genres.slice(0, 6).map((genre) => (
+        {genres.map((genre) => (
           <button
             key={genre}
             onClick={() => setSelectedGenre(genre)}
