@@ -1,47 +1,50 @@
-import React, { useState } from 'react';
-import { Lock, Unlock, TrendingUp, Users, Loader } from 'lucide-react';
-import Modal from '../Modal/Modal';
-import { Track } from '../../data/mockData';
-import styles from './UnlockModal.module.css';
+import React, { useState } from "react";
+import { Lock, Unlock, TrendingUp, Users, Loader } from "lucide-react";
+import Modal from "../Modal/Modal";
+import styles from "./UnlockModal.module.css";
+import { CoinTrack } from "../../models";
 
 interface UnlockModalProps {
   isOpen: boolean;
   onClose: () => void;
-  track: Track;
-  onUnlock: (trackId: number) => Promise<void>;
+  track: CoinTrack;
+  onUnlock: (trackId: string) => Promise<void>;
 }
 
 const UnlockModal: React.FC<UnlockModalProps> = ({
   isOpen,
   onClose,
   track,
-  onUnlock
+  onUnlock,
 }) => {
   const [isUnlocking, setIsUnlocking] = useState(false);
-  const [step, setStep] = useState<'confirm' | 'processing' | 'success'>('confirm');
+  const [step, setStep] = useState<"confirm" | "processing" | "success">(
+    "confirm"
+  );
 
   const handleUnlock = async () => {
     setIsUnlocking(true);
-    setStep('processing');
-    
+    setStep("processing");
+
     try {
       await onUnlock(track.id);
-      setStep('success');
+      setStep("success");
       setTimeout(() => {
         onClose();
-        setStep('confirm');
+        setStep("confirm");
         setIsUnlocking(false);
       }, 2000);
     } catch (error) {
       setIsUnlocking(false);
-      setStep('confirm');
+      setStep("confirm");
+      console.error("Unlock failed:", error);
     }
   };
 
   const handleClose = () => {
     if (!isUnlocking) {
       onClose();
-      setStep('confirm');
+      setStep("confirm");
     }
   };
 
@@ -49,15 +52,15 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={step === 'success' ? 'Track Unlocked!' : 'Unlock Track'}
+      title={step === "success" ? "Track Unlocked!" : "Unlock Track"}
       size="medium"
     >
       <div className={styles.container}>
-        {step === 'confirm' && (
+        {step === "confirm" && (
           <>
             <div className={styles.trackInfo}>
-              <img 
-                src={track.artwork} 
+              <img
+                src={track.artworkUrl}
                 alt={track.title}
                 className={styles.artwork}
               />
@@ -67,11 +70,11 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
                 <div className={styles.stats}>
                   <div className={styles.stat}>
                     <TrendingUp size={16} />
-                    <span>{track.coinPrice} ETH</span>
+                    <span>{0} ETH</span>
                   </div>
                   <div className={styles.stat}>
                     <Users size={16} />
-                    <span>{track.holders} holders</span>
+                    <span>{track.uniqueHolders} holders</span>
                   </div>
                 </div>
               </div>
@@ -92,7 +95,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
               <div className={styles.priceBreakdown}>
                 <div className={styles.priceRow}>
                   <span>Track unlock</span>
-                  <span>{track.coinPrice} ETH</span>
+                  <span>{0} ETH</span>
                 </div>
                 <div className={styles.priceRow}>
                   <span>Gas fee (estimated)</span>
@@ -100,7 +103,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
                 </div>
                 <div className={`${styles.priceRow} ${styles.total}`}>
                   <span>Total</span>
-                  <span>{(track.coinPrice + 0.001).toFixed(4)} ETH</span>
+                  <span>{(0 + 0.001).toFixed(4)} ETH</span>
                 </div>
               </div>
             </div>
@@ -111,20 +114,21 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
               </button>
               <button onClick={handleUnlock} className={styles.unlockButton}>
                 <Lock size={18} />
-                Unlock for {track.coinPrice} ETH
+                Unlock for {0} ETH
               </button>
             </div>
           </>
         )}
 
-        {step === 'processing' && (
+        {step === "processing" && (
           <div className={styles.processing}>
             <div className={styles.processingIcon}>
               <Loader size={48} className={styles.spinner} />
             </div>
             <h3 className={styles.processingTitle}>Unlocking Track...</h3>
             <p className={styles.processingText}>
-              Please confirm the transaction in your wallet and wait for blockchain confirmation.
+              Please confirm the transaction in your wallet and wait for
+              blockchain confirmation.
             </p>
             <div className={styles.processingSteps}>
               <div className={styles.step}>
@@ -145,12 +149,14 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
           </div>
         )}
 
-        {step === 'success' && (
+        {step === "success" && (
           <div className={styles.success}>
             <div className={styles.successIcon}>
               <Unlock size={48} />
             </div>
-            <h3 className={styles.successTitle}>Track Unlocked Successfully!</h3>
+            <h3 className={styles.successTitle}>
+              Track Unlocked Successfully!
+            </h3>
             <p className={styles.successText}>
               You now have full access to "{track.title}" and own 1 song coin.
             </p>
@@ -161,7 +167,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
               </div>
               <div className={styles.successStat}>
                 <span className={styles.successLabel}>Current Value</span>
-                <span className={styles.successValue}>{track.coinPrice} ETH</span>
+                <span className={styles.successValue}>{0} ETH</span>
               </div>
             </div>
           </div>

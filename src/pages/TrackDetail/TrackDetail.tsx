@@ -17,6 +17,7 @@ import WalletModal from "../../components/WalletModal/WalletModal";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./TrackDetail.module.css";
 import { CoinTrack } from "../../models";
+import { useWallet } from "../../hooks/useWallet";
 
 interface TrackDetailProps {
   onTrackPlay: (track: CoinTrack) => void;
@@ -50,7 +51,8 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
     },
   ]);
 
-  const { tracks, trackLoading } = useAppContext();
+  const { tracks, trackLoading, tradeCoins } = useAppContext();
+  const { isConnected, walletAddress } = useWallet();
 
   useEffect(() => {
     if (!trackLoading && tracks.length > 0 && id) {
@@ -86,7 +88,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
   };
 
   const handleUnlockClick = () => {
-    if (!showWalletModal) {
+    if (!isConnected) {
       setShowWalletModal(true);
       return;
     }
@@ -119,6 +121,19 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
       };
       setComments([newComment, ...comments]);
       setComment("");
+    }
+  };
+
+  const handleTrade = async (trackAddress: string) => {
+    try {
+      await tradeCoins({
+        type: "buy",
+        amount: "0.01",
+        walletAddress: walletAddress!,
+        coinAddress: trackAddress,
+      });
+    } catch (error) {
+      console.error("Trade failed:", error);
     }
   };
 
@@ -285,7 +300,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
         isOpen={showUnlockModal}
         onClose={() => setShowUnlockModal(false)}
         track={track}
-        onUnlock={(): Promise<void> => Promise.resolve()}
+        onUnlock={() => handleTrade(track.id)}
       />
 
       <WalletModal

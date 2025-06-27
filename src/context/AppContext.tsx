@@ -9,8 +9,8 @@ import {
 import { CoinTrack, MusicTrack } from "../models";
 import { uploadFileToPinata, uploadJsonToPinata } from "../client/pinata";
 import { fetchMultipleCoins, viemSetup } from "../client/zora";
-import { Address } from "viem";
-import { createCoin, DeployCurrency } from "@zoralabs/coins-sdk";
+import { Address, parseEther } from "viem";
+import { createCoin, DeployCurrency, tradeCoin } from "@zoralabs/coins-sdk";
 import {
   Artist,
   createTrack,
@@ -63,7 +63,17 @@ interface AppContextType extends AppState {
       percentage: number;
     }[];
   }) => void;
-  tradeCoins: () => void;
+  tradeCoins: ({
+    type,
+    amount,
+    walletAddress,
+    coinAddress,
+  }: {
+    type: "buy" | "sell";
+    amount: string;
+    walletAddress: string;
+    coinAddress: string;
+  }) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -273,11 +283,46 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const tradeCoins = () =>
-    // trackId: number,
-    // type: "buy" | "sell",
-    // amount: number
-    {};
+  const tradeCoins = async ({
+    type,
+    amount,
+    walletAddress,
+    coinAddress,
+  }: {
+    type: "buy" | "sell";
+    amount: string;
+    walletAddress: string;
+    coinAddress: string;
+  }) => {
+    if (!walletClient) {
+      throw new Error("Wallet client is not available.");
+    }
+    console.log("Trading coins with params:", {
+      type,
+      amount,
+      walletAddress,
+      coinAddress,
+    });
+
+    const buyParams = {
+      direction: type,
+      target: coinAddress as Address,
+      args: {
+        recipient: walletAddress as Address, // Where to receive the purchased coins
+        orderSize: parseEther(amount), // Amount of ETH to spend
+        minAmountOut: 0n, // Minimum amount of coins to receive (0 = no minimum)
+        tradeReferrer: "0xb43C9F0F2bb65A37761E7867a6f1903799f45D65" as Address, // Optional
+      },
+    };
+
+    const { publicClient } = viemSetup(walletAddress);
+    const result = await tradeCoin(buyParams, walletClient, publicClient);
+
+    console.log("Transaction hash:", result.hash);
+    console.log("Trade details:", result.trade);
+
+    console.log("Result:", result);
+  };
 
   return (
     <AppContext.Provider
