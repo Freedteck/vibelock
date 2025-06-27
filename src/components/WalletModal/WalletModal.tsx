@@ -3,6 +3,7 @@ import { X, Wallet } from "lucide-react";
 // import { useAppContext } from '../../context/AppContext';
 import { useNotification } from "../../hooks/useNotification";
 import styles from "./WalletModal.module.css";
+import { useWallet } from "../../hooks/useWallet";
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -10,13 +11,13 @@ interface WalletModalProps {
 }
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
-  // const { dispatch } = useAppContext();
+  const { connectWallet } = useWallet();
   const { showSuccess } = useNotification();
 
   const handleConnect = () => {
     // Simulate wallet connection
     setTimeout(() => {
-      // dispatch({ type: 'CONNECT_WALLET' });
+      connectWallet();
       showSuccess(
         "Wallet Connected",
         "Your wallet has been connected successfully!"
