@@ -1,16 +1,16 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: var(--z-sticky);
+  z-index: 90;
   background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-sm) var(--spacing-md);
-  padding-top: calc(var(--spacing-sm) + env(safe-area-inset-top));
-  min-height: calc(60px + env(safe-area-inset-top));
+  padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  min-height: 60px;
 }
 
 .left,
@@ -33,56 +33,36 @@
 .backButton {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   background: transparent;
   border: none;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  touch-action: manipulation;
+  transition: all 0.2s ease;
 }
 
 .backButton:hover {
-  background: var(--color-background-card);
-  transform: scale(1.05);
-}
-
-.backButton:active {
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
 }
 
 .logoIcon {
-  color: var(--color-accent-primary);
-}
-
-.logoText {
-  background: var(--color-accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-lg);
+  color: #8b5cf6;
 }
 
 .title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin: 0;
   text-align: center;
-  text-truncate: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 200px;
 }
 
 .profileSection {
@@ -93,70 +73,43 @@
 .userAvatar {
   width: 36px;
   height: 36px;
-  background: var(--color-background-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  touch-action: manipulation;
+  transition: all 0.2s ease;
 }
 
 .userAvatar:hover {
-  border-color: var(--color-accent-primary);
-  background: var(--color-background-elevated);
-}
-
-.userAvatar:active {
-  transform: scale(0.95);
+  border-color: #8b5cf6;
 }
 
 .walletIndicator {
   width: 36px;
   height: 36px;
   background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  touch-action: manipulation;
+  transition: all 0.2s ease;
 }
 
 .walletIndicator:hover {
-  border-color: var(--color-accent-primary);
+  border-color: #8b5cf6;
   background: rgba(139, 92, 246, 0.1);
-}
-
-.walletIndicator:active {
-  transform: scale(0.95);
 }
 
 /* Hide on desktop */
 @media (min-width: 768px) {
   .header {
     display: none;
-  }
-}
-
-/* Landscape phone adjustments */
-@media (max-width: 767px) and (orientation: landscape) {
-  .header {
-    padding: var(--spacing-xs) var(--spacing-md);
-    min-height: 50px;
-  }
-  
-  .title {
-    font-size: var(--font-size-base);
-  }
-  
-  .logoText {
-    font-size: var(--font-size-base);
   }
 }

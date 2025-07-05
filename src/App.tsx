@@ -13,7 +13,7 @@ import Upload from "./pages/Upload/Upload";
 import ArtistProfile from "./pages/ArtistProfile/ArtistProfile";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import { useNotification } from "./hooks/useNotification";
-import styles from "./App.module.css";
+import "./styles/globals.css";
 import { setApiKey } from "@zoralabs/coins-sdk";
 import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile";
 import { CoinTrack } from "./models";
@@ -28,20 +28,8 @@ function AppContent() {
   const [shuffledPlaylist, setShuffledPlaylist] = useState<CoinTrack[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
-  const [isMobile, setIsMobile] = useState(false);
 
   const { notification, hideNotification } = useNotification();
-
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   // TODO: Set Zora API Key
   useEffect(() => {
@@ -163,34 +151,16 @@ function AppContent() {
     }
   };
 
-  // Determine main class based on device and player state
-  const getMainClass = () => {
-    let className = `${styles.main} ${styles.pageTransition}`;
-    
-    if (isMobile) {
-      className += ` ${styles.mainMobile}`;
-      if (currentTrack) {
-        className += ` ${styles.mainMobileWithPlayer}`;
-      }
-    } else {
-      if (currentTrack) {
-        className += ` ${styles.mainWithPlayer}`;
-      }
-    }
-    
-    return className;
-  };
-
   return (
     <Router>
-      <div className={styles.app}>
+      <div className="App">
         {/* Desktop Header */}
-        {!isMobile && <Header />}
+        <Header />
 
         {/* Mobile Header */}
-        {isMobile && <MobileHeader />}
+        <MobileHeader />
 
-        <main className={getMainClass()}>
+        <main style={{ paddingBottom: currentTrack ? "160px" : "80px" }}>
           <Routes>
             <Route
               path="/"
@@ -233,25 +203,23 @@ function AppContent() {
         </main>
 
         {/* Bottom Player */}
-        {currentTrack && (
-          <BottomPlayer
-            currentTrack={currentTrack}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            onTrackEnd={handleTrackEnd}
-            playlist={playlist}
-            currentIndex={currentTrackIndex}
-            isShuffled={isShuffled}
-            onShuffle={toggleShuffle}
-            repeatMode={repeatMode}
-            onRepeat={toggleRepeat}
-          />
-        )}
+        <BottomPlayer
+          currentTrack={currentTrack}
+          isPlaying={isPlaying}
+          onPlayPause={handlePlayPause}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          onTrackEnd={handleTrackEnd}
+          playlist={playlist}
+          currentIndex={currentTrackIndex}
+          isShuffled={isShuffled}
+          onShuffle={toggleShuffle}
+          repeatMode={repeatMode}
+          onRepeat={toggleRepeat}
+        />
 
-        {/* Bottom Navigation - Mobile Only */}
-        {isMobile && <BottomNavigation />}
+        {/* Bottom Navigation */}
+        <BottomNavigation />
 
         <NotificationModal
           isOpen={notification.isOpen}
