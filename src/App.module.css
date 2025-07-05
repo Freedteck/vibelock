@@ -1,0 +1,58 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-primary);
+}
+
+.main {
+  flex: 1;
+  padding-bottom: var(--spacing-2xl);
+  transition: padding-bottom var(--transition-normal);
+}
+
+.mainWithPlayer {
+  padding-bottom: calc(160px + var(--spacing-md));
+}
+
+.mainMobile {
+  padding-bottom: calc(80px + var(--spacing-md));
+}
+
+.mainMobileWithPlayer {
+  padding-bottom: calc(160px + var(--spacing-md));
+}
+
+/* Desktop layout */
+@media (min-width: 768px) {
+  .main {
+    padding-bottom: var(--spacing-xl);
+  }
+  
+  .mainWithPlayer {
+    padding-bottom: calc(120px + var(--spacing-xl));
+  }
+}
+
+/* Animation for smooth transitions */
+.pageTransition {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-secondary);
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top: 3px solid var(--color-accent-primary);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
