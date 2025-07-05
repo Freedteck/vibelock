@@ -7,7 +7,6 @@ import {
   SkipForward,
   Shuffle,
   Repeat,
-  // Heart,
   Share2,
 } from "lucide-react";
 import styles from "./FullScreenPlayer.module.css";
@@ -26,6 +25,8 @@ interface FullScreenPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement>;
   isShuffled: boolean;
   onShuffle: () => void;
+  repeatMode: "none" | "one" | "all";
+  onRepeat: () => void;
   playlist: CoinTrack[];
   currentIndex: number;
 }
@@ -43,6 +44,8 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
   audioRef,
   isShuffled,
   onShuffle,
+  repeatMode,
+  onRepeat,
   playlist,
   currentIndex,
 }) => {
@@ -148,8 +151,32 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
           <button onClick={onNext} className={styles.controlButton}>
             <SkipForward size={28} />
           </button>
-          <button className={styles.controlButton}>
+          <button 
+            onClick={onRepeat}
+            className={`${styles.controlButton} ${
+              repeatMode !== "none" ? styles.active : ""
+            }`}
+          >
             <Repeat size={24} />
+            {repeatMode === "one" && (
+              <span style={{
+                position: "absolute",
+                top: "-2px",
+                right: "-2px",
+                fontSize: "8px",
+                fontWeight: "bold",
+                background: "#8b5cf6",
+                color: "white",
+                borderRadius: "50%",
+                width: "12px",
+                height: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                1
+              </span>
+            )}
           </button>
         </div>
 

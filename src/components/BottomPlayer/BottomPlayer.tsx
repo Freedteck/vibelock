@@ -12,10 +12,13 @@ interface BottomPlayerProps {
   onPlayPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
+  onTrackEnd: () => void;
   playlist: CoinTrack[];
   currentIndex: number;
   isShuffled: boolean;
   onShuffle: () => void;
+  repeatMode: "none" | "one" | "all";
+  onRepeat: () => void;
 }
 
 const BottomPlayer: React.FC<BottomPlayerProps> = ({
@@ -24,10 +27,13 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   onPlayPause,
   onNext,
   onPrevious,
+  onTrackEnd,
   playlist,
   currentIndex,
   isShuffled,
   onShuffle,
+  repeatMode,
+  onRepeat,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -43,15 +49,25 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
 
     const updateTime = () => setCurrentTime(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
+    const handleEnded = () => {
+      if (repeatMode === "one") {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        onTrackEnd();
+      }
+    };
 
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("ended", handleEnded);
     };
-  }, [currentTrack]);
+  }, [currentTrack, repeatMode, onTrackEnd]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -171,6 +187,8 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
         audioRef={audioRef}
         isShuffled={isShuffled}
         onShuffle={onShuffle}
+        repeatMode={repeatMode}
+        onRepeat={onRepeat}
         playlist={playlist}
         currentIndex={currentIndex}
       />

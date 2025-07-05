@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Music, Users, TrendingUp, ExternalLink, Play } from "lucide-react";
+import { Music, Users, ExternalLink, Play } from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./ArtistProfile.module.css";
@@ -72,33 +72,40 @@ const ArtistProfile: React.FC = () => {
         <div className={styles.hero}>
           <div
             className={styles.banner}
-            style={{ backgroundImage: `url(${artist?.banner_image})` }}
+            style={{ 
+              backgroundImage: `url(${artist?.banner_image || 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800'})` 
+            }}
           >
             <div className={styles.bannerOverlay} />
           </div>
 
           <div className={styles.profileInfo}>
             <img
-              src={artist?.profile_image}
+              src={artist?.profile_image || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150'}
               alt={artist.full_name}
               className={styles.avatar}
             />
             <div className={styles.artistDetails}>
               <h1 className={styles.artistName}>{artist.full_name}</h1>
-              <p className={styles.artistBio}>{artist.bio}</p>
+              <p className={styles.artistBio}>
+                {artist.bio || "A passionate artist creating amazing music for the world to enjoy."}
+              </p>
 
               <div className={styles.artistStats}>
                 <div className={styles.statItem}>
-                  <Users size={16} />
-                  <span>{0}</span>
+                  <Users className={styles.statIcon} size={20} />
+                  <div className={styles.statValue}>1.2K</div>
+                  <div className={styles.statLabel}>Followers</div>
                 </div>
                 <div className={styles.statItem}>
-                  <Music size={16} />
-                  <span>{artistTracks.length} tracks</span>
+                  <Music className={styles.statIcon} size={20} />
+                  <div className={styles.statValue}>{artistTracks.length}</div>
+                  <div className={styles.statLabel}>Tracks</div>
                 </div>
                 <div className={styles.statItem}>
-                  <TrendingUp size={16} />
-                  <span>{0} ETH</span>
+                  <Play className={styles.statIcon} size={20} />
+                  <div className={styles.statValue}>45.2K</div>
+                  <div className={styles.statLabel}>Plays</div>
                 </div>
               </div>
 
@@ -113,7 +120,7 @@ const ArtistProfile: React.FC = () => {
                     rel="noopener noreferrer"
                     className={styles.socialLink}
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink size={16} />
                     Twitter
                   </a>
                 )}
@@ -127,21 +134,10 @@ const ArtistProfile: React.FC = () => {
                     rel="noopener noreferrer"
                     className={styles.socialLink}
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink size={16} />
                     Instagram
                   </a>
                 )}
-                {/* {artist?.spotify && (
-                  <a
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.socialLink}
-                  >
-                    <ExternalLink size={14} />
-                    Spotify
-                  </a>
-                )} */}
               </div>
             </div>
           </div>
@@ -151,9 +147,14 @@ const ArtistProfile: React.FC = () => {
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
-              <Music size={18} />
-              Tracks ({artistTracks.length})
+              <div className={styles.sectionIcon}>
+                <Music size={18} />
+              </div>
+              Music Collection
             </h2>
+            <p className={styles.sectionDescription}>
+              Discover all tracks by {artist.full_name}
+            </p>
           </div>
 
           {artistTracks.length > 0 ? (
@@ -170,99 +171,65 @@ const ArtistProfile: React.FC = () => {
             </div>
           ) : (
             <div className={styles.noTracks}>
-              <Music size={48} />
+              <Music size={64} />
               <h3>No tracks yet</h3>
-              <p>This artist hasn't uploaded any tracks yet.</p>
+              <p>This artist hasn't uploaded any tracks yet. Check back soon for new releases!</p>
             </div>
           )}
         </div>
 
-        {/* Earnings Dashboard */}
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              <TrendingUp size={18} />
-              Earnings Overview
-            </h2>
-          </div>
-
-          <div className={styles.earningsGrid}>
-            <div className={styles.earningsCard}>
-              <div className={styles.earningsIcon}>
-                <TrendingUp size={20} />
-              </div>
-              <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{0}</h3>
-                <p className={styles.earningsLabel}>Total ETH</p>
-              </div>
-            </div>
-
-            <div className={styles.earningsCard}>
-              <div className={styles.earningsIcon}>
-                <Music size={20} />
-              </div>
-              <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{artistTracks.length}</h3>
-                <p className={styles.earningsLabel}>Tracks</p>
-              </div>
-            </div>
-
-            <div className={styles.earningsCard}>
-              <div className={styles.earningsIcon}>
-                <Users size={20} />
-              </div>
-              <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{0}</h3>
-                <p className={styles.earningsLabel}>Followers</p>
-              </div>
-            </div>
-
-            <div className={styles.earningsCard}>
-              <div className={styles.earningsIcon}>
-                <Play size={20} />
-              </div>
-              <div className={styles.earningsInfo}>
-                <h3 className={styles.earningsValue}>{0}</h3>
-                <p className={styles.earningsLabel}>Total Plays</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Recent Collaborations */}
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              <Users size={18} />
-              Recent Collaborations
-            </h2>
-          </div>
-
-          <div className={styles.collaborationsList}>
-            {artistTracks.slice(0, 3).map((track) => (
-              <div key={track.id} className={styles.collaborationItem}>
-                <img
-                  src={track.artworkUrl}
-                  alt={track.title}
-                  className={styles.collabArtwork}
-                />
-                <div className={styles.collabInfo}>
-                  <h3 className={styles.collabTitle}>{track.title}</h3>
-                  <div className={styles.collabArtists}>
-                    {track?.collaborators?.map((collab, index) => (
-                      <span key={index} className={styles.collabArtist}>
-                        {collab.name} ({collab.percentage}%)
-                      </span>
-                    ))}
-                  </div>
+        {artistTracks.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>
+                <div className={styles.sectionIcon}>
+                  <Users size={18} />
                 </div>
-                <Link to={`/track/${track.id}`} className={styles.collabLink}>
-                  View
-                </Link>
-              </div>
-            ))}
+                Featured Collaborations
+              </h2>
+              <p className={styles.sectionDescription}>
+                Tracks featuring collaborations with other artists
+              </p>
+            </div>
+
+            <div className={styles.collaborationsList}>
+              {artistTracks
+                .filter(track => track.collaborators && track.collaborators.length > 1)
+                .slice(0, 3)
+                .map((track) => (
+                <div key={track.id} className={styles.collaborationItem}>
+                  <img
+                    src={track.artworkUrl}
+                    alt={track.title}
+                    className={styles.collabArtwork}
+                  />
+                  <div className={styles.collabInfo}>
+                    <h3 className={styles.collabTitle}>{track.title}</h3>
+                    <div className={styles.collabArtists}>
+                      {track?.collaborators?.map((collab, index) => (
+                        <span key={index} className={styles.collabArtist}>
+                          {collab.name} ({collab.percentage}%)
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <Link to={`/track/${track.id}`} className={styles.collabLink}>
+                    Listen
+                  </Link>
+                </div>
+              ))}
+              
+              {artistTracks.filter(track => track.collaborators && track.collaborators.length > 1).length === 0 && (
+                <div className={styles.noTracks}>
+                  <Users size={48} />
+                  <h3>No collaborations yet</h3>
+                  <p>This artist hasn't collaborated with others yet.</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

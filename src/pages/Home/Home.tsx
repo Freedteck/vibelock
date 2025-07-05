@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Users, Music, ChevronRight, Play } from "lucide-react";
+import { 
+  TrendingUp, 
+  Users, 
+  Music, 
+  ChevronRight, 
+  Play, 
+  Pause,
+  Upload,
+  Search,
+  Headphones,
+  Star
+} from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import HorizontalScroll from "../../components/HorizontalScroll/HorizontalScroll";
 import styles from "./Home.module.css";
@@ -62,31 +73,78 @@ const Home: React.FC<HomeProps> = ({
     onTrackPlay(track);
   };
 
+  const quickActions = [
+    {
+      icon: <Upload size={24} />,
+      title: "Upload Music",
+      description: "Share your tracks",
+      link: "/upload"
+    },
+    {
+      icon: <Search size={24} />,
+      title: "Discover",
+      description: "Find new music",
+      link: "/discover"
+    },
+    {
+      icon: <Headphones size={24} />,
+      title: "My Library",
+      description: "Your collection",
+      link: "/dashboard"
+    },
+    {
+      icon: <Star size={24} />,
+      title: "Top Charts",
+      description: "Popular tracks",
+      link: "/discover"
+    }
+  ];
+
   return (
     <div className={styles.home}>
-      {/* Featured Track Hero */}
+      {/* Hero Section with Welcome */}
       {trackLoading ? (
-        <MusicPulseLoader />
+        <div style={{ padding: "64px 16px" }}>
+          <MusicPulseLoader size="large" text="Loading your music experience..." />
+        </div>
       ) : (
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <div className={styles.featuredTrack}>
+            <div className={styles.welcomeSection}>
+              <h1 className={styles.welcomeTitle}>Welcome to VibeLock</h1>
+              <p className={styles.welcomeSubtitle}>
+                Discover, unlock, and own the music you love
+              </p>
+            </div>
+
+            <div className={styles.featuredTrack} onClick={() => handleTrackPlay(featuredTrack)}>
               <img
                 src={featuredTrack?.artworkUrl}
                 alt={featuredTrack?.title}
                 className={styles.featuredArtwork}
               />
               <div className={styles.featuredInfo}>
-                <span className={styles.featuredLabel}>Featured Track</span>
+                <div className={styles.featuredLabel}>Featured Track</div>
                 <h2 className={styles.featuredTitle}>{featuredTrack?.title}</h2>
                 <p className={styles.featuredArtist}>
                   by {featuredTrack?.artist}
                 </p>
-                <button
-                  onClick={() => handleTrackPlay(featuredTrack)}
-                  className={styles.playButton}
-                >
-                  <Play size={20} />
+                <div className={styles.featuredStats}>
+                  <div className={styles.featuredStat}>
+                    <Users size={14} />
+                    <span>{featuredTrack?.uniqueHolders} holders</span>
+                  </div>
+                  <div className={styles.featuredStat}>
+                    <TrendingUp size={14} />
+                    <span>${featuredTrack?.marketCap}</span>
+                  </div>
+                </div>
+                <button className={styles.playButton}>
+                  {currentTrack?.id === featuredTrack?.id && isPlaying ? (
+                    <Pause size={18} />
+                  ) : (
+                    <Play size={18} />
+                  )}
                   {currentTrack?.id === featuredTrack?.id && isPlaying
                     ? "Playing"
                     : "Play Now"}
@@ -101,34 +159,59 @@ const Home: React.FC<HomeProps> = ({
       <section className={styles.statsSection}>
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
-            <Music className={styles.statIcon} />
-            <div>
-              <div className={styles.statNumber}>{tracks.length}</div>
-              <div className={styles.statLabel}>Tracks</div>
+            <div className={styles.statIcon}>
+              <Music size={24} />
             </div>
+            <div className={styles.statNumber}>{tracks.length}</div>
+            <div className={styles.statLabel}>Total Tracks</div>
           </div>
           <div className={styles.statCard}>
-            <Users className={styles.statIcon} />
-            <div>
-              <div className={styles.statNumber}>5.4K</div>
-              <div className={styles.statLabel}>Artists</div>
+            <div className={styles.statIcon}>
+              <Users size={24} />
             </div>
+            <div className={styles.statNumber}>5.4K</div>
+            <div className={styles.statLabel}>Active Users</div>
           </div>
           <div className={styles.statCard}>
-            <TrendingUp className={styles.statIcon} />
-            <div>
-              <div className={styles.statNumber}>$127K</div>
-              <div className={styles.statLabel}>Traded</div>
+            <div className={styles.statIcon}>
+              <TrendingUp size={24} />
             </div>
+            <div className={styles.statNumber}>$127K</div>
+            <div className={styles.statLabel}>Volume Traded</div>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Actions */}
+      <section className={styles.quickActions}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionIcon}>
+              <Star size={18} />
+            </div>
+            Quick Actions
+          </h2>
+        </div>
+        <div className={styles.actionsGrid}>
+          {quickActions.map((action, index) => (
+            <Link key={index} to={action.link} className={styles.actionCard}>
+              <div className={styles.actionIcon}>
+                {action.icon}
+              </div>
+              <h3 className={styles.actionTitle}>{action.title}</h3>
+              <p className={styles.actionDescription}>{action.description}</p>
+            </Link>
+          ))}
         </div>
       </section>
 
       {/* Trending Tracks */}
       {trackLoading ? (
-        <MusicPulseLoader />
+        <div style={{ padding: "32px 16px" }}>
+          <MusicPulseLoader text="Loading trending tracks..." />
+        </div>
       ) : (
-        <HorizontalScroll title="Trending Now">
+        <HorizontalScroll title="🔥 Trending Now">
           {trendingTracks.map((track) => (
             <CompactTrackCard
               key={track.id}
@@ -144,7 +227,12 @@ const Home: React.FC<HomeProps> = ({
       {/* Featured Artists */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Featured Artists</h2>
+          <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionIcon}>
+              <Users size={18} />
+            </div>
+            Featured Artists
+          </h2>
           <Link to="/discover" className={styles.sectionLink}>
             View All <ChevronRight size={16} />
           </Link>
@@ -164,7 +252,7 @@ const Home: React.FC<HomeProps> = ({
               <div className={styles.artistInfo}>
                 <h3 className={styles.artistName}>{artist.full_name}</h3>
                 <p className={styles.artistStats}>
-                  {formatUserAddress(artist.wallet_address.toLocaleString())}
+                  {formatUserAddress(artist.wallet_address)}
                 </p>
               </div>
             </Link>
@@ -174,9 +262,11 @@ const Home: React.FC<HomeProps> = ({
 
       {/* Recent Releases */}
       {trackLoading ? (
-        <MusicPulseLoader />
+        <div style={{ padding: "32px 16px" }}>
+          <MusicPulseLoader text="Loading recent releases..." />
+        </div>
       ) : (
-        <HorizontalScroll title="Recent Releases">
+        <HorizontalScroll title="🆕 Fresh Releases">
           {recentReleases.map((track) => (
             <CompactTrackCard
               key={track.id}
@@ -189,16 +279,20 @@ const Home: React.FC<HomeProps> = ({
         </HorizontalScroll>
       )}
 
-      {/* Discover More */}
+      {/* Discover More CTA */}
       <section className={styles.discoverSection}>
         <div className={styles.discoverCard}>
-          <h3 className={styles.discoverTitle}>Discover More Music</h3>
-          <p className={styles.discoverText}>
-            Explore thousands of tracks from talented artists worldwide
-          </p>
-          <Link to="/discover" className={styles.discoverButton}>
-            Explore Now
-          </Link>
+          <div className={styles.discoverContent}>
+            <h3 className={styles.discoverTitle}>Ready to Explore?</h3>
+            <p className={styles.discoverText}>
+              Dive into our vast collection of unique tracks from talented artists around the world. 
+              Discover your next favorite song and support independent creators.
+            </p>
+            <Link to="/discover" className={styles.discoverButton}>
+              <Search size={20} />
+              Start Exploring
+            </Link>
+          </div>
         </div>
       </section>
     </div>

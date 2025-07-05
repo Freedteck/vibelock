@@ -27,6 +27,7 @@ function AppContent() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [shuffledPlaylist, setShuffledPlaylist] = useState<CoinTrack[]>([]);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
 
   const { notification, hideNotification } = useNotification();
 
@@ -54,6 +55,21 @@ function AppContent() {
     }
 
     setIsShuffled(!isShuffled);
+  };
+
+  const toggleRepeat = () => {
+    setRepeatMode((prev) => {
+      switch (prev) {
+        case "none":
+          return "all";
+        case "all":
+          return "one";
+        case "one":
+          return "none";
+        default:
+          return "none";
+      }
+    });
   };
 
   const handleTrackPlay = (
@@ -84,6 +100,12 @@ function AppContent() {
     const activePlaylist = isShuffled ? shuffledPlaylist : playlist;
     const nextIndex = (currentTrackIndex + 1) % activePlaylist.length;
 
+    // If we're at the end and repeat is off, stop playing
+    if (currentTrackIndex === activePlaylist.length - 1 && repeatMode === "none") {
+      setIsPlaying(false);
+      return;
+    }
+
     setCurrentTrackIndex(nextIndex);
     setCurrentTrack(activePlaylist[nextIndex]);
     setIsPlaying(true);
@@ -101,6 +123,32 @@ function AppContent() {
     setCurrentTrackIndex(prevIndex);
     setCurrentTrack(activePlaylist[prevIndex]);
     setIsPlaying(true);
+  };
+
+  const handleTrackEnd = () => {
+    if (repeatMode === "one") {
+      // Repeat current track
+      setIsPlaying(true);
+      return;
+    }
+
+    const activePlaylist = isShuffled ? shuffledPlaylist : playlist;
+    
+    if (currentTrackIndex === activePlaylist.length - 1) {
+      // We're at the last track
+      if (repeatMode === "all") {
+        // Go to first track
+        setCurrentTrackIndex(0);
+        setCurrentTrack(activePlaylist[0]);
+        setIsPlaying(true);
+      } else {
+        // Stop playing
+        setIsPlaying(false);
+      }
+    } else {
+      // Go to next track
+      handleNext();
+    }
   };
 
   return (
@@ -161,10 +209,13 @@ function AppContent() {
           onPlayPause={handlePlayPause}
           onNext={handleNext}
           onPrevious={handlePrevious}
+          onTrackEnd={handleTrackEnd}
           playlist={playlist}
           currentIndex={currentTrackIndex}
           isShuffled={isShuffled}
           onShuffle={toggleShuffle}
+          repeatMode={repeatMode}
+          onRepeat={toggleRepeat}
         />
 
         {/* Bottom Navigation */}

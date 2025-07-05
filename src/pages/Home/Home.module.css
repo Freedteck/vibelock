@@ -1,38 +1,88 @@
 .home {
   min-height: 100vh;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
 }
 
 .hero {
-  padding: 20px 16px 32px;
-  /* background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.1) 0%,
-    rgba(236, 72, 153, 0.1) 100%
-  ); */
+  padding: 32px 16px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+  border-radius: 0 0 50px 50px;
+  z-index: -1;
 }
 
 .heroContent {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.welcomeSection {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.welcomeTitle {
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.welcomeSubtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0;
+  opacity: 0.9;
 }
 
 .featuredTrack {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 16px;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.featuredTrack:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .featuredArtwork {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
   object-fit: cover;
   flex-shrink: 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.featuredTrack:hover .featuredArtwork {
+  transform: scale(1.05);
 }
 
 .featuredInfo {
@@ -43,16 +93,25 @@
 .featuredLabel {
   font-size: 12px;
   color: #8b5cf6;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.featuredLabel::before {
+  content: '🔥';
+  font-size: 14px;
 }
 
 .featuredTitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 4px 0 2px 0;
+  margin: 0 0 4px 0;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -62,111 +121,169 @@
 .featuredArtist {
   font-size: 14px;
   color: var(--text-secondary);
-  margin: 0 0 12px 0;
+  margin: 0 0 16px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.featuredStats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.featuredStat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 .playButton {
-  padding: 8px 16px;
-  background: #8b5cf6;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 25px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 8px;
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
 }
 
 .playButton:hover {
-  background: #7c3aed;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+}
+
+.playButton:active {
+  transform: translateY(0);
 }
 
 .statsSection {
-  padding: 0 16px 32px;
+  padding: 48px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  margin: 0 -16px;
 }
 
 .statsGrid {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .statCard {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 12px;
-  flex: 1;
-  padding: 16px;
-  background: var(--bg-card);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .statIcon {
-  color: #8b5cf6;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
   flex-shrink: 0;
 }
 
 .statNumber {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   color: var(--text-primary);
   line-height: 1;
 }
 
 .statLabel {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
   line-height: 1;
+  font-weight: 500;
 }
 
 .section {
-  margin-bottom: 32px;
+  margin-bottom: 48px;
+  padding: 0 16px;
 }
 
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 0 16px;
+  margin-bottom: 24px;
+  padding: 0 8px;
 }
 
 .sectionTitle {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .sectionLink {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sectionLink:hover {
   color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .artistsScroll {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   overflow-x: auto;
-  padding: 0 16px;
+  padding: 8px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -182,8 +299,19 @@
   text-decoration: none;
   color: inherit;
   flex-shrink: 0;
-  width: 100px;
+  width: 120px;
   text-align: center;
+  padding: 16px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.artistCard:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .artistAvatar {
@@ -191,14 +319,16 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
+  margin-bottom: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .artistCard:hover .artistAvatar {
   border-color: #8b5cf6;
   transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3);
 }
 
 .artistInfo {
@@ -227,47 +357,138 @@
 }
 
 .discoverSection {
-  padding: 0 16px 32px;
+  padding: 48px 16px;
+  margin: 48px 0;
 }
 
 .discoverCard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 48px 32px;
   background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-  border-radius: 16px;
+  border-radius: 24px;
   text-align: center;
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.discoverCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+  background-size: 50px 50px;
+  animation: float 20s linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-100px); }
+}
+
+.discoverContent {
+  position: relative;
+  z-index: 1;
 }
 
 .discoverTitle {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .discoverText {
-  font-size: 14px;
-  margin: 0 0 20px 0;
-  opacity: 0.9;
-  line-height: 1.4;
+  font-size: 16px;
+  margin: 0 0 32px 0;
+  opacity: 0.95;
+  line-height: 1.5;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .discoverButton {
-  display: inline-block;
-  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  border-radius: 25px;
+  font-weight: 700;
+  transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .discoverButton:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.quickActions {
+  padding: 0 16px 32px;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.actionCard:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.actionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.actionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.actionDescription {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Desktop adjustments */
@@ -277,48 +498,57 @@
     width: 100%;
     margin: 0 auto;
   }
+
   .hero {
-    padding: 32px 24px 48px;
+    padding: 48px 24px 64px;
+  }
+
+  .welcomeTitle {
+    font-size: 48px;
+  }
+
+  .welcomeSubtitle {
+    font-size: 18px;
   }
 
   .featuredTrack {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 32px;
   }
 
   .featuredArtwork {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
   }
 
   .featuredTitle {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .featuredArtist {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .playButton {
-    padding: 12px 24px;
+    padding: 16px 32px;
     font-size: 16px;
   }
 
   .statsSection {
-    padding: 0 24px 48px;
+    padding: 64px 24px;
   }
 
   .statCard {
-    padding: 20px;
+    padding: 32px 24px;
   }
 
   .statNumber {
-    font-size: 24px;
+    font-size: 32px;
   }
 
   .statLabel {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .sectionHeader {
@@ -326,16 +556,17 @@
   }
 
   .sectionTitle {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .artistsScroll {
-    padding: 0 24px;
+    padding: 8px 24px;
     gap: 24px;
   }
 
   .artistCard {
-    width: 120px;
+    width: 140px;
+    padding: 20px;
   }
 
   .artistAvatar {
@@ -352,19 +583,24 @@
   }
 
   .discoverSection {
-    padding: 0 24px 48px;
+    padding: 64px 24px;
   }
 
   .discoverCard {
-    padding: 32px;
+    padding: 64px 48px;
   }
 
   .discoverTitle {
-    font-size: 24px;
+    font-size: 36px;
   }
 
   .discoverText {
-    font-size: 16px;
+    font-size: 18px;
+  }
+
+  .actionsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1000px;
   }
 }
 
