@@ -3,20 +3,31 @@ import {
   Music,
   TrendingUp,
   Users,
-  Play,
+  // Play,
   Lock,
   // Unlock,
-  Eye,
+  // Eye,
   // Heart,
   Wallet,
 } from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
-import TradeModal from "../../components/TradeModal/TradeModal";
 import { useAppContext } from "../../context/AppContext";
 import styles from "./Dashboard.module.css";
 import { CoinTrack } from "../../models";
 import { useWallet } from "../../hooks/useWallet";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
+import {
+  formatMarketCap,
+  formatMarketCapChange,
+  formatRawBalance,
+  getChangeColorClass,
+  getHeldValue,
+  getPricePerToken,
+  getTokensHeld,
+  getTotalPortfolioValue,
+} from "../../client/helper";
+import UnlockModal from "../../components/UnlockModal/UnlockModal";
+import toast from "react-hot-toast";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -28,20 +39,19 @@ const Dashboard: React.FC = () => {
   const [selectedTradeTrack, setSelectedTradeTrack] =
     useState<CoinTrack | null>(null);
   const [ownedTracks, setOwnedTracks] = useState<CoinTrack[]>([]);
+  const [portfolioValue, setPortfolioValue] = useState("0");
+  const [totalCoins, setTotalCoins] = useState("0");
   const { isConnected, walletAddress, connectWallet, isConnecting } =
     useWallet();
 
-  const { tracks, trackLoading } = useAppContext();
-
-  const portfolioValue = 1000;
-  const totalCoins = 5000;
-  const totalPlays = 10000;
+  const { tracks, trackLoading, profileBalances, tradeCoins } = useAppContext();
+  // const totalPlays = 10000;
 
   useEffect(() => {
     if (!isConnected || !walletAddress) return;
 
     if (!trackLoading && tracks.length > 0) {
-      const userOwnedTracks = tracks.filter(
+      const ownedTracks = tracks.filter(
         (track) =>
           track.collaborators?.some(
             (collab) =>
@@ -49,9 +59,19 @@ const Dashboard: React.FC = () => {
           ) ||
           track.artistWallet?.toLowerCase() === walletAddress?.toLowerCase()
       );
-      setOwnedTracks(userOwnedTracks);
+
+      setOwnedTracks(ownedTracks);
     }
   }, [trackLoading, tracks, walletAddress, isConnected]);
+
+  useEffect(() => {
+    if (profileBalances && profileBalances.length > 0) {
+      const totalValue = getTotalPortfolioValue(profileBalances);
+      setPortfolioValue(totalValue);
+      const totalCoinsHeld = profileBalances.length;
+      setTotalCoins(totalCoinsHeld);
+    }
+  }, [profileBalances]);
 
   const handleTrackPlay = (track: CoinTrack) => {
     if (currentTrack?.id === track.id) {
@@ -62,66 +82,47 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // const handleTradeClick = (trackId: string) => {
-  //   const track = ownedTracks.find((t) => t!.id === trackId);
-  //   if (track) {
-  //     setSelectedTradeTrack(track);
-  //     setShowTradeModal(true);
-  //   }
-  // };
+  const handleTradeClick = (trackId: string) => {
+    const track = profileBalances.find((t: any) => t!.id === trackId);
+    if (track) {
+      setSelectedTradeTrack(track);
+      setShowTradeModal(true);
+    }
+  };
 
   const handleTrade = async (
-    trackId: string,
-    type: "buy" | "sell",
-    amount: number
+    trackAddress: string,
+    amount: string,
+    type: "eth" | "coin" | "usdc"
   ) => {
-    console.log(`Handling trade for track ${trackId}: ${type} ${amount} coins`);
+    try {
+      const receipt = await toast.promise(
+        tradeCoins({
+          type: type,
+          amount: amount,
+          walletAddress: walletAddress!,
+          coinAddress: trackAddress,
+        }),
+        {
+          loading: "Processing trade...",
+          success: "Trade successful!",
+          error: `Trade failed`,
+        }
+      );
+
+      return receipt;
+    } catch (error) {
+      throw new Error(
+        `Trade failed: ${error instanceof Error ? error.message : error}`
+      );
+    }
   };
 
   const tabs = [
     { id: "owned", label: "Owned", icon: <Music size={16} /> },
     { id: "portfolio", label: "Portfolio", icon: <TrendingUp size={16} /> },
-    { id: "activity", label: "Activity", icon: <Eye size={16} /> },
+    // { id: "activity", label: "Activity", icon: <Eye size={16} /> },
   ];
-
-  // const getActivityIcon = (type: string) => {
-  //   switch (type) {
-  //     case "unlock":
-  //       return <Unlock size={18} />;
-  //     case "purchase":
-  //       return <TrendingUp size={18} />;
-  //     case "sell":
-  //       return <TrendingUp size={18} />;
-  //     default:
-  //       return <Heart size={18} />;
-  //   }
-  // };
-
-  // const getActivityDescription = (transaction: any) => {
-  //   switch (transaction.type) {
-  //     case "unlock":
-  //       return `Unlocked track ${transaction.trackTitle}`;
-  //     case "purchase":
-  //       return `Purchased ${transaction.amount} coins for ${transaction.trackTitle}`;
-  //     case "sell":
-  //       return `Sold ${transaction.amount} coins for ${transaction.trackTitle}`;
-  //     default:
-  //       return `Performed action on ${transaction.trackTitle}`;
-  //   }
-  // };
-
-  // const formatTimeAgo = (timestamp: string) => {
-  //   const now = new Date();
-  //   const time = new Date(timestamp);
-  //   const diffInHours = Math.floor(
-  //     (now.getTime() - time.getTime()) / (1000 * 60 * 60)
-  //   );
-
-  //   if (diffInHours < 1) return "Just now";
-  //   if (diffInHours < 24) return `${diffInHours}h ago`;
-  //   const diffInDays = Math.floor(diffInHours / 24);
-  //   return `${diffInDays}d ago`;
-  // };
 
   if (!isConnected) {
     return (
@@ -217,9 +218,7 @@ const Dashboard: React.FC = () => {
               <TrendingUp className={styles.statIcon} />
               <span className={styles.statLabel}>Portfolio Value</span>
             </div>
-            <div className={styles.statValue}>
-              {portfolioValue.toFixed(3)} ETH
-            </div>
+            <div className={styles.statValue}>{portfolioValue}</div>
           </div>
 
           <div className={styles.statCard}>
@@ -230,7 +229,7 @@ const Dashboard: React.FC = () => {
             <div className={styles.statValue}>{totalCoins}</div>
           </div>
 
-          <div className={styles.statCard}>
+          {/* <div className={styles.statCard}>
             <div className={styles.statHeader}>
               <Play className={styles.statIcon} />
               <span className={styles.statLabel}>Total Plays</span>
@@ -238,7 +237,7 @@ const Dashboard: React.FC = () => {
             <div className={styles.statValue}>
               {totalPlays.toLocaleString()}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Tab Navigation */}
@@ -304,73 +303,110 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className={styles.portfolioList}>
-                {/* {[].map((portfolio) => {
-                  const track = [].find((t) => t.id === portfolio.trackId);
-                  if (!track) return null;
-
-                  return (
-                    <div
-                      key={portfolio.trackId}
-                      className={styles.portfolioItem}
-                    >
+                {profileBalances
+                  .filter(
+                    (portfolio: any) =>
+                      portfolio && formatRawBalance(portfolio.balance) > 0
+                  ) // Only show positions with coins
+                  .map((portfolio: any) => (
+                    <div key={portfolio.id} className={styles.portfolioItem}>
                       <div className={styles.portfolioHeader}>
                         <img
-                          src={track.artwork}
-                          alt={track.title}
+                          src={portfolio.artworkUrl}
+                          alt={portfolio.title}
                           className={styles.portfolioArtwork}
                         />
                         <div className={styles.portfolioInfo}>
                           <h3 className={styles.portfolioTitle}>
-                            {track.title}
+                            {portfolio.title}
                           </h3>
                           <p className={styles.portfolioArtist}>
-                            {track.artist}
+                            {portfolio.artist}
                           </p>
+                          <div className={styles.portfolioMarketCap}>
+                            <span className={styles.marketCapLabel}>
+                              Market Cap:
+                            </span>
+                            <span className={styles.marketCapValue}>
+                              {formatMarketCap(portfolio.marketCap)}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
                       <div className={styles.portfolioStats}>
                         <div className={styles.portfolioStat}>
-                          <span className={styles.portfolioLabel}>Coins</span>
+                          <span className={styles.portfolioLabel}>
+                            Your Coins
+                          </span>
                           <span className={styles.portfolioValue}>
-                            {portfolio.coinsHeld}
+                            {getTokensHeld(portfolio.balance)}
                           </span>
                         </div>
                         <div className={styles.portfolioStat}>
-                          <span className={styles.portfolioLabel}>Price</span>
+                          <span className={styles.portfolioLabel}>
+                            Coin Price
+                          </span>
                           <span className={styles.portfolioValue}>
-                            {track.coinPrice} ETH
+                            {getPricePerToken(
+                              portfolio.marketCap,
+                              portfolio.totalSupply
+                            )}
                           </span>
                         </div>
                         <div className={styles.portfolioStat}>
-                          <span className={styles.portfolioLabel}>Value</span>
+                          <span className={styles.portfolioLabel}>
+                            Total Value
+                          </span>
                           <span className={styles.portfolioValue}>
-                            {(track.coinPrice * portfolio.coinsHeld).toFixed(4)}{" "}
-                            ETH
+                            {getHeldValue(
+                              portfolio.balance,
+                              portfolio.marketCap,
+                              portfolio.totalSupply
+                            )}
                           </span>
                         </div>
                         <div className={styles.portfolioStat}>
-                          <span className={styles.portfolioLabel}>Change</span>
+                          <span className={styles.portfolioLabel}>
+                            24h Change
+                          </span>
                           <span
-                            className={`${styles.portfolioValue} ${styles.positive}`}
+                            className={`${styles.portfolioValue} ${
+                              styles[
+                                getChangeColorClass(portfolio.marketCapDelta24h)
+                              ]
+                            }`}
                           >
-                            +{portfolio.percentageChange.toFixed(1)}%
+                            {formatMarketCapChange(portfolio.marketCapDelta24h)}
                           </span>
                         </div>
                       </div>
 
                       <div className={styles.portfolioActions}>
                         <button
-                          className={styles.portfolioButton}
-                          onClick={() => handleTradeClick(portfolio.trackId)}
+                          className={`${styles.portfolioButton} ${styles.primary}`}
+                          onClick={() => handleTradeClick(portfolio.id)}
                         >
                           Trade
                         </button>
                       </div>
                     </div>
-                  );
-                })} */}
+                  ))}
               </div>
+
+              {/* Empty state if no positions */}
+              {profileBalances.filter(
+                (p: any) => p && formatRawBalance(p.balance) > 0
+              ).length === 0 && (
+                <div className={styles.emptyState}>
+                  <TrendingUp size={48} />
+                  <h3>No coin positions yet</h3>
+                  <p>
+                    Start investing in your favorite tracks to build your
+                    portfolio
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -417,14 +453,24 @@ const Dashboard: React.FC = () => {
 
       {/* Trade Modal */}
       {showTradeModal && selectedTradeTrack && (
-        <TradeModal
+        // <TradeModal
+        //   isOpen={showTradeModal}
+        //   onClose={() => {
+        //     setShowTradeModal(false);
+        //     setSelectedTradeTrack(null);
+        //   }}
+        //   track={selectedTradeTrack}
+        //   onTrade={handleTrade}
+        // />
+        <UnlockModal
           isOpen={showTradeModal}
           onClose={() => {
             setShowTradeModal(false);
             setSelectedTradeTrack(null);
           }}
           track={selectedTradeTrack}
-          onTrade={handleTrade}
+          onUnlock={handleTrade}
+          onSell={handleTrade}
         />
       )}
     </div>

@@ -49,6 +49,14 @@
   color: var(--text-secondary);
 }
 
+.positive {
+  color: var(--success);
+}
+
+.negative {
+  color: #ef4444;
+}
+
 .tradeTypeSelector {
   display: flex;
   gap: 0.5rem;
@@ -87,6 +95,74 @@
   background: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
   color: #ef4444;
+}
+
+.currencySelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.dropdownButton:hover {
+  border-color: var(--accent-primary);
+}
+
+.currencyOption {
+  font-weight: 500;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownItem {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdownItem:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.dropdownItem:last-child {
+  border-radius: 0 0 8px 8px;
 }
 
 .amountSelector {
@@ -186,13 +262,16 @@
   margin-bottom: 0.5rem;
 }
 
+.summaryRow:last-child {
+  margin-bottom: 0;
+}
+
 .summaryRow.total {
   padding-top: 0.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   font-weight: 600;
   font-size: 1rem;
-  margin-bottom: 0;
 }
 
 .actions {
@@ -362,5 +441,13 @@
 
   .amountControls {
     justify-content: center;
+  }
+
+  .dropdownMenu {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+    bottom: 1rem;
   }
 }

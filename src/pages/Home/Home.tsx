@@ -8,6 +8,7 @@ import { CoinTrack } from "../../models";
 import { useAppContext } from "../../context/AppContext";
 import { Artist } from "../../client/supabase";
 import { formatUserAddress } from "../../client/helper";
+import MusicPulseLoader from "../../components/MusicPulseLoader/MusicPulseLoader";
 
 interface HomeProps {
   onTrackPlay: (track: CoinTrack, trackList?: CoinTrack[]) => void;
@@ -35,7 +36,9 @@ const Home: React.FC<HomeProps> = ({
   useEffect(() => {
     if (!trackLoading) {
       setTracks(trackList);
-      setTrendingTracks(trackList?.filter((track) => track.isNew).slice(0, 10));
+      setTrendingTracks(
+        trackList?.filter((track) => track.uniqueHolders > 2).slice(0, 10)
+      );
       setRecentReleases(
         trackList
           .sort((a: CoinTrack, b: CoinTrack) => {
@@ -62,33 +65,37 @@ const Home: React.FC<HomeProps> = ({
   return (
     <div className={styles.home}>
       {/* Featured Track Hero */}
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <div className={styles.featuredTrack}>
-            <img
-              src={featuredTrack?.artworkUrl}
-              alt={featuredTrack?.title}
-              className={styles.featuredArtwork}
-            />
-            <div className={styles.featuredInfo}>
-              <span className={styles.featuredLabel}>Featured Track</span>
-              <h2 className={styles.featuredTitle}>{featuredTrack?.title}</h2>
-              <p className={styles.featuredArtist}>
-                by {featuredTrack?.artist}
-              </p>
-              <button
-                onClick={() => handleTrackPlay(featuredTrack)}
-                className={styles.playButton}
-              >
-                <Play size={20} />
-                {currentTrack?.id === featuredTrack?.id && isPlaying
-                  ? "Playing"
-                  : "Play Now"}
-              </button>
+      {trackLoading ? (
+        <MusicPulseLoader />
+      ) : (
+        <section className={styles.hero}>
+          <div className={styles.heroContent}>
+            <div className={styles.featuredTrack}>
+              <img
+                src={featuredTrack?.artworkUrl}
+                alt={featuredTrack?.title}
+                className={styles.featuredArtwork}
+              />
+              <div className={styles.featuredInfo}>
+                <span className={styles.featuredLabel}>Featured Track</span>
+                <h2 className={styles.featuredTitle}>{featuredTrack?.title}</h2>
+                <p className={styles.featuredArtist}>
+                  by {featuredTrack?.artist}
+                </p>
+                <button
+                  onClick={() => handleTrackPlay(featuredTrack)}
+                  className={styles.playButton}
+                >
+                  <Play size={20} />
+                  {currentTrack?.id === featuredTrack?.id && isPlaying
+                    ? "Playing"
+                    : "Play Now"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Quick Stats */}
       <section className={styles.statsSection}>
@@ -118,17 +125,21 @@ const Home: React.FC<HomeProps> = ({
       </section>
 
       {/* Trending Tracks */}
-      <HorizontalScroll title="Trending Now">
-        {trendingTracks.map((track) => (
-          <CompactTrackCard
-            key={track.id}
-            track={track}
-            onPlay={handleTrackPlay}
-            isPlaying={currentTrack?.id === track.id && isPlaying}
-            size="medium"
-          />
-        ))}
-      </HorizontalScroll>
+      {trackLoading ? (
+        <MusicPulseLoader />
+      ) : (
+        <HorizontalScroll title="Trending Now">
+          {trendingTracks.map((track) => (
+            <CompactTrackCard
+              key={track.id}
+              track={track}
+              onPlay={handleTrackPlay}
+              isPlaying={currentTrack?.id === track.id && isPlaying}
+              size="medium"
+            />
+          ))}
+        </HorizontalScroll>
+      )}
 
       {/* Featured Artists */}
       <section className={styles.section}>
@@ -162,17 +173,21 @@ const Home: React.FC<HomeProps> = ({
       </section>
 
       {/* Recent Releases */}
-      <HorizontalScroll title="Recent Releases">
-        {recentReleases.map((track) => (
-          <CompactTrackCard
-            key={track.id}
-            track={track}
-            onPlay={handleTrackPlay}
-            isPlaying={currentTrack?.id === track.id && isPlaying}
-            size="medium"
-          />
-        ))}
-      </HorizontalScroll>
+      {trackLoading ? (
+        <MusicPulseLoader />
+      ) : (
+        <HorizontalScroll title="Recent Releases">
+          {recentReleases.map((track) => (
+            <CompactTrackCard
+              key={track.id}
+              track={track}
+              onPlay={handleTrackPlay}
+              isPlaying={currentTrack?.id === track.id && isPlaying}
+              size="medium"
+            />
+          ))}
+        </HorizontalScroll>
+      )}
 
       {/* Discover More */}
       <section className={styles.discoverSection}>

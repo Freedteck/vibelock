@@ -240,6 +240,10 @@
   text-align: center;
   padding: 32px 16px;
   color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .emptyState h3 {
@@ -454,7 +458,7 @@
   }
 
   .statsGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 32px;
   }
@@ -563,4 +567,51 @@
   .container {
     padding: 1.5rem 1rem;
   }
+}
+
+.portfolioMarketCap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.marketCapLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.marketCapValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.portfolioValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Color classes for changes */
+.portfolioValue.positive {
+  color: #10b981;
+}
+
+.portfolioValue.negative {
+  color: #ef4444;
+}
+
+.portfolioValue.neutral {
+  color: var(--text-secondary);
+}
+
+.portfolioButton.secondary {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.portfolioButton.secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary-color);
 }

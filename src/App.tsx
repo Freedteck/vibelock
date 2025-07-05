@@ -17,6 +17,7 @@ import "./styles/globals.css";
 import { setApiKey } from "@zoralabs/coins-sdk";
 import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile";
 import { CoinTrack } from "./models";
+import { Toaster } from "react-hot-toast";
 
 function AppContent() {
   const { tracks } = useAppContext();
@@ -176,6 +177,7 @@ function AppContent() {
           title={notification.title}
           message={notification.message}
         />
+        <Toaster position="top-center" />
       </div>
     </Router>
   );

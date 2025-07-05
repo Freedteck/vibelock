@@ -17,6 +17,8 @@ export interface Artist {
 }
 
 export interface Comment {
+  id?: string;
+  created_at?: string;
   coin_address: string;
   commenter_wallet: string;
   message: string;

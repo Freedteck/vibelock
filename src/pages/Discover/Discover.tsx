@@ -4,6 +4,7 @@ import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard
 import styles from "./Discover.module.css";
 import { CoinTrack, genres } from "../../models";
 import { useAppContext } from "../../context/AppContext";
+import MusicPulseLoader from "../../components/MusicPulseLoader/MusicPulseLoader";
 
 interface DiscoverProps {
   onTrackPlay: (track: CoinTrack) => void;
@@ -149,24 +150,28 @@ const Discover: React.FC<DiscoverProps> = ({
       </div>
 
       {/* Tracks Grid */}
-      <div className={styles.tracksGrid}>
-        {filteredAndSortedTracks.length > 0 ? (
-          filteredAndSortedTracks.map((track) => (
-            <CompactTrackCard
-              key={track.id}
-              track={track}
-              onPlay={onTrackPlay}
-              isPlaying={currentTrack?.id === track.id && isPlaying}
-              size="medium"
-            />
-          ))
-        ) : (
-          <div className={styles.noResults}>
-            <h3>No tracks found</h3>
-            <p>Try adjusting your search or filter criteria</p>
-          </div>
-        )}
-      </div>
+      {trackLoading ? (
+        <MusicPulseLoader size="large" text="Loading tracks..." />
+      ) : (
+        <div className={styles.tracksGrid}>
+          {filteredAndSortedTracks.length > 0 ? (
+            filteredAndSortedTracks.map((track) => (
+              <CompactTrackCard
+                key={track.id}
+                track={track}
+                onPlay={onTrackPlay}
+                isPlaying={currentTrack?.id === track.id && isPlaying}
+                size="medium"
+              />
+            ))
+          ) : (
+            <div className={styles.noResults}>
+              <h3>No tracks found</h3>
+              <p>Try adjusting your search or filter criteria</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

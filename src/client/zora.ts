@@ -1,17 +1,17 @@
 import { getCoin, getCoins } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, Hex, http } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 
 // Set up viem clients
 export const viemSetup = (account: any) => {
   const publicClient = createPublicClient({
-    chain: baseSepolia,
+    chain: base,
     transport: http(),
   });
 
   const walletClient = createWalletClient({
     account: account as Hex,
-    chain: baseSepolia,
+    chain: base,
     transport: http(),
   });
 
@@ -21,7 +21,7 @@ export const viemSetup = (account: any) => {
 export async function fetchSingleCoin(coinAddress: string) {
   const response = await getCoin({
     address: coinAddress,
-    chain: baseSepolia.id, // Optional: Base chain set by default
+    chain: base.id, // Optional: Base chain set by default
   });
 
   const coin = response.data?.zora20Token;
@@ -32,7 +32,7 @@ export async function fetchSingleCoin(coinAddress: string) {
 export async function fetchMultipleCoins(coinAddresses: string[]) {
   const coins = coinAddresses.map((address) => ({
     collectionAddress: address,
-    chainId: baseSepolia.id,
+    chainId: base.id,
   }));
 
   const response = await getCoins({ coins: coins });

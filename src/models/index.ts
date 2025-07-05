@@ -39,7 +39,7 @@ export interface CoinMetadata {
 }
 
 export interface CoinTrack {
-  id: string; // token address
+  id: string; // coin address
   title: string; // from coin.name
   artistWallet: string; // coin.creatorAddress
   description?: string; // optional
@@ -54,12 +54,15 @@ export interface CoinTrack {
   genre?: string; // optional genre
   artist: string; // artist name
   premiumAudio?: string; // optional premium audio URL
+  balance?: number; // user's balance of this track
   collaborators?: {
     name: string;
     wallet: string;
     role: string;
     percentage: number;
   }[]; // optional collaborators
+  marketCap: number;
+  marketCapDelta24h?: number; // percentage change in market cap over 24h
 }
 
 export const genres = [

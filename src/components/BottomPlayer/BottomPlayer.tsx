@@ -3,6 +3,7 @@ import { Play, Pause, SkipBack, SkipForward, ChevronUp } from "lucide-react";
 import FullScreenPlayer from "./FullScreenPlayer";
 import styles from "./BottomPlayer.module.css";
 import { CoinTrack } from "../../models";
+import { useAppContext } from "../../context/AppContext";
 
 interface BottomPlayerProps {
   currentTrack: CoinTrack | null;
@@ -30,6 +31,8 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const { profileBalances } = useAppContext();
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -59,9 +62,16 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
     }
   }, [isPlaying, currentTrack]);
 
+  useEffect(() => {
+    if (currentTrack) {
+      setIsUnlocked(
+        profileBalances?.some((balance: any) => balance.id === currentTrack.id)
+      );
+    }
+  }, [currentTrack, profileBalances]);
+
   if (!currentTrack) return null;
 
-  const isUnlocked = true;
   const audioUrl = isUnlocked
     ? currentTrack.premiumAudio
     : currentTrack.mediaUrl;

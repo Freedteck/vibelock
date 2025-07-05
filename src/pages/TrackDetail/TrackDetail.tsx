@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Play,
@@ -18,6 +18,9 @@ import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./TrackDetail.module.css";
 import { CoinTrack } from "../../models";
 import { useWallet } from "../../hooks/useWallet";
+import { Comment, createComment, getComments } from "../../client/supabase";
+import { formatCreatedAt, formatUserAddress } from "../../client/helper";
+import toast from "react-hot-toast";
 
 interface TrackDetailProps {
   onTrackPlay: (track: CoinTrack) => void;
@@ -36,22 +39,10 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "MusicFan",
-      text: "This track is absolutely incredible! 🔥",
-      timestamp: "2 hours ago",
-    },
-    {
-      id: 2,
-      author: "CryptoVibes",
-      text: "Can't wait to unlock the full version!",
-      timestamp: "5 hours ago",
-    },
-  ]);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
 
-  const { tracks, trackLoading, tradeCoins } = useAppContext();
+  const { tracks, trackLoading, tradeCoins, profileBalances } = useAppContext();
   const { isConnected, walletAddress } = useWallet();
 
   useEffect(() => {
@@ -67,7 +58,30 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
     }
   }, [id, trackLoading, tracks]);
 
-  const isUnlocked = false;
+  useEffect(() => {
+    if (track) {
+      setIsUnlocked(
+        profileBalances?.some((balance: any) => balance.id === track.id)
+      );
+    }
+  }, [track, profileBalances]);
+
+  const fetchComments = useCallback(async () => {
+    if (track) {
+      const { data, error } = await getComments(track.id);
+      if (error) {
+        throw new Error(`Failed to fetch comments: ${error.message}`);
+      } else {
+        setComments(data || []);
+      }
+    }
+  }, [track]);
+
+  useEffect(() => {
+    fetchComments().catch((error) => {
+      console.error("Error fetching comments:", error);
+    });
+  }, [fetchComments]);
 
   if (!track) {
     return (
@@ -111,29 +125,55 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
     }
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (comment.trim()) {
-      const newComment = {
-        id: Date.now(),
-        author: "You",
-        text: comment,
-        timestamp: "Just now",
+      const newComment: Comment = {
+        coin_address: track.id,
+        commenter_wallet: walletAddress!,
+        message: comment.trim(),
       };
-      setComments([newComment, ...comments]);
+
+      const { error } = await toast.promise(createComment(newComment), {
+        loading: "Posting comment...",
+        success: "Comment posted successfully!",
+        error: "Failed to post comment",
+      });
+      if (error) {
+        console.error("Failed to post comment:", error);
+        return;
+      }
+      fetchComments().catch((error) => {
+        console.error("Error fetching comments after posting:", error);
+      });
       setComment("");
     }
   };
 
-  const handleTrade = async (trackAddress: string) => {
+  const handleTrade = async (
+    trackAddress: string,
+    amount: string,
+    type: "eth" | "coin" | "usdc"
+  ) => {
     try {
-      await tradeCoins({
-        type: "buy",
-        amount: "0.01",
-        walletAddress: walletAddress!,
-        coinAddress: trackAddress,
-      });
+      const receipt = await toast.promise(
+        tradeCoins({
+          type: type,
+          amount: amount,
+          walletAddress: walletAddress!,
+          coinAddress: trackAddress,
+        }),
+        {
+          loading: "Unlocking track...",
+          success: "Track unlocked successfully!",
+          error: `Failed to unlock track`,
+        }
+      );
+
+      return receipt;
     } catch (error) {
-      console.error("Trade failed:", error);
+      throw new Error(
+        `Trade failed: ${error instanceof Error ? error.message : error}`
+      );
     }
   };
 
@@ -185,11 +225,11 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
             <div className={styles.stats}>
               <div className={styles.statItem}>
                 <TrendingUp size={16} />
-                <span>{track.coinPrice} ETH</span>
+                <span>${track.marketCap}</span>
               </div>
               <div className={styles.statItem}>
                 <Users size={16} />
-                <span>{track.holders}</span>
+                <span>{track.uniqueHolders}</span>
               </div>
               <div className={styles.statItem}>
                 <Play size={16} />
@@ -209,7 +249,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
           ) : (
             <button className={styles.unlockButton} onClick={handleUnlockClick}>
               <Lock size={18} />
-              Unlock for {track.coinPrice} ETH
+              Unlock for Premium
             </button>
           )}
 
@@ -276,18 +316,18 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
               {comments.map((comment) => (
                 <div key={comment.id} className={styles.comment}>
                   <div className={styles.commentAvatar}>
-                    {comment.author.charAt(0)}
+                    {comment.commenter_wallet.slice(2, 4).toUpperCase()}
                   </div>
                   <div className={styles.commentContent}>
                     <div className={styles.commentHeader}>
                       <span className={styles.commentAuthor}>
-                        {comment.author}
+                        {formatUserAddress(comment.commenter_wallet)}
                       </span>
                       <span className={styles.commentTime}>
-                        {comment.timestamp}
+                        {formatCreatedAt(comment.created_at || "")}
                       </span>
                     </div>
-                    <p className={styles.commentText}>{comment.text}</p>
+                    <p className={styles.commentText}>{comment.message}</p>
                   </div>
                 </div>
               ))}
@@ -300,7 +340,7 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
         isOpen={showUnlockModal}
         onClose={() => setShowUnlockModal(false)}
         track={track}
-        onUnlock={() => handleTrade(track.id)}
+        onUnlock={handleTrade}
       />
 
       <WalletModal

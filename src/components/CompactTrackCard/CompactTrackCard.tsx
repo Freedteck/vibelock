@@ -3,6 +3,7 @@ import { Play, Pause, Lock, Unlock, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import styles from "./CompactTrackCard.module.css";
 import { CoinTrack } from "../../models";
+import { useAppContext } from "../../context/AppContext";
 
 interface CompactTrackCardProps {
   track: CoinTrack;
@@ -18,8 +19,11 @@ const CompactTrackCard: React.FC<CompactTrackCardProps> = ({
   size = "medium",
 }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const { profileBalances } = useAppContext();
 
-  const isUnlocked = true;
+  const isUnlocked = profileBalances?.some(
+    (balance: any) => balance.id === track.id
+  );
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();

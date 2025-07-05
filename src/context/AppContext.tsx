@@ -10,7 +10,13 @@ import { CoinTrack, MusicTrack } from "../models";
 import { uploadFileToPinata, uploadJsonToPinata } from "../client/pinata";
 import { fetchMultipleCoins, viemSetup } from "../client/zora";
 import { Address, parseEther } from "viem";
-import { createCoin, DeployCurrency, tradeCoin } from "@zoralabs/coins-sdk";
+import {
+  createCoin,
+  DeployCurrency,
+  getProfileBalances,
+  tradeCoin,
+  ValidMetadataURI,
+} from "@zoralabs/coins-sdk";
 import {
   Artist,
   createTrack,
@@ -24,7 +30,7 @@ import {
   getContentsFromUri,
   isTrackNew,
 } from "../client/helper";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 import { SplitV2Client } from "@0xsplits/splits-sdk";
 
 interface AppState {
@@ -32,15 +38,15 @@ interface AppState {
   trackLoading: boolean;
   artists?: Artist[];
   artistLoading?: boolean;
+  profileBalances?: any;
 }
 
-export enum SplitV2Type {
+enum SplitV2Type {
   Push = "push",
   Pull = "pull",
 }
 
 interface AppContextType extends AppState {
-  unlockTrack?: (trackId: number) => void;
   addTrack: ({
     trackData,
     artistName,
@@ -62,18 +68,18 @@ interface AppContextType extends AppState {
       role: string;
       percentage: number;
     }[];
-  }) => void;
+  }) => Promise<any>;
   tradeCoins: ({
     type,
     amount,
     walletAddress,
     coinAddress,
   }: {
-    type: "buy" | "sell";
+    type: "eth" | "coin" | "usdc";
     amount: string;
     walletAddress: string;
     coinAddress: string;
-  }) => Promise<void>;
+  }) => Promise<any>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -84,6 +90,64 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [trackLoading, setTrackLoading] = useState(false);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [artistLoading, setArtistLoading] = useState(false);
+  const [profileBalances, setProfileBalances] = useState({});
+
+  const fetchUserBalances = useCallback(async () => {
+    const response = await getProfileBalances({
+      identifier: walletClient?.account?.address as Address,
+    });
+
+    const profile: any = response.data?.profile;
+    // const totalCoins = profile.coinBalances?.count || 0;
+    const balances =
+      profile.coinBalances?.edges.filter(
+        (coin: any) =>
+          coin.node.id !==
+          "R3JhcGhRTENvaW5CYWxhbmNlOkJBU0UtTUFJTk5FVC4kLjB4MDc1YzFiNzI5YTljY2IwMGQ0YjFkMTlhMjg5OTg5Mzc4NTU1ZWVlZi4kLjB4MmRlZWI2OTVmN2VmZmJjNDE2ODA1NThjNDgzMjcwMWVjZmMxZjU5NQ=="
+      ) || [];
+
+    // Format balances to match expected structure
+    const formattedBalance = await Promise.all(
+      balances.map(async (coin: any) => {
+        const supply = Number(coin.node.coin.totalSupply);
+        const holders = coin.node.coin.uniqueHolders ?? 0;
+        const tokenUri = coin?.node?.coin?.tokenUri;
+        const marketCap = coin.node.coin.marketCap || 0;
+        const marketCapDelta24h = coin.node.coin.marketCapDelta24h || 0;
+
+        let tokenDetails: MusicTrack | undefined = undefined;
+        try {
+          tokenDetails = await getContentsFromUri(tokenUri || "");
+        } catch (e) {
+          console.error(`Failed to fetch token details for ${tokenUri}`, e);
+        }
+
+        return {
+          id: coin?.node?.coin?.address,
+          balance: coin?.node?.balance,
+          title: coin.node.coin.name,
+          artistWallet: coin.node.coin.creatorAddress,
+          description: coin.node.coin.description,
+          mimeType: coin.node.coin.mediaContent?.mimeType,
+          mediaUrl: coin.node.coin.mediaContent?.originalUri,
+          artworkUrl: coin.node.coin.mediaContent?.previewImage?.medium,
+          createdAt: coin.node.coin.createdAt,
+          formattedDate: formatCreatedAt(coin?.node?.coin?.createdAt ?? ""),
+          isNew: isTrackNew(coin?.node?.coin?.createdAt ?? ""),
+          totalSupply: supply,
+          uniqueHolders: holders,
+          genre: tokenDetails?.attributes[0]?.value || "Unknown",
+          artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
+          premiumAudio: tokenDetails?.extra?.premium_audio || "",
+          collaborators: tokenDetails!.extra?.collaborators || [],
+          marketCap: marketCap,
+          marketCapDelta24h: marketCapDelta24h,
+        };
+      })
+    );
+
+    setProfileBalances(formattedBalance);
+  }, [walletClient]);
 
   const fetchCoins = useCallback(async () => {
     setTrackLoading(true);
@@ -101,6 +165,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const supply = Number(coin.totalSupply);
           const holders = coin.uniqueHolders ?? 0;
           const tokenUri = coin.tokenUri;
+          const marketCap = coin.marketCap || 0;
+          const marketCapDelta24h = coin.marketCapDelta24h || 0;
 
           let tokenDetails: MusicTrack | undefined = undefined;
           try {
@@ -126,6 +192,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             artist: tokenDetails?.attributes[1]?.value || "Unknown Artist",
             premiumAudio: tokenDetails?.extra?.premium_audio || "",
             collaborators: tokenDetails!.extra?.collaborators || [],
+            marketCap: marketCap,
+            marketCapDelta24h: marketCapDelta24h,
           };
         })
       );
@@ -163,6 +231,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     fetchArtists();
   }, [fetchArtists]);
 
+  useEffect(() => {
+    if (walletClient?.account?.address) {
+      fetchUserBalances();
+    } else {
+      setProfileBalances([]);
+    }
+  }, [fetchUserBalances, walletClient]);
+
   const addTrack = async ({
     trackData,
     artistName,
@@ -196,7 +272,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const { publicClient } = viemSetup(walletAddress);
 
       const splitsClient = new SplitV2Client({
-        chainId: baseSepolia.id, // Base Sepolia chain ID
+        chainId: base.id, // Base chain ID
         publicClient, // viem public client (optional, required if using any of the contract functions)
         walletClient, // viem wallet client (optional, required if using any contract write functions. must have an account already attached)
         includeEnsNames: false,
@@ -215,7 +291,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         splitType: SplitV2Type.Push,
         ownerAddress: walletClient.account.address.toLowerCase() as Address,
         creatorAddress: walletClient.account.address.toLowerCase() as Address,
-        chainId: Number(baseSepolia.id),
+        chainId: Number(base.id),
       };
       let splitAddress = "";
       if (collaborators.length > 1) {
@@ -251,8 +327,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const coinParams = {
         name: trackData.title,
         symbol: "MUSIC",
-        uri: jsonUri.toString(),
-        chainId: Number(baseSepolia.id), // baseSepolia.id
+        uri: jsonUri as ValidMetadataURI,
+        chainId: Number(base.id),
         owners: collaborators.map((c) => c.walletAddress as Address),
         payoutRecipient:
           collaborators.length > 1
@@ -260,7 +336,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             : (walletAddress.toLowerCase() as Address),
         platformReferrer:
           "0xb43C9F0F2bb65A37761E7867a6f1903799f45D65" as Address,
-        currency: DeployCurrency.ETH,
+        currency: DeployCurrency.ZORA,
       };
 
       if (!walletClient) {
@@ -277,6 +353,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const { error } = await createTrack(track);
       if (error) throw error;
       fetchCoins();
+
+      return result;
     } catch (error) {
       console.error("Error adding track:", error);
       throw error; // Re-throw to handle in the component
@@ -289,7 +367,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     walletAddress,
     coinAddress,
   }: {
-    type: "buy" | "sell";
+    type: "eth" | "coin" | "usdc";
     amount: string;
     walletAddress: string;
     coinAddress: string;
@@ -297,31 +375,57 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!walletClient) {
       throw new Error("Wallet client is not available.");
     }
-    console.log("Trading coins with params:", {
-      type,
-      amount,
-      walletAddress,
-      coinAddress,
-    });
 
-    const buyParams = {
-      direction: type,
-      target: coinAddress as Address,
-      args: {
-        recipient: walletAddress as Address, // Where to receive the purchased coins
-        orderSize: parseEther(amount), // Amount of ETH to spend
-        minAmountOut: 0n, // Minimum amount of coins to receive (0 = no minimum)
-        tradeReferrer: "0xb43C9F0F2bb65A37761E7867a6f1903799f45D65" as Address, // Optional
-      },
-    };
+    let tradeParameters: any;
+
+    if (type === "eth") {
+      tradeParameters = {
+        sell: { type: "eth" },
+        buy: {
+          type: "erc20",
+          address: coinAddress,
+        },
+        amountIn: parseEther(amount),
+        slippage: 0.05, // 5% slippage tolerance
+        sender: walletAddress,
+      };
+    } else if (type === "usdc") {
+      tradeParameters = {
+        sell: {
+          type: "erc20",
+          address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC address
+        },
+        buy: {
+          type: "erc20",
+          address: coinAddress,
+        },
+        amountIn: BigInt(+amount * 10 ** 6),
+        slippage: 0.05, // 5% slippage tolerance
+        sender: walletAddress,
+      };
+    } else {
+      tradeParameters = {
+        sell: { type: "erc20", address: coinAddress },
+        buy: {
+          type: "eth",
+        },
+        amountIn: parseEther(amount),
+        slippage: 0.15, // 5% slippage tolerance
+        sender: walletAddress,
+      };
+    }
 
     const { publicClient } = viemSetup(walletAddress);
-    const result = await tradeCoin(buyParams, walletClient, publicClient);
+    const receipt = await tradeCoin({
+      tradeParameters,
+      walletClient,
+      account: walletClient.account,
+      publicClient,
+    });
 
-    console.log("Transaction hash:", result.hash);
-    console.log("Trade details:", result.trade);
-
-    console.log("Result:", result);
+    fetchCoins();
+    fetchUserBalances();
+    return receipt;
   };
 
   return (
@@ -333,6 +437,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         artistLoading,
         addTrack,
         tradeCoins,
+        profileBalances,
       }}
     >
       {children}

@@ -13,6 +13,7 @@ import { getArtist } from "../../client/supabase";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./Upload.module.css";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 interface Collaborator {
   name: string;
@@ -75,7 +76,7 @@ const Upload: React.FC = () => {
 
       setIsCheckingArtist(true);
       try {
-        const { data, error } = await getArtist(walletAddress);
+        const { data, error } = await getArtist(walletAddress.toLowerCase());
         if (data && !error) {
           setArtistExists(true);
           setArtistName(data.full_name || "Unknown Artist");
@@ -144,19 +145,26 @@ const Upload: React.FC = () => {
 
     setIsUploading(true);
     try {
-      await addTrack({
-        trackData,
-        artistName,
-        walletAddress,
-        artworkFile: artworkFile!,
-        previewFile: previewFile!,
-        fullFile: fullFile!,
-        collaborators,
-      });
+      await toast.promise(
+        addTrack({
+          trackData,
+          artistName,
+          walletAddress,
+          artworkFile: artworkFile!,
+          previewFile: previewFile!,
+          fullFile: fullFile!,
+          collaborators,
+        }),
+        {
+          loading: "Adding track...",
+          success: "Track added successfully! 🎵",
+          error: (err) => `Failed to add track: ${err.message}`,
+        }
+      );
       navigate("/dashboard");
     } catch (error) {
       console.error("Error uploading track:", error);
-      alert("Failed to upload track. Please try again.");
+      // Toast already handled the error - no need for alert
     } finally {
       setIsUploading(false);
     }

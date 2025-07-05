@@ -454,6 +454,16 @@
   gap: 0.5rem;
 }
 
+.publishButton:disabled {
+  background: rgba(139, 92, 246, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.backButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .spinner {
   width: 20px;
   height: 20px;

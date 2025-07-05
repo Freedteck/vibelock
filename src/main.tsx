@@ -66,12 +66,12 @@ createAppKit({
 });
 
 const publicClient = createPublicClient({
-  chain: baseSepolia,
+  chain: base,
   transport: http(),
 });
 
 const splitsConfig = {
-  chainId: baseSepolia.id,
+  chainId: base.id,
   publicClient,
 };
 

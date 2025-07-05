@@ -11,17 +11,17 @@ import {
   Shuffle,
   Repeat,
 } from "lucide-react";
-import { Track } from "../../data/mockData";
-// import { useAppContext } from '../../context/AppContext';
 import styles from "./AudioPlayer.module.css";
+import { useAppContext } from "../../context/AppContext";
+import { CoinTrack } from "../../models";
 
 interface AudioPlayerProps {
-  currentTrack: Track | null;
+  currentTrack: CoinTrack | null;
   isPlaying: boolean;
   onPlayPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
-  playlist: Track[];
+  playlist: CoinTrack[];
   currentIndex: number;
 }
 
@@ -43,6 +43,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
+  const { profileBalances } = useAppContext();
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
   // const { state } = useAppContext();
 
@@ -129,6 +131,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     setDuration(0);
   }, [currentTrack]);
 
+  useEffect(() => {
+    if (currentTrack) {
+      setIsUnlocked(
+        profileBalances?.some((balance: any) => balance.id === currentTrack.id)
+      );
+    }
+  }, [currentTrack, profileBalances]);
+
   const formatTime = (time: number) => {
     if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -183,8 +193,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   if (!currentTrack) return null;
 
-  const isUnlocked = true;
-  const audioUrl = isUnlocked ? currentTrack.fullUrl : currentTrack.previewUrl;
+  const audioUrl = isUnlocked
+    ? currentTrack.premiumAudio
+    : currentTrack.mediaUrl;
 
   return (
     <div
@@ -203,7 +214,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <div className={styles.miniPlayer}>
         <div className={styles.trackInfo}>
           <img
-            src={currentTrack.artwork}
+            src={currentTrack.artworkUrl}
             alt={currentTrack.title}
             className={styles.albumArt}
           />
