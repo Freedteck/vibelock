@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Music, Users, ExternalLink, Play } from "lucide-react";
+import {
+  Music,
+  Users,
+  ExternalLink,
+  // Play
+} from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import MobileHeader from "../../components/MobileHeader/MobileHeader";
 import styles from "./ArtistProfile.module.css";
@@ -72,8 +77,11 @@ const ArtistProfile: React.FC = () => {
         <div className={styles.hero}>
           <div
             className={styles.banner}
-            style={{ 
-              backgroundImage: `url(${artist?.banner_image || 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800'})` 
+            style={{
+              backgroundImage: `url(${
+                artist?.banner_image ||
+                "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800"
+              })`,
             }}
           >
             <div className={styles.bannerOverlay} />
@@ -81,17 +89,21 @@ const ArtistProfile: React.FC = () => {
 
           <div className={styles.profileInfo}>
             <img
-              src={artist?.profile_image || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150'}
+              src={
+                artist?.profile_image ||
+                "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150"
+              }
               alt={artist.full_name}
               className={styles.avatar}
             />
             <div className={styles.artistDetails}>
               <h1 className={styles.artistName}>{artist.full_name}</h1>
               <p className={styles.artistBio}>
-                {artist.bio || "A passionate artist creating amazing music for the world to enjoy."}
+                {artist.bio ||
+                  "A passionate artist creating amazing music for the world to enjoy."}
               </p>
 
-              <div className={styles.artistStats}>
+              {/* <div className={styles.artistStats}>
                 <div className={styles.statItem}>
                   <Users className={styles.statIcon} size={20} />
                   <div className={styles.statValue}>1.2K</div>
@@ -107,7 +119,7 @@ const ArtistProfile: React.FC = () => {
                   <div className={styles.statValue}>45.2K</div>
                   <div className={styles.statLabel}>Plays</div>
                 </div>
-              </div>
+              </div> */}
 
               <div className={styles.socialLinks}>
                 {artist?.twitter && (
@@ -173,7 +185,10 @@ const ArtistProfile: React.FC = () => {
             <div className={styles.noTracks}>
               <Music size={64} />
               <h3>No tracks yet</h3>
-              <p>This artist hasn't uploaded any tracks yet. Check back soon for new releases!</p>
+              <p>
+                This artist hasn't uploaded any tracks yet. Check back soon for
+                new releases!
+              </p>
             </div>
           )}
         </div>
@@ -195,32 +210,40 @@ const ArtistProfile: React.FC = () => {
 
             <div className={styles.collaborationsList}>
               {artistTracks
-                .filter(track => track.collaborators && track.collaborators.length > 1)
+                .filter(
+                  (track) =>
+                    track.collaborators && track.collaborators.length > 1
+                )
                 .slice(0, 3)
                 .map((track) => (
-                <div key={track.id} className={styles.collaborationItem}>
-                  <img
-                    src={track.artworkUrl}
-                    alt={track.title}
-                    className={styles.collabArtwork}
-                  />
-                  <div className={styles.collabInfo}>
-                    <h3 className={styles.collabTitle}>{track.title}</h3>
-                    <div className={styles.collabArtists}>
-                      {track?.collaborators?.map((collab, index) => (
-                        <span key={index} className={styles.collabArtist}>
-                          {collab.name} ({collab.percentage}%)
-                        </span>
-                      ))}
+                  <div key={track.id} className={styles.collaborationItem}>
+                    <img
+                      src={track.artworkUrl}
+                      alt={track.title}
+                      className={styles.collabArtwork}
+                    />
+                    <div className={styles.collabInfo}>
+                      <h3 className={styles.collabTitle}>{track.title}</h3>
+                      <div className={styles.collabArtists}>
+                        {track?.collaborators?.map((collab, index) => (
+                          <span key={index} className={styles.collabArtist}>
+                            {collab.name} ({collab.percentage}%)
+                          </span>
+                        ))}
+                      </div>
                     </div>
+                    <Link
+                      to={`/track/${track.id}`}
+                      className={styles.collabLink}
+                    >
+                      Listen
+                    </Link>
                   </div>
-                  <Link to={`/track/${track.id}`} className={styles.collabLink}>
-                    Listen
-                  </Link>
-                </div>
-              ))}
-              
-              {artistTracks.filter(track => track.collaborators && track.collaborators.length > 1).length === 0 && (
+                ))}
+
+              {artistTracks.filter(
+                (track) => track.collaborators && track.collaborators.length > 1
+              ).length === 0 && (
                 <div className={styles.noTracks}>
                   <Users size={48} />
                   <h3>No collaborations yet</h3>

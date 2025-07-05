@@ -1,6 +1,10 @@
 .home {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.05) 0%,
+    rgba(236, 72, 153, 0.05) 100%
+  );
 }
 
 .hero {
@@ -10,13 +14,17 @@
 }
 
 .hero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 200px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(236, 72, 153, 0.1) 100%
+  );
   border-radius: 0 0 2rem 2rem;
   z-index: -1;
 }
@@ -175,8 +183,9 @@
 
 .statsSection {
   padding: 2rem 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  margin: 2rem -1rem 0 -1rem;
+  /* background: rgba(255, 255, 255, 0.02); */
+  /* margin: 2rem -1rem 0 -1rem; */
+  max-width: 100%;
 }
 
 .statsGrid {
@@ -381,20 +390,25 @@
 }
 
 .discoverCard::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>')
+    repeat;
   background-size: 50px 50px;
   animation: float 20s linear infinite;
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-100px); }
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
 }
 
 .discoverContent {
@@ -489,7 +503,7 @@
 
   .statsSection {
     padding: 3rem 2rem;
-    margin: 3rem -2rem 0 -2rem;
+    /* margin: 3rem -2rem 0 -2rem; */
   }
 
   .statsGrid {
@@ -506,9 +520,9 @@
     margin-right: 1rem;
   }
 
-  .section {
+  /* .section {
     padding: 0 2rem;
-  }
+  } */
 
   .sectionHeader {
     padding: 0 1rem;
@@ -561,12 +575,12 @@
 
   .statsSection {
     padding: 4rem 3rem;
-    margin: 4rem -3rem 0 -3rem;
+    /* margin: 4rem -3rem 0 -3rem; */
   }
 
-  .section {
+  /* .section {
     padding: 0 3rem;
-  }
+  } */
 
   .artistCard {
     width: 160px;
