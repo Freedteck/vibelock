@@ -36,11 +36,6 @@ function AppContent() {
     setApiKey(`${import.meta.env.VITE_ZORA_API_KEY}`);
   }, []);
 
-  // Update playlist when tracks change
-  useEffect(() => {
-    setPlaylist(tracks);
-  }, [tracks]);
-
   const toggleShuffle = () => {
     if (!isShuffled) {
       // Create a shuffled copy of the playlist without the current track
@@ -81,10 +76,10 @@ function AppContent() {
     track: CoinTrack,
     trackList: CoinTrack[] = tracks
   ) => {
-    if (trackList && trackList.length > 0) {
+    if (trackList) {
       setPlaylist(trackList);
       const index = trackList.findIndex((t) => t.id === track.id);
-      setCurrentTrackIndex(index >= 0 ? index : 0);
+      setCurrentTrackIndex(index);
     }
 
     if (currentTrack?.id === track.id) {
@@ -132,7 +127,7 @@ function AppContent() {
 
   const handleTrackEnd = () => {
     if (repeatMode === "one") {
-      // Repeat current track - just restart it
+      // Repeat current track
       setIsPlaying(true);
       return;
     }
@@ -147,15 +142,12 @@ function AppContent() {
         setCurrentTrack(activePlaylist[0]);
         setIsPlaying(true);
       } else {
-        // Stop playing (repeatMode === "none")
+        // Stop playing
         setIsPlaying(false);
       }
     } else {
       // Go to next track
-      const nextIndex = currentTrackIndex + 1;
-      setCurrentTrackIndex(nextIndex);
-      setCurrentTrack(activePlaylist[nextIndex]);
-      setIsPlaying(true);
+      handleNext();
     }
   };
 

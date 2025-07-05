@@ -3,73 +3,46 @@
   bottom: 80px; /* Above bottom navigation */
   left: 0;
   right: 0;
-  background: rgba(26, 26, 26, 0.98);
-  backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
   z-index: 90;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .progressBar {
-  height: 3px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
   position: relative;
-  overflow: hidden;
 }
 
 .progress {
   height: 100%;
-  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  background: #8b5cf6;
   transition: width 0.1s ease;
-  position: relative;
-}
-
-.progress::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-20px); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateX(20px); opacity: 0; }
 }
 
 .playerContent {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
-  gap: 16px;
+  padding: 12px 16px;
+  gap: 12px;
 }
 
 .trackInfo {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
 
 .albumArt {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-.playerContent:hover .albumArt {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .trackDetails {
@@ -78,10 +51,10 @@
 }
 
 .trackTitle {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -89,7 +62,7 @@
 }
 
 .trackArtist {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.2;
@@ -101,13 +74,13 @@
 .controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .controlButton {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -117,24 +90,18 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative;
 }
 
 .controlButton:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  transform: scale(1.05);
-}
-
-.controlButton:active {
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .playButton {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  background: #8b5cf6;
   border: none;
   color: white;
   display: flex;
@@ -142,21 +109,16 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 }
 
 .playButton:hover {
+  background: #7c3aed;
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-}
-
-.playButton:active {
-  transform: scale(0.95);
 }
 
 .expandButton {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -171,8 +133,7 @@
 
 .expandButton:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Desktop adjustments */
@@ -186,33 +147,19 @@
   .playerContent {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 28px;
+    padding: 16px 24px;
   }
   
   .albumArt {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
   }
   
   .trackTitle {
-    font-size: 17px;
+    font-size: 16px;
   }
   
   .trackArtist {
-    font-size: 15px;
-  }
-
-  .controls {
-    gap: 16px;
-  }
-
-  .controlButton {
-    width: 44px;
-    height: 44px;
-  }
-
-  .playButton {
-    width: 48px;
-    height: 48px;
+    font-size: 14px;
   }
 }

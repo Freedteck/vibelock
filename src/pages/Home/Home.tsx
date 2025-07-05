@@ -7,7 +7,10 @@ import {
   ChevronRight, 
   Play, 
   Pause,
-  Search
+  Upload,
+  Search,
+  Headphones,
+  Star
 } from "lucide-react";
 import CompactTrackCard from "../../components/CompactTrackCard/CompactTrackCard";
 import HorizontalScroll from "../../components/HorizontalScroll/HorizontalScroll";
@@ -70,6 +73,33 @@ const Home: React.FC<HomeProps> = ({
     onTrackPlay(track);
   };
 
+  const quickActions = [
+    {
+      icon: <Upload size={24} />,
+      title: "Upload Music",
+      description: "Share your tracks",
+      link: "/upload"
+    },
+    {
+      icon: <Search size={24} />,
+      title: "Discover",
+      description: "Find new music",
+      link: "/discover"
+    },
+    {
+      icon: <Headphones size={24} />,
+      title: "My Library",
+      description: "Your collection",
+      link: "/dashboard"
+    },
+    {
+      icon: <Star size={24} />,
+      title: "Top Charts",
+      description: "Popular tracks",
+      link: "/discover"
+    }
+  ];
+
   return (
     <div className={styles.home}>
       {/* Hero Section with Welcome */}
@@ -94,10 +124,7 @@ const Home: React.FC<HomeProps> = ({
                 className={styles.featuredArtwork}
               />
               <div className={styles.featuredInfo}>
-                <div className={styles.featuredLabel}>
-                  <TrendingUp size={14} />
-                  Featured Track
-                </div>
+                <div className={styles.featuredLabel}>Featured Track</div>
                 <h2 className={styles.featuredTitle}>{featuredTrack?.title}</h2>
                 <p className={styles.featuredArtist}>
                   by {featuredTrack?.artist}
@@ -133,25 +160,48 @@ const Home: React.FC<HomeProps> = ({
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
             <div className={styles.statIcon}>
-              <Music size={28} />
+              <Music size={24} />
             </div>
             <div className={styles.statNumber}>{tracks.length}</div>
             <div className={styles.statLabel}>Total Tracks</div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.statIcon}>
-              <Users size={28} />
+              <Users size={24} />
             </div>
             <div className={styles.statNumber}>5.4K</div>
             <div className={styles.statLabel}>Active Users</div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.statIcon}>
-              <TrendingUp size={28} />
+              <TrendingUp size={24} />
             </div>
             <div className={styles.statNumber}>$127K</div>
             <div className={styles.statLabel}>Volume Traded</div>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Actions */}
+      <section className={styles.quickActions}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionIcon}>
+              <Star size={18} />
+            </div>
+            Quick Actions
+          </h2>
+        </div>
+        <div className={styles.actionsGrid}>
+          {quickActions.map((action, index) => (
+            <Link key={index} to={action.link} className={styles.actionCard}>
+              <div className={styles.actionIcon}>
+                {action.icon}
+              </div>
+              <h3 className={styles.actionTitle}>{action.title}</h3>
+              <p className={styles.actionDescription}>{action.description}</p>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -161,7 +211,7 @@ const Home: React.FC<HomeProps> = ({
           <MusicPulseLoader text="Loading trending tracks..." />
         </div>
       ) : (
-        <HorizontalScroll title="Trending Now">
+        <HorizontalScroll title="🔥 Trending Now">
           {trendingTracks.map((track) => (
             <CompactTrackCard
               key={track.id}
@@ -179,7 +229,7 @@ const Home: React.FC<HomeProps> = ({
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
             <div className={styles.sectionIcon}>
-              <Users size={20} />
+              <Users size={18} />
             </div>
             Featured Artists
           </h2>
@@ -216,7 +266,7 @@ const Home: React.FC<HomeProps> = ({
           <MusicPulseLoader text="Loading recent releases..." />
         </div>
       ) : (
-        <HorizontalScroll title="Fresh Releases">
+        <HorizontalScroll title="🆕 Fresh Releases">
           {recentReleases.map((track) => (
             <CompactTrackCard
               key={track.id}

@@ -84,7 +84,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
         {/* Header */}
         <div className={styles.header}>
           <button onClick={onClose} className={styles.closeButton}>
-            <ChevronDown size={28} />
+            <ChevronDown size={24} />
           </button>
           <div className={styles.headerInfo}>
             <span className={styles.playingFrom}>
@@ -93,7 +93,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
           </div>
           <div className={styles.headerActions}>
             <button className={styles.actionButton}>
-              <Share2 size={22} />
+              <Share2 size={20} />
             </button>
           </div>
         </div>
@@ -123,7 +123,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
             onChange={handleSeek}
             className={styles.progressSlider}
             style={{
-              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.1) ${progress}%, rgba(255,255,255,0.1) 100%)`,
+              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.2) ${progress}%, rgba(255,255,255,0.2) 100%)`,
             }}
           />
           <div className={styles.timeInfo}>
@@ -140,16 +140,16 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
               isShuffled ? styles.active : ""
             }`}
           >
-            <Shuffle size={26} />
+            <Shuffle size={24} />
           </button>
           <button onClick={onPrevious} className={styles.controlButton}>
-            <SkipBack size={30} />
+            <SkipBack size={28} />
           </button>
           <button onClick={onPlayPause} className={styles.playButton}>
-            {isPlaying ? <Pause size={36} /> : <Play size={36} />}
+            {isPlaying ? <Pause size={32} /> : <Play size={32} />}
           </button>
           <button onClick={onNext} className={styles.controlButton}>
-            <SkipForward size={30} />
+            <SkipForward size={28} />
           </button>
           <button 
             onClick={onRepeat}
@@ -157,9 +157,25 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
               repeatMode !== "none" ? styles.active : ""
             }`}
           >
-            <Repeat size={26} />
+            <Repeat size={24} />
             {repeatMode === "one" && (
-              <span className={styles.repeatIndicator}>1</span>
+              <span style={{
+                position: "absolute",
+                top: "-2px",
+                right: "-2px",
+                fontSize: "8px",
+                fontWeight: "bold",
+                background: "#8b5cf6",
+                color: "white",
+                borderRadius: "50%",
+                width: "12px",
+                height: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                1
+              </span>
             )}
           </button>
         </div>
