@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider, useAppContext } from "./context/AppContext";
-import Header from "./components/Header/Header";
-import MobileHeader from "./components/MobileHeader/MobileHeader";
-import BottomNavigation from "./components/BottomNavigation/BottomNavigation";
-import BottomPlayer from "./components/BottomPlayer/BottomPlayer";
+import AppLayout from "./components/Layout/AppLayout";
 import NotificationModal from "./components/NotificationModal/NotificationModal";
 import Home from "./pages/Home/Home";
 import Discover from "./pages/Discover/Discover";
@@ -13,6 +10,7 @@ import Upload from "./pages/Upload/Upload";
 import ArtistProfile from "./pages/ArtistProfile/ArtistProfile";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import { useNotification } from "./hooks/useNotification";
+import { useTheme } from "./hooks/useTheme";
 import "./styles/globals.css";
 import { setApiKey } from "@zoralabs/coins-sdk";
 import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile";
@@ -30,11 +28,22 @@ function AppContent() {
   const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
 
   const { notification, hideNotification } = useNotification();
+  const { theme } = useTheme();
 
-  // TODO: Set Zora API Key
+  // Initialize theme
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  // Set Zora API Key
   useEffect(() => {
     setApiKey(`${import.meta.env.VITE_ZORA_API_KEY}`);
   }, []);
+
+  // Update playlist when tracks change
+  useEffect(() => {
+    setPlaylist(tracks);
+  }, [tracks]);
 
   const toggleShuffle = () => {
     if (!isShuffled) {
@@ -153,83 +162,81 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="App">
-        {/* Desktop Header */}
-        <Header />
+      <AppLayout
+        currentTrack={currentTrack}
+        isPlaying={isPlaying}
+        onTrackPlay={handleTrackPlay}
+        onPlayPause={handlePlayPause}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        onTrackEnd={handleTrackEnd}
+        playlist={playlist}
+        currentIndex={currentTrackIndex}
+        isShuffled={isShuffled}
+        onShuffle={toggleShuffle}
+        repeatMode={repeatMode}
+        onRepeat={toggleRepeat}
+      >
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                onTrackPlay={handleTrackPlay}
+                currentTrack={currentTrack}
+                isPlaying={isPlaying}
+              />
+            }
+          />
+          <Route
+            path="/discover"
+            element={
+              <Discover
+                onTrackPlay={handleTrackPlay}
+                currentTrack={currentTrack}
+                isPlaying={isPlaying}
+              />
+            }
+          />
+          <Route
+            path="/track/:id"
+            element={
+              <TrackDetail
+                onTrackPlay={handleTrackPlay}
+                currentTrack={currentTrack}
+                isPlaying={isPlaying}
+              />
+            }
+          />
+          <Route path="/upload" element={<Upload />} />
+          <Route
+            path="/create-artist-profile"
+            element={<CreateArtistProfile />}
+          />
+          <Route path="/artist/:id" element={<ArtistProfile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </AppLayout>
 
-        {/* Mobile Header */}
-        <MobileHeader />
-
-        <main style={{ paddingBottom: currentTrack ? "160px" : "80px" }}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  onTrackPlay={handleTrackPlay}
-                  currentTrack={currentTrack}
-                  isPlaying={isPlaying}
-                />
-              }
-            />
-            <Route
-              path="/discover"
-              element={
-                <Discover
-                  onTrackPlay={handleTrackPlay}
-                  currentTrack={currentTrack}
-                  isPlaying={isPlaying}
-                />
-              }
-            />
-            <Route
-              path="/track/:id"
-              element={
-                <TrackDetail
-                  onTrackPlay={handleTrackPlay}
-                  currentTrack={currentTrack}
-                  isPlaying={isPlaying}
-                />
-              }
-            />
-            <Route path="/upload" element={<Upload />} />
-            <Route
-              path="/create-artist-profile"
-              element={<CreateArtistProfile />}
-            />
-            <Route path="/artist/:id" element={<ArtistProfile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-        </main>
-
-        {/* Bottom Player */}
-        <BottomPlayer
-          currentTrack={currentTrack}
-          isPlaying={isPlaying}
-          onPlayPause={handlePlayPause}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          onTrackEnd={handleTrackEnd}
-          playlist={playlist}
-          currentIndex={currentTrackIndex}
-          isShuffled={isShuffled}
-          onShuffle={toggleShuffle}
-          repeatMode={repeatMode}
-          onRepeat={toggleRepeat}
-        />
-
-        {/* Bottom Navigation */}
-        <BottomNavigation />
-
-        <NotificationModal
-          isOpen={notification.isOpen}
-          onClose={hideNotification}
-          type={notification.type}
-          title={notification.title}
-          message={notification.message}
-        />
-        <Toaster position="top-center" />
-      </div>
+      <NotificationModal
+        isOpen={notification.isOpen}
+        onClose={hideNotification}
+        type={notification.type}
+        title={notification.title}
+        message={notification.message}
+      />
+      
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border)',
+          },
+        }}
+      />
     </Router>
   );
 }
