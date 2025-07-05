@@ -1,25 +1,29 @@
 .container {
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding: 0 16px;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
 }
 
 .title {
-  font-size: 20px;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .navigation {
   display: none;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .navButton {
@@ -44,10 +48,10 @@
 
 .scrollContainer {
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 0 16px;
+  padding: 0.5rem 1rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -58,32 +62,41 @@
 
 .scrollContainer > * {
   flex-shrink: 0;
-  width: 160px;
+  width: clamp(140px, 35vw, 180px);
 }
 
-/* Desktop */
+/* Tablet */
 @media (min-width: 768px) {
   .navigation {
     display: flex;
   }
   
   .header {
-    padding: 0 24px;
+    padding: 0 1.5rem;
   }
   
   .scrollContainer {
-    padding: 0 24px;
-    gap: 20px;
+    padding: 0.5rem 1.5rem;
+    gap: 1.25rem;
   }
   
   .scrollContainer > * {
-    width: 200px;
+    width: clamp(180px, 25vw, 220px);
   }
 }
 
-/* Large desktop */
+/* Desktop */
 @media (min-width: 1024px) {
+  .header {
+    padding: 0 2rem;
+  }
+
+  .scrollContainer {
+    padding: 0.5rem 2rem;
+    gap: 1.5rem;
+  }
+
   .scrollContainer > * {
-    width: 220px;
+    width: clamp(200px, 20vw, 240px);
   }
 }

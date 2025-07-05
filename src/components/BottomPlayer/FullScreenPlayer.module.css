@@ -9,6 +9,9 @@
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -24,19 +27,23 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: env(safe-area-inset-top) 24px 24px;
+  width: 100%;
+  padding: env(safe-area-inset-top) 1rem 1rem;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  min-height: 44px;
 }
 
 .closeButton {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -58,20 +65,20 @@
 }
 
 .playingFrom {
-  font-size: 12px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: var(--text-secondary);
   font-weight: 500;
 }
 
 .headerActions {
-  width: 40px;
+  width: 44px;
   display: flex;
   justify-content: flex-end;
 }
 
 .actionButton {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -89,45 +96,49 @@
 }
 
 .artworkContainer {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 -24px;
-  padding: 0 24px;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
 }
 
 .artwork {
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 16px;
+  border-radius: 1rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .trackInfo {
   text-align: center;
-  margin: 32px 0;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  padding: 0 1rem;
 }
 
 .title {
-  font-size: 24px;
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
 
 .artist {
-  font-size: 18px;
+  font-size: clamp(1rem, 4vw, 1.25rem);
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.2;
 }
 
 .progressContainer {
-  margin-bottom: 32px;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  padding: 0 1rem;
 }
 
 .progressSlider {
@@ -138,35 +149,35 @@
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  margin-bottom: 8px;
+  margin-bottom: 0.75rem;
 }
 
 .progressSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #8b5cf6;
   cursor: pointer;
-  border: 2px solid white;
+  border: 3px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .progressSlider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #8b5cf6;
   cursor: pointer;
-  border: 2px solid white;
+  border: 3px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .timeInfo {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -175,13 +186,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  margin-bottom: 32px;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  padding: 0 1rem;
 }
 
 .controlButton {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -191,6 +204,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .controlButton:hover {
@@ -199,8 +213,8 @@
 }
 
 .playButton {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #8b5cf6;
   border: none;
@@ -218,56 +232,29 @@
   transform: scale(1.05);
 }
 
-.bottomActions {
-  display: flex;
-  justify-content: center;
-  margin-bottom: env(safe-area-inset-bottom);
-}
-
-/* Tablet and desktop adjustments */
-@media (min-width: 768px) {
-  .player {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  .artwork {
-    max-width: 280px;
-  }
-
-  .title {
-    font-size: 28px;
-  }
-
-  .artist {
-    font-size: 20px;
-  }
-}
-
-.active {
-  color: #8b5cf6 !important;
-}
-
 .playlistContainer {
   flex: 1;
   overflow-y: auto;
-  margin-top: 16px;
-  padding: 0 8px;
+  margin-top: 0.5rem;
+  padding: 0 0.5rem;
+  min-height: 0;
 }
 
 .playlist {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .playlistItem {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 60px;
 }
 
 .playlistItem:hover {
@@ -279,11 +266,12 @@
 }
 
 .playlistArt {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  margin-right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.5rem;
+  margin-right: 0.75rem;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .playlistInfo {
@@ -293,60 +281,187 @@
 
 .playlistInfo h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: clamp(0.875rem, 3vw, 1rem);
   font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .playlistInfo p {
-  margin: 4px 0 0;
-  font-size: 12px;
+  margin: 0.25rem 0 0;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .nowPlayingIndicator {
-  margin-left: 12px;
-  padding: 4px 8px;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.5rem;
   background-color: rgba(139, 92, 246, 0.2);
   color: #8b5cf6;
-  border-radius: 12px;
-  font-size: 10px;
+  border-radius: 0.75rem;
+  font-size: clamp(0.625rem, 2vw, 0.75rem);
   font-weight: 600;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
-/* Adjust the player container to accommodate playlist */
-.player {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: env(safe-area-inset-top) 24px 24px;
-  overflow: hidden; /* Prevent double scroll bars */
+.active {
+  color: #8b5cf6 !important;
 }
 
-.artworkContainer {
-  flex: 0 0 auto; /* Don't grow or shrink */
-  margin: 0 -24px 16px;
-  padding: 0 24px;
+/* Tablet adjustments */
+@media (min-width: 768px) {
+  .player {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: env(safe-area-inset-top) 2rem 2rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .artworkContainer {
+    margin-bottom: 2rem;
+  }
+
+  .artwork {
+    max-width: 320px;
+    border-radius: 1.25rem;
+  }
+
+  .trackInfo {
+    margin-bottom: 2rem;
+  }
+
+  .progressContainer {
+    margin-bottom: 2rem;
+  }
+
+  .controls {
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .controlButton {
+    width: 56px;
+    height: 56px;
+  }
+
+  .playButton {
+    width: 88px;
+    height: 88px;
+  }
+
+  .playlistContainer {
+    padding: 0 1rem;
+  }
+
+  .playlistItem {
+    padding: 1rem;
+    border-radius: 1rem;
+    min-height: 68px;
+  }
+
+  .playlistArt {
+    width: 52px;
+    height: 52px;
+    margin-right: 1rem;
+  }
+
+  .nowPlayingIndicator {
+    margin-left: 1rem;
+    padding: 0.375rem 0.75rem;
+  }
 }
 
-.trackInfo {
-  flex: 0 0 auto;
-  margin: 0 0 16px;
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  .player {
+    max-width: 600px;
+    padding: env(safe-area-inset-top) 3rem 3rem;
+  }
+
+  .artwork {
+    max-width: 360px;
+  }
+
+  .controls {
+    gap: 2.5rem;
+  }
+
+  .controlButton {
+    width: 60px;
+    height: 60px;
+  }
+
+  .playButton {
+    width: 96px;
+    height: 96px;
+  }
 }
 
-.progressContainer {
-  flex: 0 0 auto;
-  margin-bottom: 16px;
-}
+/* Landscape phone orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .player {
+    flex-direction: row;
+    padding: env(safe-area-inset-top) 1rem 1rem;
+  }
 
-.controls {
-  flex: 0 0 auto;
-  margin-bottom: 16px;
+  .leftPanel {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    padding-right: 1rem;
+  }
+
+  .rightPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .artworkContainer {
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  .artwork {
+    max-width: 200px;
+  }
+
+  .trackInfo {
+    margin-bottom: 1rem;
+  }
+
+  .progressContainer {
+    margin-bottom: 1rem;
+  }
+
+  .controls {
+    gap: 1rem;
+    margin-bottom: 0;
+  }
+
+  .controlButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .playButton {
+    width: 64px;
+    height: 64px;
+  }
+
+  .playlistContainer {
+    margin-top: 0;
+  }
 }

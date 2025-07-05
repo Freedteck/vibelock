@@ -98,90 +98,93 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
           </div>
         </div>
 
-        {/* Album Art */}
-        <div className={styles.artworkContainer}>
-          <img
-            src={currentTrack.artworkUrl}
-            alt={currentTrack.title}
-            className={styles.artwork}
-          />
-        </div>
+        {/* Main Content - responsive layout */}
+        <div className="leftPanel">
+          {/* Album Art */}
+          <div className={styles.artworkContainer}>
+            <img
+              src={currentTrack.artworkUrl}
+              alt={currentTrack.title}
+              className={styles.artwork}
+            />
+          </div>
 
-        {/* Track Info */}
-        <div className={styles.trackInfo}>
-          <h1 className={styles.title}>{currentTrack.title}</h1>
-          <p className={styles.artist}>{currentTrack.artist}</p>
-        </div>
+          {/* Track Info */}
+          <div className={styles.trackInfo}>
+            <h1 className={styles.title}>{currentTrack.title}</h1>
+            <p className={styles.artist}>{currentTrack.artist}</p>
+          </div>
 
-        {/* Progress */}
-        <div className={styles.progressContainer}>
-          <input
-            type="range"
-            min="0"
-            max={duration || 100}
-            value={currentTime}
-            onChange={handleSeek}
-            className={styles.progressSlider}
-            style={{
-              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.2) ${progress}%, rgba(255,255,255,0.2) 100%)`,
-            }}
-          />
-          <div className={styles.timeInfo}>
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+          {/* Progress */}
+          <div className={styles.progressContainer}>
+            <input
+              type="range"
+              min="0"
+              max={duration || 100}
+              value={currentTime}
+              onChange={handleSeek}
+              className={styles.progressSlider}
+              style={{
+                background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${progress}%, rgba(255,255,255,0.2) ${progress}%, rgba(255,255,255,0.2) 100%)`,
+              }}
+            />
+            <div className={styles.timeInfo}>
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className={styles.controls}>
+            <button
+              onClick={onShuffle}
+              className={`${styles.controlButton} ${
+                isShuffled ? styles.active : ""
+              }`}
+            >
+              <Shuffle size={24} />
+            </button>
+            <button onClick={onPrevious} className={styles.controlButton}>
+              <SkipBack size={28} />
+            </button>
+            <button onClick={onPlayPause} className={styles.playButton}>
+              {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+            </button>
+            <button onClick={onNext} className={styles.controlButton}>
+              <SkipForward size={28} />
+            </button>
+            <button 
+              onClick={onRepeat}
+              className={`${styles.controlButton} ${
+                repeatMode !== "none" ? styles.active : ""
+              }`}
+            >
+              <Repeat size={24} />
+              {repeatMode === "one" && (
+                <span style={{
+                  position: "absolute",
+                  top: "-2px",
+                  right: "-2px",
+                  fontSize: "8px",
+                  fontWeight: "bold",
+                  background: "#8b5cf6",
+                  color: "white",
+                  borderRadius: "50%",
+                  width: "12px",
+                  height: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  1
+                </span>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className={styles.controls}>
-          <button
-            onClick={onShuffle}
-            className={`${styles.controlButton} ${
-              isShuffled ? styles.active : ""
-            }`}
-          >
-            <Shuffle size={24} />
-          </button>
-          <button onClick={onPrevious} className={styles.controlButton}>
-            <SkipBack size={28} />
-          </button>
-          <button onClick={onPlayPause} className={styles.playButton}>
-            {isPlaying ? <Pause size={32} /> : <Play size={32} />}
-          </button>
-          <button onClick={onNext} className={styles.controlButton}>
-            <SkipForward size={28} />
-          </button>
-          <button 
-            onClick={onRepeat}
-            className={`${styles.controlButton} ${
-              repeatMode !== "none" ? styles.active : ""
-            }`}
-          >
-            <Repeat size={24} />
-            {repeatMode === "one" && (
-              <span style={{
-                position: "absolute",
-                top: "-2px",
-                right: "-2px",
-                fontSize: "8px",
-                fontWeight: "bold",
-                background: "#8b5cf6",
-                color: "white",
-                borderRadius: "50%",
-                width: "12px",
-                height: "12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
-                1
-              </span>
-            )}
-          </button>
-        </div>
-
         {/* Playlist */}
-        <div className={styles.playlistContainer}>
+        <div className={`${styles.playlistContainer} rightPanel`}>
           <div className={styles.playlist}>
             {playlist.map((track, index) => (
               <div

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, TrendingUp, Star } from 'lucide-react';
 import styles from './HorizontalScroll.module.css';
 
 interface HorizontalScrollProps {
@@ -30,10 +30,23 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
     });
   };
 
+  const getIcon = () => {
+    if (title.includes('Trending')) {
+      return <TrendingUp size={20} />;
+    }
+    if (title.includes('Fresh') || title.includes('Recent')) {
+      return <Star size={20} />;
+    }
+    return null;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={styles.title}>
+          {getIcon()}
+          {title}
+        </h2>
         {showNavigation && (
           <div className={styles.navigation}>
             <button 

@@ -4,7 +4,7 @@
 }
 
 .hero {
-  padding: 32px 16px 48px;
+  padding: 1rem;
   position: relative;
   overflow: hidden;
 }
@@ -15,14 +15,14 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 300px;
+  height: 200px;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-  border-radius: 0 0 50px 50px;
+  border-radius: 0 0 2rem 2rem;
   z-index: -1;
 }
 
 .heroContent {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -30,136 +30,143 @@
 
 .welcomeSection {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
 }
 
 .welcomeTitle {
-  font-size: 32px;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
   font-weight: 800;
   background: linear-gradient(135deg, #8b5cf6, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0 0 8px 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
 
 .welcomeSubtitle {
-  font-size: 16px;
+  font-size: clamp(0.875rem, 3vw, 1rem);
   color: var(--text-secondary);
   margin: 0;
   opacity: 0.9;
+  line-height: 1.4;
 }
 
 .featuredTrack {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  flex-direction: column;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 1rem;
+  padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
 }
 
 .featuredTrack:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   border-color: rgba(139, 92, 246, 0.3);
 }
 
+.featuredTrack:active {
+  transform: translateY(0);
+}
+
 .featuredArtwork {
-  width: 100px;
-  height: 100px;
-  border-radius: 16px;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 200px;
+  border-radius: 0.75rem;
   object-fit: cover;
-  flex-shrink: 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin: 0 auto 1rem auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
 .featuredTrack:hover .featuredArtwork {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .featuredInfo {
-  flex: 1;
-  min-width: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .featuredLabel {
-  font-size: 12px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: #8b5cf6;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.featuredLabel::before {
-  content: '🔥';
-  font-size: 14px;
+  justify-content: center;
+  gap: 0.375rem;
 }
 
 .featuredTitle {
-  font-size: 20px;
+  font-size: clamp(1.125rem, 4vw, 1.5rem);
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 0.25rem 0;
   line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .featuredArtist {
-  font-size: 14px;
+  font-size: clamp(0.875rem, 3vw, 1rem);
   color: var(--text-secondary);
-  margin: 0 0 16px 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
 }
 
 .featuredStats {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .featuredStat {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
+  gap: 0.25rem;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: var(--text-secondary);
 }
 
 .playButton {
-  padding: 12px 24px;
+  padding: 0.875rem 1.5rem;
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 2rem;
   font-weight: 600;
-  font-size: 14px;
+  font-size: clamp(0.875rem, 3vw, 1rem);
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+  margin: 0 auto;
+  min-height: 44px;
+  width: 100%;
+  max-width: 200px;
 }
 
 .playButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
 }
 
 .playButton:active {
@@ -167,16 +174,16 @@
 }
 
 .statsSection {
-  padding: 48px 16px;
+  padding: 2rem 1rem;
   background: rgba(255, 255, 255, 0.02);
-  margin: 0 -16px;
+  margin: 2rem -1rem 0 -1rem;
 }
 
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  max-width: 1200px;
+  gap: 0.75rem;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -184,25 +191,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px 16px;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   text-align: center;
 }
 
 .statCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(139, 92, 246, 0.3);
 }
 
 .statIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: clamp(2rem, 8vw, 3rem);
+  height: clamp(2rem, 8vw, 3rem);
+  border-radius: 0.75rem;
   background: linear-gradient(135deg, #8b5cf6, #ec4899);
   display: flex;
   align-items: center;
@@ -212,46 +219,46 @@
 }
 
 .statNumber {
-  font-size: 24px;
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1;
 }
 
 .statLabel {
-  font-size: 14px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   color: var(--text-secondary);
   line-height: 1;
   font-weight: 500;
 }
 
 .section {
-  margin-bottom: 48px;
-  padding: 0 16px;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
 }
 
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 0 8px;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
 }
 
 .sectionTitle {
-  font-size: 24px;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .sectionIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: clamp(1.5rem, 4vw, 2rem);
+  height: clamp(1.5rem, 4vw, 2rem);
+  border-radius: 0.5rem;
   background: linear-gradient(135deg, #8b5cf6, #ec4899);
   display: flex;
   align-items: center;
@@ -262,14 +269,14 @@
 .sectionLink {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 600;
-  font-size: 14px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   transition: all 0.2s ease;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -281,9 +288,9 @@
 
 .artistsScroll {
   display: flex;
-  gap: 20px;
+  gap: 1rem;
   overflow-x: auto;
-  padding: 8px;
+  padding: 0.5rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -299,36 +306,36 @@
   text-decoration: none;
   color: inherit;
   flex-shrink: 0;
-  width: 120px;
+  width: clamp(6rem, 20vw, 8rem);
   text-align: center;
-  padding: 16px;
-  border-radius: 16px;
+  padding: 1rem 0.5rem;
+  border-radius: 1rem;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .artistCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(139, 92, 246, 0.3);
 }
 
 .artistAvatar {
-  width: 80px;
-  height: 80px;
+  width: clamp(3rem, 12vw, 5rem);
+  height: clamp(3rem, 12vw, 5rem);
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 12px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .artistCard:hover .artistAvatar {
   border-color: #8b5cf6;
   transform: scale(1.05);
-  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
 }
 
 .artistInfo {
@@ -336,10 +343,10 @@
 }
 
 .artistName {
-  font-size: 14px;
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 0.25rem 0;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -347,7 +354,7 @@
 }
 
 .artistStats {
-  font-size: 12px;
+  font-size: clamp(0.625rem, 2vw, 0.75rem);
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.2;
@@ -357,16 +364,16 @@
 }
 
 .discoverSection {
-  padding: 48px 16px;
-  margin: 48px 0;
+  padding: 2rem 1rem;
+  margin: 2rem 0;
 }
 
 .discoverCard {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 48px 32px;
+  padding: 2rem 1.5rem;
   background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-  border-radius: 24px;
+  border-radius: 1.5rem;
   text-align: center;
   color: white;
   position: relative;
@@ -396,211 +403,177 @@
 }
 
 .discoverTitle {
-  font-size: 28px;
+  font-size: clamp(1.5rem, 5vw, 2rem);
   font-weight: 800;
-  margin: 0 0 12px 0;
+  margin: 0 0 0.75rem 0;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .discoverText {
-  font-size: 16px;
-  margin: 0 0 32px 0;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+  margin: 0 0 2rem 0;
   opacity: 0.95;
   line-height: 1.5;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 100%;
 }
 
 .discoverButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 16px 32px;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   text-decoration: none;
-  border-radius: 25px;
+  border-radius: 2rem;
   font-weight: 700;
+  font-size: clamp(0.875rem, 3vw, 1rem);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  min-height: 44px;
 }
 
 .discoverButton:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-.quickActions {
-  padding: 0 16px 32px;
-}
-
-.actionsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.actionCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-}
-
-.actionCard:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(139, 92, 246, 0.3);
-}
-
-.actionIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.actionTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.actionDescription {
-  font-size: 12px;
-  color: var(--text-secondary);
-  text-align: center;
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* Desktop adjustments */
+/* Tablet adjustments */
 @media (min-width: 768px) {
-  .home {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
   .hero {
-    padding: 48px 24px 64px;
+    padding: 2rem;
   }
 
-  .welcomeTitle {
-    font-size: 48px;
+  .hero::before {
+    height: 300px;
+    border-radius: 0 0 3rem 3rem;
   }
 
-  .welcomeSubtitle {
-    font-size: 18px;
+  .heroContent {
+    max-width: 800px;
+  }
+
+  .welcomeSection {
+    margin-bottom: 2rem;
   }
 
   .featuredTrack {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 32px;
+    flex-direction: row;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 1.5rem;
   }
 
   .featuredArtwork {
-    width: 140px;
-    height: 140px;
+    width: 160px;
+    height: 160px;
+    margin: 0 2rem 0 0;
+    border-radius: 1rem;
   }
 
-  .featuredTitle {
-    font-size: 28px;
+  .featuredInfo {
+    text-align: left;
+    flex: 1;
   }
 
-  .featuredArtist {
-    font-size: 18px;
+  .featuredStats {
+    justify-content: flex-start;
   }
 
   .playButton {
-    padding: 16px 32px;
-    font-size: 16px;
+    width: auto;
+    max-width: none;
   }
 
   .statsSection {
-    padding: 64px 24px;
+    padding: 3rem 2rem;
+    margin: 3rem -2rem 0 -2rem;
+  }
+
+  .statsGrid {
+    gap: 1.5rem;
   }
 
   .statCard {
-    padding: 32px 24px;
+    flex-direction: row;
+    padding: 1.5rem;
+    text-align: left;
   }
 
-  .statNumber {
-    font-size: 32px;
+  .statIcon {
+    margin-right: 1rem;
   }
 
-  .statLabel {
-    font-size: 16px;
+  .section {
+    padding: 0 2rem;
   }
 
   .sectionHeader {
-    padding: 0 24px;
-  }
-
-  .sectionTitle {
-    font-size: 28px;
+    padding: 0 1rem;
   }
 
   .artistsScroll {
-    padding: 8px 24px;
-    gap: 24px;
+    padding: 0.5rem 1rem;
+    gap: 1.5rem;
   }
 
   .artistCard {
     width: 140px;
-    padding: 20px;
-  }
-
-  .artistAvatar {
-    width: 100px;
-    height: 100px;
-  }
-
-  .artistName {
-    font-size: 16px;
-  }
-
-  .artistStats {
-    font-size: 14px;
+    padding: 1.5rem 1rem;
   }
 
   .discoverSection {
-    padding: 64px 24px;
+    padding: 3rem 2rem;
   }
 
   .discoverCard {
-    padding: 64px 48px;
+    padding: 3rem 2.5rem;
+    border-radius: 2rem;
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  .home {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .discoverTitle {
-    font-size: 36px;
+  .hero {
+    padding: 3rem;
   }
 
-  .discoverText {
-    font-size: 18px;
-  }
-
-  .actionsGrid {
-    grid-template-columns: repeat(4, 1fr);
+  .heroContent {
     max-width: 1000px;
+  }
+
+  .featuredTrack {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .featuredArtwork {
+    width: 200px;
+    height: 200px;
+  }
+
+  .statsSection {
+    padding: 4rem 3rem;
+    margin: 4rem -3rem 0 -3rem;
+  }
+
+  .section {
+    padding: 0 3rem;
+  }
+
+  .artistCard {
+    width: 160px;
+  }
+
+  .discoverCard {
+    padding: 4rem 3rem;
   }
 }
 
