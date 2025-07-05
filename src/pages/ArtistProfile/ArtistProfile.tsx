@@ -93,17 +93,17 @@ const ArtistProfile: React.FC = () => {
 
               <div className={styles.artistStats}>
                 <div className={styles.statItem}>
-                  <Users className={styles.statIcon} size={20} />
+                  <Users className={styles.statIcon} size={24} />
                   <div className={styles.statValue}>1.2K</div>
                   <div className={styles.statLabel}>Followers</div>
                 </div>
                 <div className={styles.statItem}>
-                  <Music className={styles.statIcon} size={20} />
+                  <Music className={styles.statIcon} size={24} />
                   <div className={styles.statValue}>{artistTracks.length}</div>
                   <div className={styles.statLabel}>Tracks</div>
                 </div>
                 <div className={styles.statItem}>
-                  <Play className={styles.statIcon} size={20} />
+                  <Play className={styles.statIcon} size={24} />
                   <div className={styles.statValue}>45.2K</div>
                   <div className={styles.statLabel}>Plays</div>
                 </div>
@@ -120,7 +120,7 @@ const ArtistProfile: React.FC = () => {
                     rel="noopener noreferrer"
                     className={styles.socialLink}
                   >
-                    <ExternalLink size={16} />
+                    <ExternalLink size={18} />
                     Twitter
                   </a>
                 )}
@@ -134,7 +134,7 @@ const ArtistProfile: React.FC = () => {
                     rel="noopener noreferrer"
                     className={styles.socialLink}
                   >
-                    <ExternalLink size={16} />
+                    <ExternalLink size={18} />
                     Instagram
                   </a>
                 )}
@@ -148,7 +148,7 @@ const ArtistProfile: React.FC = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
               <div className={styles.sectionIcon}>
-                <Music size={18} />
+                <Music size={20} />
               </div>
               Music Collection
             </h2>
@@ -184,7 +184,7 @@ const ArtistProfile: React.FC = () => {
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
                 <div className={styles.sectionIcon}>
-                  <Users size={18} />
+                  <Users size={20} />
                 </div>
                 Featured Collaborations
               </h2>

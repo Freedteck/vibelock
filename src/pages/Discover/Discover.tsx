@@ -53,18 +53,17 @@ const Discover: React.FC<DiscoverProps> = ({
       case "newest":
         result.sort(
           (a, b) =>
-            new Date(b.releaseDate).getTime() -
-            new Date(a.releaseDate).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         break;
       case "popular":
-        result.sort((a, b) => b.playCount - a.playCount);
+        result.sort((a, b) => b.uniqueHolders - a.uniqueHolders);
         break;
       case "price-low":
-        result.sort((a, b) => a.coinPrice - b.coinPrice);
+        result.sort((a, b) => parseFloat(a.marketCap) - parseFloat(b.marketCap));
         break;
       case "price-high":
-        result.sort((a, b) => b.coinPrice - a.coinPrice);
+        result.sort((a, b) => parseFloat(b.marketCap) - parseFloat(a.marketCap));
         break;
       case "holders":
         result.sort((a, b) => b.uniqueHolders - a.uniqueHolders);
@@ -76,102 +75,114 @@ const Discover: React.FC<DiscoverProps> = ({
 
   return (
     <div className={styles.discover}>
-      {/* Search Section */}
-      <div className={styles.searchSection}>
-        <div className={styles.searchContainer}>
-          <Search className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Search tracks, artists..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
+      <div className={styles.container}>
+        {/* Header */}
+        <div className={styles.header}>
+          <h1 className={styles.title}>Discover Music</h1>
+          <p className={styles.subtitle}>
+            Explore amazing tracks from talented artists worldwide
+          </p>
         </div>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className={`${styles.filterButton} ${
-            showFilters ? styles.active : ""
-          }`}
-        >
-          <Filter size={20} />
-        </button>
-      </div>
 
-      {/* Filters Panel */}
-      {showFilters && (
-        <div className={styles.filtersPanel}>
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Sort By</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value="newest">Newest First</option>
-              <option value="popular">Most Popular</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="holders">Most Holders</option>
-            </select>
+        {/* Search Section */}
+        <div className={styles.searchSection}>
+          <div className={styles.searchContainer}>
+            <Search className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search tracks, artists, genres..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
           </div>
-        </div>
-      )}
-
-      {/* Genre Pills */}
-      <div className={styles.genrePills}>
-        <button
-          onClick={() => setSelectedGenre("All")}
-          className={`${styles.genrePill} ${
-            selectedGenre === "All" ? styles.active : ""
-          }`}
-        >
-          All
-        </button>
-        {genres.map((genre) => (
           <button
-            key={genre}
-            onClick={() => setSelectedGenre(genre)}
-            className={`${styles.genrePill} ${
-              selectedGenre === genre ? styles.active : ""
+            onClick={() => setShowFilters(!showFilters)}
+            className={`${styles.filterButton} ${
+              showFilters ? styles.active : ""
             }`}
           >
-            {genre}
+            <Filter size={22} />
           </button>
-        ))}
-      </div>
-
-      {/* Results Count */}
-      <div className={styles.resultsInfo}>
-        <p className={styles.resultsCount}>
-          {filteredAndSortedTracks.length} track
-          {filteredAndSortedTracks.length !== 1 ? "s" : ""} found
-        </p>
-      </div>
-
-      {/* Tracks Grid */}
-      {trackLoading ? (
-        <MusicPulseLoader size="large" text="Loading tracks..." />
-      ) : (
-        <div className={styles.tracksGrid}>
-          {filteredAndSortedTracks.length > 0 ? (
-            filteredAndSortedTracks.map((track) => (
-              <CompactTrackCard
-                key={track.id}
-                track={track}
-                onPlay={onTrackPlay}
-                isPlaying={currentTrack?.id === track.id && isPlaying}
-                size="medium"
-              />
-            ))
-          ) : (
-            <div className={styles.noResults}>
-              <h3>No tracks found</h3>
-              <p>Try adjusting your search or filter criteria</p>
-            </div>
-          )}
         </div>
-      )}
+
+        {/* Filters Panel */}
+        {showFilters && (
+          <div className={styles.filtersPanel}>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Sort By</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="newest">Newest First</option>
+                <option value="popular">Most Popular</option>
+                <option value="price-low">Market Cap: Low to High</option>
+                <option value="price-high">Market Cap: High to Low</option>
+                <option value="holders">Most Holders</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Genre Pills */}
+        <div className={styles.genrePills}>
+          <button
+            onClick={() => setSelectedGenre("All")}
+            className={`${styles.genrePill} ${
+              selectedGenre === "All" ? styles.active : ""
+            }`}
+          >
+            All Genres
+          </button>
+          {genres.map((genre) => (
+            <button
+              key={genre}
+              onClick={() => setSelectedGenre(genre)}
+              className={`${styles.genrePill} ${
+                selectedGenre === genre ? styles.active : ""
+              }`}
+            >
+              {genre}
+            </button>
+          ))}
+        </div>
+
+        {/* Results Count */}
+        <div className={styles.resultsInfo}>
+          <p className={styles.resultsCount}>
+            {filteredAndSortedTracks.length} track
+            {filteredAndSortedTracks.length !== 1 ? "s" : ""} found
+          </p>
+        </div>
+
+        {/* Tracks Grid */}
+        {trackLoading ? (
+          <div className={styles.loading}>
+            <MusicPulseLoader size="large" text="Loading tracks..." />
+          </div>
+        ) : (
+          <div className={styles.tracksGrid}>
+            {filteredAndSortedTracks.length > 0 ? (
+              filteredAndSortedTracks.map((track) => (
+                <CompactTrackCard
+                  key={track.id}
+                  track={track}
+                  onPlay={onTrackPlay}
+                  isPlaying={currentTrack?.id === track.id && isPlaying}
+                  size="medium"
+                />
+              ))
+            ) : (
+              <div className={styles.noResults}>
+                <h3>No tracks found</h3>
+                <p>Try adjusting your search or filter criteria to discover more music</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
