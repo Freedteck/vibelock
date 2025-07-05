@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./CompactTrackCard.module.css";
 import { CoinTrack } from "../../models";
 import { useAppContext } from "../../context/AppContext";
+import { useWallet } from "../../hooks/useWallet";
 
 interface CompactTrackCardProps {
   track: CoinTrack;
@@ -20,10 +21,13 @@ const CompactTrackCard: React.FC<CompactTrackCardProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false);
   const { profileBalances } = useAppContext();
+  const { walletAddress } = useWallet();
 
-  const isUnlocked = profileBalances?.some(
-    (balance: any) => balance.id === track.id
-  );
+  const isUnlocked =
+    profileBalances?.some((balance: any) => balance.id === track.id) ||
+    track?.collaborators?.some(
+      (collab: any) => collab.walletAddress === walletAddress
+    );
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -61,10 +61,13 @@ const TrackDetail: React.FC<TrackDetailProps> = ({
   useEffect(() => {
     if (track) {
       setIsUnlocked(
-        profileBalances?.some((balance: any) => balance.id === track.id)
+        profileBalances?.some((balance: any) => balance.id === track.id) ||
+          track.collaborators.some(
+            (collab: any) => collab.walletAddress === walletAddress
+          )
       );
     }
-  }, [track, profileBalances]);
+  }, [track, profileBalances, walletAddress]);
 
   const fetchComments = useCallback(async () => {
     if (track) {

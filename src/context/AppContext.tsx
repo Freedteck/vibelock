@@ -198,6 +198,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         })
       );
 
+      console.log("Formatted Tracks:", formattedTracks);
+
       setTracks(formattedTracks);
       return formattedTracks;
     } catch (error) {
@@ -353,7 +355,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const { error } = await createTrack(track);
       if (error) throw error;
       fetchCoins();
-
+      fetchUserBalances();
       return result;
     } catch (error) {
       console.error("Error adding track:", error);

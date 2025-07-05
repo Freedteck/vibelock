@@ -4,6 +4,7 @@ import FullScreenPlayer from "./FullScreenPlayer";
 import styles from "./BottomPlayer.module.css";
 import { CoinTrack } from "../../models";
 import { useAppContext } from "../../context/AppContext";
+import { useWallet } from "../../hooks/useWallet";
 
 interface BottomPlayerProps {
   currentTrack: CoinTrack | null;
@@ -34,6 +35,7 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   const { profileBalances } = useAppContext();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { walletAddress } = useWallet();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -65,10 +67,15 @@ const BottomPlayer: React.FC<BottomPlayerProps> = ({
   useEffect(() => {
     if (currentTrack) {
       setIsUnlocked(
-        profileBalances?.some((balance: any) => balance.id === currentTrack.id)
+        profileBalances?.some(
+          (balance: any) => balance.id === currentTrack.id
+        ) ||
+          currentTrack?.collaborators?.some(
+            (collab: any) => collab.walletAddress === walletAddress
+          )
       );
     }
-  }, [currentTrack, profileBalances]);
+  }, [currentTrack, profileBalances, walletAddress]);
 
   if (!currentTrack) return null;
 
