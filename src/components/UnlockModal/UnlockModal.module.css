@@ -523,7 +523,7 @@
 .sellButton {
   flex: 2;
   padding: 0.875rem 1.5rem;
-  background: var(--error);
+  background: var(--accent-primary);
   border: none;
   color: white;
   border-radius: 8px;

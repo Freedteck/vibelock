@@ -101,9 +101,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // const totalCoins = profile.coinBalances?.count || 0;
     const balances =
       profile.coinBalances?.edges.filter(
-        (coin: any) =>
-          coin.node.id !==
-          "R3JhcGhRTENvaW5CYWxhbmNlOkJBU0UtTUFJTk5FVC4kLjB4MDc1YzFiNzI5YTljY2IwMGQ0YjFkMTlhMjg5OTg5Mzc4NTU1ZWVlZi4kLjB4MmRlZWI2OTVmN2VmZmJjNDE2ODA1NThjNDgzMjcwMWVjZmMxZjU5NQ=="
+        (coin: any) => coin?.node?.coin?.symbol === "MUSIC"
       ) || [];
 
     // Format balances to match expected structure

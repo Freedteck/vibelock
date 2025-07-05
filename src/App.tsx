@@ -18,6 +18,7 @@ import { setApiKey } from "@zoralabs/coins-sdk";
 import CreateArtistProfile from "./pages/CreateArtistProfile/CreateArtistProfile";
 import { CoinTrack } from "./models";
 import { Toaster } from "react-hot-toast";
+import ScrollToTop from "./components/ScrollToTop";
 
 function AppContent() {
   const { tracks } = useAppContext();
@@ -101,7 +102,10 @@ function AppContent() {
     const nextIndex = (currentTrackIndex + 1) % activePlaylist.length;
 
     // If we're at the end and repeat is off, stop playing
-    if (currentTrackIndex === activePlaylist.length - 1 && repeatMode === "none") {
+    if (
+      currentTrackIndex === activePlaylist.length - 1 &&
+      repeatMode === "none"
+    ) {
       setIsPlaying(false);
       return;
     }
@@ -133,7 +137,7 @@ function AppContent() {
     }
 
     const activePlaylist = isShuffled ? shuffledPlaylist : playlist;
-    
+
     if (currentTrackIndex === activePlaylist.length - 1) {
       // We're at the last track
       if (repeatMode === "all") {
@@ -154,6 +158,7 @@ function AppContent() {
   return (
     <Router>
       <div className="App">
+        <ScrollToTop />
         {/* Desktop Header */}
         <Header />
 
