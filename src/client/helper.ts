@@ -114,7 +114,7 @@ const formatPercentageChange = (change: any) => {
   const numChange = typeof change === "string" ? parseFloat(change) : change;
   if (isNaN(numChange)) return "0.00%";
 
-  const sign = numChange >= 0 ? "+" : "";
+  const sign = "$";
   return `${sign}${numChange.toFixed(2)}%`;
 };
 

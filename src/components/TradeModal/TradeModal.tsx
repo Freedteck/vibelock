@@ -47,7 +47,8 @@ const TradeModal: React.FC<TradeModalProps> = ({
 
   // Calculate current price per coin from market cap and total supply
   const currentPriceUSD =
-    parseFloat(`${track.marketCap || 0}`) / parseFloat(`${track.totalSupply || 1}`);
+    parseFloat(`${track.marketCap || 0}`) /
+    parseFloat(`${track.totalSupply || 1}`);
   const ethToUsdRate = 3500; // Mock ETH to USD rate - replace with real data
   const usdcToUsdRate = 1; // USDC is pegged to USD
 
@@ -80,7 +81,7 @@ const TradeModal: React.FC<TradeModalProps> = ({
 
   const formatMarketData = () => {
     const marketCap = parseFloat(`${track.marketCap || 0}`);
-    const marketCapDelta = parseFloat(`${track.marketCapDelta24h || 0}`);
+    const marketCapDelta = parseFloat(`${track.volume24h || 0}`);
     const totalSupply = parseFloat(`${track.totalSupply || 0}`);
 
     return {
@@ -238,10 +239,10 @@ const TradeModal: React.FC<TradeModalProps> = ({
                     <span>{marketData.marketCap}</span>
                   </div>
                   <div className={styles.stat}>
-                    <span>24h Change</span>
+                    <span>24h Volume</span>
                     <span
                       className={
-                        parseFloat(`${track.marketCapDelta24h || 0}`) >= 0
+                        parseFloat(`${track.volume24h || 0}`) >= 0
                           ? styles.positive
                           : styles.negative
                       }

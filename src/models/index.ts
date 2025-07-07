@@ -62,7 +62,7 @@ export interface CoinTrack {
     percentage: number;
   }[]; // optional collaborators
   marketCap: number;
-  marketCapDelta24h?: number; // percentage change in market cap over 24h
+  volume24h?: number; // percentage change in market cap over 24h
 }
 
 export const genres = [

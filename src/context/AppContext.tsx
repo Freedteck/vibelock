@@ -111,7 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const holders = coin.node.coin.uniqueHolders ?? 0;
         const tokenUri = coin?.node?.coin?.tokenUri;
         const marketCap = coin.node.coin.marketCap || 0;
-        const marketCapDelta24h = coin.node.coin.marketCapDelta24h || 0;
+        const volume24h = coin.node.coin.volume24h || 0;
 
         let tokenDetails: MusicTrack | undefined = undefined;
         try {
@@ -139,7 +139,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           premiumAudio: tokenDetails?.extra?.premium_audio || "",
           collaborators: tokenDetails!.extra?.collaborators || [],
           marketCap: marketCap,
-          marketCapDelta24h: marketCapDelta24h,
+          volume24h: volume24h,
         };
       })
     );
@@ -164,7 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const holders = coin.uniqueHolders ?? 0;
           const tokenUri = coin.tokenUri;
           const marketCap = coin.marketCap || 0;
-          const marketCapDelta24h = coin.marketCapDelta24h || 0;
+          const volume24h = coin.volume24h || 0;
 
           let tokenDetails: MusicTrack | undefined = undefined;
           try {
@@ -191,12 +191,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
             premiumAudio: tokenDetails?.extra?.premium_audio || "",
             collaborators: tokenDetails!.extra?.collaborators || [],
             marketCap: marketCap,
-            marketCapDelta24h: marketCapDelta24h,
+            volume24h: volume24h,
           };
         })
       );
 
-      console.log("Formatted Tracks:", formattedTracks);
+      // console.log("Formatted Tracks:", formattedTracks);
 
       setTracks(formattedTracks);
       return formattedTracks;
@@ -423,8 +423,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       publicClient,
     });
 
-    fetchCoins();
-    fetchUserBalances();
+    await fetchCoins();
+    await fetchUserBalances();
     return receipt;
   };
 

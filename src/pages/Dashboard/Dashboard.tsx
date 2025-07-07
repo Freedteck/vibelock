@@ -372,12 +372,10 @@ const Dashboard: React.FC = () => {
                           </span>
                           <span
                             className={`${styles.portfolioValue} ${
-                              styles[
-                                getChangeColorClass(portfolio.marketCapDelta24h)
-                              ]
+                              styles[getChangeColorClass(portfolio.volume24h)]
                             }`}
                           >
-                            {formatMarketCapChange(portfolio.marketCapDelta24h)}
+                            {formatMarketCapChange(portfolio.volume24h)}
                           </span>
                         </div>
                       </div>

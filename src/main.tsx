@@ -73,6 +73,9 @@ const publicClient = createPublicClient({
 const splitsConfig = {
   chainId: base.id,
   publicClient,
+  // apiConfig: {
+  //   apiKey: `${import.meta.env.VITE_SPLIT_API_KEY}`, // You can create an API key by signing up on our app, and accessing your account settings at app.splits.org/settings.
+  // }, // Splits GraphQL API key config, this is required for the data client to access the splits graphQL API.
 };
 
 createRoot(document.getElementById("root")!).render(
