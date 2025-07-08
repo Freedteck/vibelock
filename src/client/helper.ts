@@ -115,7 +115,7 @@ const formatPercentageChange = (change: any) => {
   if (isNaN(numChange)) return "0.00%";
 
   const sign = "$";
-  return `${sign}${numChange.toFixed(2)}%`;
+  return `${sign}${numChange.toFixed(2)}`;
 };
 
 // ====== Main Portfolio Helper Functions ======
